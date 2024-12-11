@@ -49,7 +49,28 @@ public:
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
 		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f};
-		float rotation = body->GetRotation() * RAD2DEG;
+		float rotation = 0;
+		
+		if (IsKeyDown(KEY_D))
+		{
+			body->body->ApplyForce(b2Vec2(1.0f, 0.f), body->body->GetLocalCenter(), true);
+			rotation = body->GetRotation() * RAD2DEG - 1.0f;
+		}
+		if (IsKeyDown(KEY_A))
+		{
+			body->body->ApplyForce(b2Vec2(-1.0f, 0.f), body->body->GetLocalCenter(), true);
+			rotation = body->GetRotation() * RAD2DEG + 1.0f;
+		}
+		if (IsKeyDown(KEY_W))
+		{
+			body->body->ApplyForce(b2Vec2(0.0f, -1.0f), body->body->GetLocalCenter(), true);
+
+		}
+		if (IsKeyDown(KEY_S))
+		{
+			body->body->ApplyForce(b2Vec2(0.0f, 1.0f), body->body->GetLocalCenter(), true);
+	
+		}
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 	}
 
@@ -197,7 +218,6 @@ update_status ModuleGame::Update()
 		entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, circle));
 		
 	}
-
 	if(IsKeyPressed(KEY_TWO))
 	{
 		entities.emplace_back(new Box(App->physics, GetMouseX(), GetMouseY(), this, box));
