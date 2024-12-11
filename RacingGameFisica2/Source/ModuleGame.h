@@ -24,8 +24,9 @@ public:
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
 public:
-
 	std::vector<PhysicEntity*> entities;
+
+	Texture2D background;
 	
 	PhysBody* m_body;
 	PhysBody* sensor;
@@ -36,6 +37,11 @@ public:
 	Texture2D rick;
 
 	uint32 bonus_fx;
+	uint32 engine_fx;
+	uint32 bump_fx;
+	uint32 boost_fx;
+
+
 
 	vec2<int> ray;
 	bool ray_on;
