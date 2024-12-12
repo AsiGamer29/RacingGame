@@ -87,6 +87,45 @@ public:
         : Collisions(physics, coords, 16, _listener, _texture) {}
 };
 
+class Internal_Collision_3 : public Collisions {
+public:
+    static constexpr int coords[8] = {
+    929, 193,
+    943, 193,
+    943, 207,
+    929, 207
+    };
+
+    Internal_Collision_3(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture)
+        : Collisions(physics, coords, 8, _listener, _texture) {}
+};
+
+class Internal_Collision_4 : public Collisions {
+public:
+    static constexpr int coords[8] = {
+    1009, 289,
+    1039, 289,
+    1039, 303,
+    1009, 303
+    };
+
+    Internal_Collision_4(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture)
+        : Collisions(physics, coords, 8, _listener, _texture) {}
+};
+
+class Internal_Collision_5 : public Collisions {
+public:
+    static constexpr int coords[8] = {
+    1105, 337,
+    1135, 337,
+    1135, 351,
+    1105, 351
+    };
+
+    Internal_Collision_5(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture)
+        : Collisions(physics, coords, 8, _listener, _texture) {}
+};
+
 class External : public Collisions { 
 public:
     static constexpr int coords[108] = {
@@ -427,6 +466,9 @@ bool ModuleGame::Start()
 
     entities.emplace_back(new Internal_Collision(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_2(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Internal_Collision_3(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Internal_Collision_4(App->physics, 0, 0, this, default));
+   entities.emplace_back(new Internal_Collision_5(App->physics, 0, 0, this, default));
     entities.emplace_back(new External(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque1Izq(App->physics, 0, 0, this, default)); 
     entities.emplace_back(new Bloque2Izq(App->physics, 0, 0, this, default));
@@ -436,6 +478,7 @@ bool ModuleGame::Start()
     entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default)); 
     entities.emplace_back(new Bloque2Arriba(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque3Arriba(App->physics, 0, 0, this, default));
+
     return ret;
 }
 // Load assets
