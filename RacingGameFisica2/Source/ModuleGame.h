@@ -11,6 +11,10 @@
 class PhysBody;
 class PhysicEntity;
 
+enum CollisionType
+{
+	DEFAULT
+};
 
 class ModuleGame : public Module
 {
@@ -35,6 +39,7 @@ public:
 	Texture2D circle;
 	Texture2D box;
 	Texture2D rick;
+	Texture2D default;
 
 	uint32 bonus_fx;
 	uint32 engine_fx;
