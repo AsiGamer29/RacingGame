@@ -47,7 +47,7 @@ public:
 	uint32 engine_fx;
 	uint32 bump_fx;
 	uint32 boost_fx;
-
+	Music bgm;
 
 
 	vec2<int> ray;
