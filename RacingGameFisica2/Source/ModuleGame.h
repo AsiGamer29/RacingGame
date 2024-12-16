@@ -37,8 +37,10 @@ public:
 	bool sensed;
 
 	Texture2D circle;
-	Texture2D box;
+	Texture2D yellowCar;
+	Texture2D redCar;
 	Texture2D rick;
+	Texture2D cone;
 	Texture2D default;
 
 	uint32 bonus_fx;

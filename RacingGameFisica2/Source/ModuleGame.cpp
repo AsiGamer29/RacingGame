@@ -276,11 +276,55 @@ private:
 
 };
 
+class Cone : public PhysicEntity
+{
+public:
+    Cone(ModulePhysics* physics, int x, int y, Module* listener, Texture2D texture, Application* _app)
+        : PhysicEntity(physics->CreateCircle(x, y, 5), listener) // Radio del cono = 5
+        , texture(texture)
+        , app(_app)
+    {
+        // Obtener el fixture del cuerpo
+        b2Fixture* fixture = body->body->GetFixtureList();
+        if (fixture)
+        {
+  
+            fixture->SetFriction(2.0f); // Fricción alta (puedes ajustar el valor según necesites)
+
+
+            fixture->SetRestitution(0.1f);
+
+
+            b2MassData massData;
+            massData.mass = 1.0f;
+            massData.center.Set(0.0f, 0.0f);
+            massData.I = 0.0f;
+            body->body->SetMassData(&massData);
+        }
+    }
+
+    void Update() override
+    {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+
+        float scale = 1.0f;
+        DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
+            Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
+            Vector2{ (float)texture.width / 2, (float)texture.height / 2 }, 0.0f, WHITE);
+    }
+
+private:
+    Texture2D texture;
+    Application* app;
+};
+
+
 class Kart : public PhysicEntity
 {
 public:
     Kart(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, int _engineSound, int _boostSound, Application* _app)
-        : PhysicEntity(physics->CreateRectangle(_x, _y, 9, 16), _listener)
+        : PhysicEntity(physics->CreateCircle(_x, _y, 9), _listener)
         , texture(_texture)
         , speed(0.0f)
         , rotation(0.0f)
@@ -435,6 +479,127 @@ private:
     Application* app; // Puntero a Application
 };
 
+class Kart_Fast : public PhysicEntity
+{
+public:
+    Kart_Fast(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture, int _engineSound, int _boostSound, Application* _app)
+        : PhysicEntity(physics->CreateCircle(_x, _y, 9), _listener)
+        , texture(_texture)
+        , speed(0.0f)
+        , rotation(0.0f)
+        , engineSound(_engineSound)
+        , boostSound(_boostSound) // Añadir el sonido de boost
+        , isMoving(false)
+        , isBoosting(false) // Añadir estado de boost
+        , app(_app) // Almacena el puntero a Application
+    {
+    }
+
+    void Update() override
+    {
+        HandleInput();
+        Move();
+
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        float rotationDegrees = body->GetRotation() * RAD2DEG;
+        float scale = 1.5f; // Escala de la imagen
+        DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
+            Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
+            Vector2{ (float)texture.width - 2.0f, (float)texture.height - 2.0f }, rotationDegrees, WHITE);
+
+        // Mostrar la velocidad del coche
+        DrawText(TextFormat("SPEED: %.2f", speed), 10, 40, 20, RED);
+
+        // Reproduce el sonido del motor si el kart se está moviendo
+        if (speed != 0.0f && !isMoving)
+        {
+            app->audio->PlayFx(engineSound, -1); // Reproduce en bucle
+            isMoving = true;
+        }
+        else if (speed == 0.0f && isMoving)
+        {
+            isMoving = false;
+        }
+    }
+
+    void HandleInput()
+    {
+        float currentMaxSpeed = maxSpeed;
+
+        if (IsKeyDown(KEY_UP))
+        {
+            speed += 0.1f;
+            if (speed > currentMaxSpeed)
+            {
+                speed = currentMaxSpeed;
+            }
+        }
+        else if (IsKeyDown(KEY_DOWN))
+        {
+            speed -= 0.1f;
+            if (speed < -currentMaxSpeed)
+            {
+                speed = -currentMaxSpeed;
+            }
+        }
+        else
+        {
+            // Deceleración gradual
+            if (speed > 0.0f)
+            {
+                speed -= deceleration;
+                if (speed < 0.0f)
+                {
+                    speed = 0.0f;
+                }
+            }
+            else if (speed < 0.0f)
+            {
+                speed += deceleration;
+                if (speed > 0.0f)
+                {
+                    speed = 0.0f;
+                }
+            }
+        }
+
+        if (IsKeyDown(KEY_LEFT))
+        {
+            rotation -= 3.0f;
+        }
+        if (IsKeyDown(KEY_RIGHT))
+        {
+            rotation += 3.0f;
+        }
+    }
+
+
+    void Move()
+    {
+        float rad = rotation * DEG2RAD;
+        body->body->SetLinearVelocity(b2Vec2(speed * sin(rad), -speed * cos(rad)));
+        body->body->SetTransform(body->body->GetPosition(), rad);
+    }
+
+    int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
+    {
+        return body->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);
+    }
+
+private:
+    Texture2D texture;
+    float speed;
+    float rotation;
+    const float maxSpeed = 3.5f;
+    const float deceleration = 0.05f; // Valor de deceleración
+    int engineSound;
+    int boostSound; // Añadir variable para el sonido de boost
+    bool isMoving;
+    bool isBoosting; // Añadir estado de boost
+    Application* app; // Puntero a Application
+};
+
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
     ray_on = false;
@@ -452,8 +617,10 @@ bool ModuleGame::Start()
 
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
+    cone = LoadTexture("Assets/cone.png");
     circle = LoadTexture("Assets/wheel.png");
-    box = LoadTexture("Assets/car.png");
+    yellowCar = LoadTexture("Assets/car.png");
+    redCar = LoadTexture("Assets/redcar.png");
     rick = LoadTexture("Assets/rick_head.png");
 	background = LoadTexture("Assets/Mapa1Racing.png");
 
@@ -468,7 +635,7 @@ bool ModuleGame::Start()
     entities.emplace_back(new Internal_Collision_2(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_3(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_4(App->physics, 0, 0, this, default));
-   entities.emplace_back(new Internal_Collision_5(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Internal_Collision_5(App->physics, 0, 0, this, default));
     entities.emplace_back(new External(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque1Izq(App->physics, 0, 0, this, default)); 
     entities.emplace_back(new Bloque2Izq(App->physics, 0, 0, this, default));
@@ -508,7 +675,16 @@ update_status ModuleGame::Update()
     }
     if (IsKeyPressed(KEY_TWO))
     {
-        entities.emplace_back(new Kart(App->physics, GetMouseX(), GetMouseY(), this, box, engine_fx, boost_fx, App)); // Pasa el puntero a Application y el sonido de boost
+        entities.emplace_back(new Kart(App->physics, GetMouseX(), GetMouseY(), this, yellowCar, engine_fx, boost_fx, App)); // Pasa el puntero a Application y el sonido de boost
+    }
+    if (IsKeyPressed(KEY_THREE))
+    {
+        entities.emplace_back(new Kart_Fast(App->physics, GetMouseX(), GetMouseY(), this, redCar, engine_fx, boost_fx, App)); // Pasa el puntero a Application y el sonido de boost
+    }
+
+    if (IsKeyPressed(KEY_M))
+    {
+        entities.emplace_back(new Cone(App->physics, GetMouseX(), GetMouseY(), this, cone, App)); // Pasa el puntero a Application y el sonido de boost
     }
 
 
