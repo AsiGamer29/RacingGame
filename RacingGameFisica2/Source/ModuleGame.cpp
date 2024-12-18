@@ -34,6 +34,62 @@ protected:
     CollisionType collisionType;
 };
 
+class Collisionss : public PhysicEntity {
+public:
+    Collisionss(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(0, 0, 200, 200), _listener)
+        , texture(_texture)
+    {
+        collisionType = SNOW; // Inicializa con el tipo de colisión por defecto
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+class SharpedosColPunt : public PhysicEntity
+{
+public:
+    // Pivot 0, 0
+    static constexpr int SCP[164] = {
+    135, 630, 127, 629, 123, 624, 122, 616, 122, 243, 124, 238,
+    127, 235, 133, 234, 162, 234, 170, 232, 177, 228, 182, 222,
+    186, 212, 186, 115, 189, 109, 195, 106, 635, 106, 641, 107,
+    645, 111, 646, 117, 646, 400, 647, 408, 650, 415, 655, 420,
+    661, 424, 668, 425, 680, 426, 865, 426, 875, 424, 882, 419,
+    887, 412, 889, 402, 890, 390, 890, 179, 893, 172, 899, 170,
+    1150, 170, 1155, 173, 1158, 179, 1158, 367, 1156, 371, 1152, 374,
+    989, 374, 981, 376, 973, 380, 969, 387, 967, 395, 966, 405,
+    966, 622, 964, 627, 958, 630, 833, 630, 828, 628, 826, 623,
+    826, 589, 824, 581, 819, 574, 812, 568, 802, 566, 579, 566,
+    573, 563, 570, 557, 570, 269, 568, 260, 562, 252, 553, 247,
+    537, 246, 347, 246, 337, 250, 330, 256, 326, 269, 326, 468,
+    328, 475, 334, 484, 344, 488, 354, 490, 382, 490, 388, 493,
+    390, 500, 390, 621, 388, 627, 381, 630,
+
+    };
+
+    SharpedosColPunt(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateSnowChain(0, 0, SCP, 164), _listener)
+        , texture(_texture)
+    {
+        collisionType = SNOW;
+    }
+
+    void Update() override
+    {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+private:
+    Texture2D texture;
+};
 class Collisions : public PhysicEntity {
 public:
     Collisions(ModulePhysics* physics, const int* coords, int coordCount, Module* _listener, Texture2D _texture)
@@ -55,6 +111,7 @@ protected:
 
 class Snow : public PhysicEntity {
 public:
+
     Snow(ModulePhysics* physics, const int* coords, int coordCount, Module* _listener, Texture2D _texture)
         : PhysicEntity(physics->CreateSnowChain(0, 0, coords, coordCount), _listener)
         , texture(_texture)
@@ -523,8 +580,9 @@ bool ModuleGame::Start()
     entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default)); 
     entities.emplace_back(new Bloque2Arriba(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque3Arriba(App->physics, 0, 0, this, default));
-    entities.emplace_back(new SnowZone(App->physics, 0, 0, this, default));
-
+    entities.emplace_back(new Collisionss(App->physics, 30, 30, this, default));
+    entities.emplace_back(new SharpedosColPunt(App->physics, 0, 0, this, default));
+    
     return ret;
 }
 // Load assets
@@ -549,7 +607,7 @@ update_status ModuleGame::Update()
 
     if (IsKeyPressed(KEY_ONE))
     {
-        entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, circle));
+       // entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, circle));
 
     }
     if (IsKeyPressed(KEY_TWO))
@@ -609,11 +667,13 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 
         if (bodyA == entities[i]->body && entities[i]->GetCollisionType() == SNOW) {
+            printf("Snow");
             Kart* kart = dynamic_cast<Kart*>(entities[i]);
             if (kart) {
                 // Modificar la velocidad máxima del Kart
                 kart->maxSpeed = 1.5f; // Ejemplo de reducir la velocidad máxima cuando se colisiona con nieve
                 kart->boostedMaxSpeed = 3.0f; // También puedes cambiar la velocidad máxima cuando se usa el boost
+                printf("Snow");
             }
 
             break;
