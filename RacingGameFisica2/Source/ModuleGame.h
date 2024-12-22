@@ -14,7 +14,8 @@ class PhysicEntity;
 enum CollisionType
 {
 	DEFAULT,
-	SNOW
+	SNOW,
+	DARKENED_SNOW
 };
 
 class ModuleGame : public Module
