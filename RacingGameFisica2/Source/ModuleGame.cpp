@@ -34,13 +34,15 @@ protected:
     CollisionType collisionType;
 };
 
-class Collisionss : public PhysicEntity {
+//------------------------------------------------------------------------------------ Snow Zone -------------------------------------------------------------------------------------
+
+class SnowZone_1 : public PhysicEntity {
 public:
-    Collisionss(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(0, 0, 200, 200), _listener)
-        , texture(_texture)
+    SnowZone_1(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(175, 370, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y                                         
     {
-        collisionType = SNOW; // Inicializa con el tipo de colisión por defecto
+        collisionType = SNOW; 
     }
 
     virtual void Update() override {
@@ -52,44 +54,85 @@ public:
 protected:
     Texture2D texture;
 };
-class SharpedosColPunt : public PhysicEntity
-{
+
+class SnowZone_2 : public PhysicEntity {
 public:
-    // Pivot 0, 0
-    static constexpr int SCP[164] = {
-    135, 630, 127, 629, 123, 624, 122, 616, 122, 243, 124, 238,
-    127, 235, 133, 234, 162, 234, 170, 232, 177, 228, 182, 222,
-    186, 212, 186, 115, 189, 109, 195, 106, 635, 106, 641, 107,
-    645, 111, 646, 117, 646, 400, 647, 408, 650, 415, 655, 420,
-    661, 424, 668, 425, 680, 426, 865, 426, 875, 424, 882, 419,
-    887, 412, 889, 402, 890, 390, 890, 179, 893, 172, 899, 170,
-    1150, 170, 1155, 173, 1158, 179, 1158, 367, 1156, 371, 1152, 374,
-    989, 374, 981, 376, 973, 380, 969, 387, 967, 395, 966, 405,
-    966, 622, 964, 627, 958, 630, 833, 630, 828, 628, 826, 623,
-    826, 589, 824, 581, 819, 574, 812, 568, 802, 566, 579, 566,
-    573, 563, 570, 557, 570, 269, 568, 260, 562, 252, 553, 247,
-    537, 246, 347, 246, 337, 250, 330, 256, 326, 269, 326, 468,
-    328, 475, 334, 484, 344, 488, 354, 490, 382, 490, 388, 493,
-    390, 500, 390, 621, 388, 627, 381, 630,
-
-    };
-
-    SharpedosColPunt(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateSnowChain(0, 0, SCP, 164), _listener)
-        , texture(_texture)
+    SnowZone_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(175, 607, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y   
     {
         collisionType = SNOW;
     }
 
-    void Update() override
-    {
+    virtual void Update() override {
         int x, y;
         body->GetPhysicPosition(x, y);
         DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
     }
-private:
+
+protected:
     Texture2D texture;
 };
+
+class SnowZone_3 : public PhysicEntity {
+public:
+    SnowZone_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(275, 435, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_4 : public PhysicEntity {
+public:
+    SnowZone_4(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(355, 558, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_5 : public PhysicEntity {
+public:
+    SnowZone_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(405, 158, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+//------------------------------------------------------------------------------------ Collisions -------------------------------------------------------------------------------------
+
 class Collisions : public PhysicEntity {
 public:
     Collisions(ModulePhysics* physics, const int* coords, int coordCount, Module* _listener, Texture2D _texture)
@@ -97,26 +140,6 @@ public:
         , texture(_texture)
     {
         collisionType = DEFAULT; // Inicializa con el tipo de colisión por defecto
-    }
-
-    virtual void Update() override {
-        int x, y;
-        body->GetPhysicPosition(x, y);
-        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
-    }
-
-protected:
-    Texture2D texture;
-};
-
-class Snow : public PhysicEntity {
-public:
-
-    Snow(ModulePhysics* physics, const int* coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateSnowChain(0, 0, coords, coordCount), _listener)
-        , texture(_texture)
-    {
-        collisionType = SNOW; // Inicializa con el tipo de colisión por defecto
     }
 
     virtual void Update() override {
@@ -324,30 +347,6 @@ public:
         : Collisions(physics, coords, 8, _listener, _texture) {}
 };
 
-class SnowZone : public Collisions {
-public:
-    static constexpr int coords[164] = {
-    135, 630, 127, 629, 123, 624, 122, 616, 122, 243, 124, 238,
-    127, 235, 133, 234, 162, 234, 170, 232, 177, 228, 182, 222,
-    186, 212, 186, 115, 189, 109, 195, 106, 635, 106, 641, 107,
-    645, 111, 646, 117, 646, 400, 647, 408, 650, 415, 655, 420,
-    661, 424, 668, 425, 680, 426, 865, 426, 875, 424, 882, 419,
-    887, 412, 889, 402, 890, 390, 890, 179, 893, 172, 899, 170,
-    1150, 170, 1155, 173, 1158, 179, 1158, 367, 1156, 371, 1152, 374,
-    989, 374, 981, 376, 973, 380, 969, 387, 967, 395, 966, 405,
-    966, 622, 964, 627, 958, 630, 833, 630, 828, 628, 826, 623,
-    826, 589, 824, 581, 819, 574, 812, 568, 802, 566, 579, 566,
-    573, 563, 570, 557, 570, 269, 568, 260, 562, 252, 553, 247,
-    537, 246, 347, 246, 337, 250, 330, 256, 326, 269, 326, 468,
-    328, 475, 334, 484, 344, 488, 354, 490, 382, 490, 388, 493,
-    390, 500, 390, 621, 388, 627, 381, 630,
-
-    };
-
-    SnowZone(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture)
-        : Collisions(physics, coords, 164, _listener, _texture) {}
-};
-
 class Circle : public PhysicEntity
 {
 public:
@@ -524,6 +523,7 @@ public:
 public:
     float maxSpeed = 2.5f;
     float boostedMaxSpeed = 4.5f; // Nueva velocidad máxima cuando se presiona Shift
+    bool inSnowZone = false;
 
 private:
     Texture2D texture;
@@ -566,6 +566,8 @@ bool ModuleGame::Start()
 
     sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
+    //------------------------------ Collision ----------------------------------------
+
     entities.emplace_back(new Internal_Collision(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_2(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_3(App->physics, 0, 0, this, default));
@@ -580,8 +582,15 @@ bool ModuleGame::Start()
     entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default)); 
     entities.emplace_back(new Bloque2Arriba(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque3Arriba(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Collisionss(App->physics, 30, 30, this, default));
-    entities.emplace_back(new SharpedosColPunt(App->physics, 0, 0, this, default));
+
+    //----------------------------- Snow Zone -----------------------------------------
+    //                                                width/height 
+    entities.emplace_back(new SnowZone_1(App->physics, 100, 255, this, default));
+    entities.emplace_back(new SnowZone_2(App->physics, 100, 40, this, default));
+    entities.emplace_back(new SnowZone_3(App->physics, 100, 385, this, default));
+    entities.emplace_back(new SnowZone_4(App->physics, 65, 138, this, default));
+    entities.emplace_back(new SnowZone_5(App->physics, 250, 155, this, default));
+    
     
     return ret;
 }
@@ -659,29 +668,45 @@ update_status ModuleGame::Update()
     return UPDATE_CONTINUE;
 }
 
-void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
-{
-
+void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
     int length = entities.size();
+
     for (int i = 0; i < length; ++i) {
-
-
-        if (bodyA == entities[i]->body && entities[i]->GetCollisionType() == SNOW) {
-            printf("Snow");
+        if (bodyA == entities[i]->body) {
             Kart* kart = dynamic_cast<Kart*>(entities[i]);
+
             if (kart) {
-                // Modificar la velocidad máxima del Kart
-                kart->maxSpeed = 1.5f; // Ejemplo de reducir la velocidad máxima cuando se colisiona con nieve
-                kart->boostedMaxSpeed = 3.0f; // También puedes cambiar la velocidad máxima cuando se usa el boost
-                printf("Snow");
+                
+                if (!kart->inSnowZone) {
+                    printf("Kart entered snow zone.\n");
+                    kart->inSnowZone = true;
+                    kart->maxSpeed = 1.5f;
+                    kart->boostedMaxSpeed = 3.0f;
+                }
+                break; 
             }
-
-            break;
         }
-
     }
-
-
-
-    App->audio->PlayFx(bump_fx);
 }
+void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
+    int length = entities.size();
+
+    for (int i = 0; i < length; ++i) {
+        if (bodyA == entities[i]->body) {
+            Kart* kart = dynamic_cast<Kart*>(entities[i]);
+
+            if (kart && kart->inSnowZone) {
+                printf("Kart exited snow zone.\n");
+                kart->inSnowZone = false;
+                kart->maxSpeed = 2.5f;
+                kart->boostedMaxSpeed = 4.5f;
+                break; 
+            }
+        }
+    }
+}
+
+
+
+
+
