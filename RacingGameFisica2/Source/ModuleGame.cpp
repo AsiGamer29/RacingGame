@@ -279,9 +279,8 @@ private:
 class Cone : public PhysicEntity
 {
 public:
-    Cone(ModulePhysics* physics, int x, int y, Module* listener, Texture2D texture, Application* _app)
+    Cone(ModulePhysics* physics, int x, int y, Module* listener, Application* _app)
         : PhysicEntity(physics->CreateStaticCircle(x, y, 5), listener) // Radio del cono = 5
-        , texture(texture)
         , app(_app)
     {
     }
@@ -291,20 +290,21 @@ public:
         int x, y;
         body->GetPhysicPosition(x, y);
 
-        float scale = 1.5f;
+        float scale = 50.0f;
         DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
             Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
-            Vector2{ (float)texture.width -  1, (float)texture.height}, 0.0f, WHITE);
+            Vector2{ (float)texture.width - 1, (float)texture.height }, 0.0f, WHITE);
     }
 
 private:
-    Texture2D texture;
+    Texture2D texture = LoadTexture("Assets/cone.png");
     Application* app;
 };
 
+
 class Kart : public PhysicEntity {
 public:
-    Kart(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app)
+    Kart(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
         : PhysicEntity(physics->CreateCircle(x, y, 9), _listener), texture(_texture), app(_app) {}
 
     virtual void Update() override {
@@ -325,8 +325,8 @@ protected:
 
 class Kart_Controller : public Kart {
 public:
-    Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app)
-        : Kart(physics, x, y, _listener, _texture, _app), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false) {}
+    Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
+        : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type){}
 
     virtual void HandleInput() {
         
@@ -343,12 +343,17 @@ public:
         }
         
         // Si se presiona Shift, aumentar la velocidad máxima y reproducir el sonido de boost
-        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
-            currentMaxSpeed = boostedMaxSpeed;
-            if (!isBoosting) {
-                app->audio->PlayFx(boostSound);
-                isBoosting = true;
+        if (IsKeyDown(KEY_LEFT_SHIFT)|| IsKeyDown(KEY_RIGHT_SHIFT)) {
+            if (kartType == BOOST) {
+                currentMaxSpeed = boostedMaxSpeed;
+                if (!isBoosting) {
+                    app->audio->PlayFx(boostSound);
+                    isBoosting = true;
+                }
             }
+			else if (kartType == CONE) {
+				currentMaxSpeed = maxSpeed;
+			}
         }
         else {
             
@@ -384,11 +389,19 @@ public:
         }
 
         // Deceleración adicional cuando se deja de pulsar Shift
-        if (!(IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) && speed > maxSpeed) {
-            speed -= deceleration;
-            if (speed < maxSpeed) {
-                speed = maxSpeed;
+        if (!(IsKeyDown(KEY_LEFT_SHIFT) && speed > maxSpeed || IsKeyDown(KEY_RIGHT_SHIFT)) && speed > maxSpeed) {
+            if (kartType == BOOST) {
+                speed -= deceleration;
+                if (speed < maxSpeed) {
+                    speed = maxSpeed;
+                }
             }
+			else if (kartType == CONE) {
+				speed -= deceleration;
+				if (speed < maxSpeed) {
+					speed = maxSpeed;
+				}
+			}
         }
 
         if (isBoosting) {
@@ -407,8 +420,16 @@ public:
                 rotation += 3.0f;
             }
         }
-    }
 
+        if (kartType == CONE && IsKeyPressed(KEY_M)) {
+            int x, y;
+            body->GetPhysicPosition(x, y);
+            coneEntity = new Cone(app->physics, x, y, this->listener, app);
+            entities.emplace_back(coneEntity);
+            coneEntity->Update();
+        }
+    }
+    
     void Move()
     {
         float rad = rotation * DEG2RAD;
@@ -420,9 +441,13 @@ public:
         HandleInput();
         Move();
         Kart::Update();
+		
     }
 
 protected:
+	Cone* coneEntity;
+    KartType kartType;
+    std::vector<PhysicEntity*> entities;
     float speed;
     float rotation;
     bool isMoving;
@@ -436,15 +461,17 @@ protected:
 
 class Kart_Player_1 : public Kart_Controller {
 public:
-    Kart_Player_1(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app)
-        : Kart_Controller(physics, x, y, _listener, _texture, _app) {}
+    Kart_Player_1(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType BOOST)
+        : Kart_Controller(physics, x, y, _listener, _texture, _app, BOOST) {}
 };
 
 class Kart_Player_2 : public Kart_Controller {
 public:
-    Kart_Player_2(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app)
-        : Kart_Controller(physics, x, y, _listener, _texture, _app) {}
+    Kart_Player_2(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType CONE)
+        : Kart_Controller(physics, x, y, _listener, _texture, _app, CONE) {
+    }
 };
+
 
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -527,16 +554,12 @@ update_status ModuleGame::Update()
     }
     if (IsKeyPressed(KEY_TWO))
     {
-        entities.emplace_back(new Kart_Player_1(App->physics, GetMouseX(), GetMouseY(), this, yellowCar, App));
-    }
-    if (IsKeyPressed(KEY_THREE))
-    {
-        entities.emplace_back(new Kart_Player_2(App->physics, GetMouseX(), GetMouseY(), this, redCar, App));
+        entities.emplace_back(new Kart_Player_1(App->physics, GetMouseX(), GetMouseY(), this, yellowCar, App, BOOST));
     }
 
-    if (IsKeyPressed(KEY_M))
+    if (IsKeyPressed(KEY_THREE))
     {
-        entities.emplace_back(new Cone(App->physics, GetMouseX(), GetMouseY(), this, cone, App)); // Pasa el puntero a Application y el sonido de boost
+        entities.emplace_back(new Kart_Player_2(App->physics, GetMouseX(), GetMouseY(), this, redCar, App, CONE));
     }
 
 

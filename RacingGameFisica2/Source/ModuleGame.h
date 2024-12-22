@@ -16,6 +16,15 @@ enum CollisionType
 	DEFAULT
 };
 
+enum KartType
+{
+	BOOST,
+	CONE,
+	SHOOT,
+	TANK,
+	DEFAULT_KART
+};
+
 class ModuleGame : public Module
 {
 public:
@@ -48,6 +57,8 @@ public:
 	uint32 bump_fx;
 	uint32 boost_fx;
 	Music bgm;
+
+	bool hasSpawnedCar = false;
 
 
 	vec2<int> ray;
