@@ -1065,7 +1065,13 @@ public:
         Kart::Update();
 		
     }
-
+public:
+    float maxSpeed = 2.5f;
+    float boostedMaxSpeed = 4.5f; 
+    bool inSnowZone = false;
+    bool inDarkenedSnowZone = false;
+    int snowZoneCount = 0;
+    int DarkenedsnowZoneCount = 0;
 protected:
 	Cone* coneEntity;
     KartType kartType;
@@ -1075,8 +1081,6 @@ protected:
     bool isMoving;
     bool isBoosting;
     bool isDrifting;
-    const float maxSpeed = 2.5f;
-    const float boostedMaxSpeed = 4.5f;
     const float deceleration = 0.05f;
     uint32 boostSound = app->audio->LoadFx("Assets/boost.wav");
 	uint32 engineSound = app->audio->LoadFx("Assets/drive.wav");;
@@ -1282,7 +1286,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
     int length = entities.size();
     for (int i = 0; i < length; ++i) {
         if (bodyA == entities[i]->body) {
-            Kart* kart = dynamic_cast<Kart*>(entities[i]);
+            Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entities[i]);
             if (kart) {
                 for (int j = 0; j < length; ++j) {
                     //SNOW ZONE
@@ -1318,7 +1322,7 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
     int length = entities.size();
     for (int i = 0; i < length; ++i) {
         if (bodyA == entities[i]->body) {
-            Kart* kart = dynamic_cast<Kart*>(entities[i]);
+            Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entities[i]);
             if (kart) {
                 for (int j = 0; j < length; ++j) {
                     if (bodyB == entities[j]->body) {
