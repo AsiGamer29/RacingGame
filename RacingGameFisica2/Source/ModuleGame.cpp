@@ -115,7 +115,236 @@ protected:
 class SnowZone_5 : public PhysicEntity {
 public:
     SnowZone_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(365, 175, coords, coordCount), _listener)
+        : PhysicEntity(physics->CreateRectangleSensor(450, 170, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_14 : public PhysicEntity {
+public:
+    SnowZone_14(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(789, 495, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_15 : public PhysicEntity {
+public:
+    SnowZone_15(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(894, 528, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_16 : public PhysicEntity {
+public:
+    SnowZone_16(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(704, 460, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_17 : public PhysicEntity {
+public:
+    SnowZone_17(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1060, 275, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_18 : public PhysicEntity {
+public:
+    SnowZone_18(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(925, 300, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_19 : public PhysicEntity {
+public:
+    SnowZone_19(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(738, 188, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW; 
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_20 : public PhysicEntity {
+public:
+    SnowZone_20(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(807, 329, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW; 
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_21 : public PhysicEntity {
+public:
+    SnowZone_21(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(807, 97, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_22 : public PhysicEntity {
+public:
+    SnowZone_22(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(955, 62, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+
+class SnowZone_23 : public PhysicEntity {
+public:
+    SnowZone_23(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1245, 279, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_24 : public PhysicEntity {
+public: 
+    SnowZone_24(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1158, 574, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {                                           
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_25 : public PhysicEntity {
+public:
+    SnowZone_25(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(655, 670, coords, coordCount), _listener)
         , texture(_texture) //             position:   x    y  
     {
         collisionType = SNOW;
@@ -332,7 +561,7 @@ public:
         : PhysicEntity(physics->CreateChain(0, 0, coords, coordCount), _listener)
         , texture(_texture)
     {
-        collisionType = DEFAULT; // Inicializa con el tipo de colisión por defecto
+        collisionType = DEFAULT; // Inicializa con el tipo de colisiï¿½n por defecto
     }
 
     virtual void Update() override {
@@ -577,9 +806,9 @@ public:
         , speed(0.0f)
         , rotation(0.0f)
         , engineSound(_engineSound)
-        , boostSound(_boostSound) // Añadir el sonido de boost
+        , boostSound(_boostSound) // Aï¿½adir el sonido de boost
         , isMoving(false)
-        , isBoosting(false) // Añadir estado de boost
+        , isBoosting(false) // Aï¿½adir estado de boost
         , app(_app) // Almacena el puntero a Application
     {
     }
@@ -600,7 +829,7 @@ public:
         // Mostrar la velocidad del coche
         DrawText(TextFormat("SPEED: %.2f", speed), 10, 40, 20, RED);
 
-        // Reproduce el sonido del motor si el kart se está moviendo
+        // Reproduce el sonido del motor si el kart se estï¿½ moviendo
         if (speed != 0.0f && !isMoving)
         {
             app->audio->PlayFx(engineSound, -1); // Reproduce en bucle
@@ -616,7 +845,7 @@ public:
     {
         float currentMaxSpeed = maxSpeed;
 
-        // Si se presiona Shift, aumentar la velocidad máxima y reproducir el sonido de boost
+        // Si se presiona Shift, aumentar la velocidad mï¿½xima y reproducir el sonido de boost
         if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT))
         {
             currentMaxSpeed = boostedMaxSpeed;
@@ -649,7 +878,7 @@ public:
         }
         else
         {
-            // Deceleración gradual
+            // Deceleraciï¿½n gradual
             if (speed > 0.0f)
             {
                 speed -= deceleration;
@@ -668,7 +897,7 @@ public:
             }
         }
 
-        // Deceleración adicional cuando se deja de pulsar Shift
+        // Deceleraciï¿½n adicional cuando se deja de pulsar Shift
         if (!(IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) && speed > maxSpeed)
         {
             speed -= deceleration;
@@ -715,18 +944,18 @@ public:
 
 public:
     float maxSpeed = 2.5f;
-    float boostedMaxSpeed = 4.5f; // Nueva velocidad máxima cuando se presiona Shift
+    float boostedMaxSpeed = 4.5f; // Nueva velocidad mï¿½xima cuando se presiona Shift
     bool inSnowZone = false;
 
 private:
     Texture2D texture;
     float speed;
     float rotation;
-    const float deceleration = 0.05f; // Valor de deceleración
+    const float deceleration = 0.05f; // Valor de deceleraciï¿½n
     int engineSound;
-    int boostSound; // Añadir variable para el sonido de boost
+    int boostSound; // Aï¿½adir variable para el sonido de boost
     bool isMoving;
-    bool isBoosting; // Añadir estado de boost
+    bool isBoosting; // Aï¿½adir estado de boost
     Application* app; // Puntero a Application
 };
 
@@ -791,10 +1020,21 @@ bool ModuleGame::Start()
     entities.emplace_back(new SnowZone_11(App->physics, 426, 20, this, default));
     entities.emplace_back(new SnowZone_12(App->physics, 74, 267, this, default));
     entities.emplace_back(new SnowZone_13(App->physics, 136, 137, this, default));
+    entities.emplace_back(new SnowZone_14(App->physics, 75, 140, this, default));
+    entities.emplace_back(new SnowZone_15(App->physics, 134, 206, this, default));
+    entities.emplace_back(new SnowZone_16(App->physics, 94, 70, this, default));
+    entities.emplace_back(new SnowZone_17(App->physics, 198, 200, this, default));
+    entities.emplace_back(new SnowZone_18(App->physics, 70, 250, this, default));
+    entities.emplace_back(new SnowZone_19(App->physics, 80, 374, this, default));
+    entities.emplace_back(new SnowZone_20(App->physics, 57, 93, this, default));
+    entities.emplace_back(new SnowZone_21(App->physics, 57, 189, this, default));
+    entities.emplace_back(new SnowZone_22(App->physics, 240, 118, this, default));
+    entities.emplace_back(new SnowZone_23(App->physics, 70, 296, this, default));
+    entities.emplace_back(new SnowZone_24(App->physics, 280, 294, this, default));
+    entities.emplace_back(new SnowZone_25(App->physics, 240, 100, this, default));
     entities.emplace_back(new SnowZone_30(App->physics, 52, 50, this, default));
     entities.emplace_back(new SnowZone_31(App->physics, 256, 84, this, default));
-    
-    
+
     return ret;
 }
 // Load assets
