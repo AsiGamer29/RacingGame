@@ -279,9 +279,8 @@ private:
 class Cone : public PhysicEntity
 {
 public:
-    Cone(ModulePhysics* physics, int x, int y, Module* listener, Application* _app)
-        : PhysicEntity(physics->CreateStaticCircle(x, y, 5), listener) // Radio del cono = 5
-        , app(_app)
+    Cone(ModulePhysics* physics, int x, int y, Module* listener, Texture2D _texture, Application* _app)
+        : PhysicEntity(physics->CreateStaticCircle(x, y, 6), listener), texture(_texture), app(_app)
     {
     }
 
@@ -290,14 +289,14 @@ public:
         int x, y;
         body->GetPhysicPosition(x, y);
 
-        float scale = 50.0f;
+        float scale = 2.0f;
         DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
             Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
-            Vector2{ (float)texture.width - 1, (float)texture.height }, 0.0f, WHITE);
+            Vector2{ (float)texture.width, (float)texture.height }, 0.0f, WHITE);
     }
 
 private:
-    Texture2D texture = LoadTexture("Assets/cone.png");
+    Texture2D texture;
     Application* app;
 };
 
@@ -341,24 +340,6 @@ public:
         {
             isMoving = false;
         }
-        
-        // Si se presiona Shift, aumentar la velocidad máxima y reproducir el sonido de boost
-        if (IsKeyDown(KEY_LEFT_SHIFT)|| IsKeyDown(KEY_RIGHT_SHIFT)) {
-            if (kartType == BOOST) {
-                currentMaxSpeed = boostedMaxSpeed;
-                if (!isBoosting) {
-                    app->audio->PlayFx(boostSound);
-                    isBoosting = true;
-                }
-            }
-			else if (kartType == CONE) {
-				currentMaxSpeed = maxSpeed;
-			}
-        }
-        else {
-            
-            isBoosting = false;
-        }
 
         if (IsKeyDown(KEY_W)) {
             speed += 0.1f;
@@ -388,48 +369,34 @@ public:
             }
         }
 
-        // Deceleración adicional cuando se deja de pulsar Shift
-        if (!(IsKeyDown(KEY_LEFT_SHIFT) && speed > maxSpeed || IsKeyDown(KEY_RIGHT_SHIFT)) && speed > maxSpeed) {
-            if (kartType == BOOST) {
-                speed -= deceleration;
-                if (speed < maxSpeed) {
-                    speed = maxSpeed;
-                }
-            }
-			else if (kartType == CONE) {
-				speed -= deceleration;
-				if (speed < maxSpeed) {
-					speed = maxSpeed;
-				}
-			}
-        }
-
-        if (isBoosting) {
-            if (IsKeyDown(KEY_A)) {
-                rotation -= 2.0f;
-            }
-            if (IsKeyDown(KEY_D)) {
-                rotation += 2.0f;
-            }
+        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
+			isDrifting = true;
         }
         else {
-            if (IsKeyDown(KEY_A)) {
-                rotation -= 3.0f;
-            }
-            if (IsKeyDown(KEY_D)) {
-                rotation += 3.0f;
-            }
+			isDrifting = false;
         }
 
-        if (kartType == CONE && IsKeyPressed(KEY_M)) {
-            int x, y;
-            body->GetPhysicPosition(x, y);
-            coneEntity = new Cone(app->physics, x, y, this->listener, app);
-            entities.emplace_back(coneEntity);
-            coneEntity->Update();
+        if (isDrifting) {
+            if (IsKeyDown(KEY_A)) {
+                rotation -= 3.5f;
+            }
+            if (IsKeyDown(KEY_D)) {
+                rotation += 3.5f;
+			}
+		}
+		else {
+			if (IsKeyDown(KEY_A)) {
+				rotation -= 2.0f;
+			}
+			if (IsKeyDown(KEY_D)) {
+				rotation += 2.0f;
+			}
         }
+        
     }
     
+    // La logica para boostear esta en los commits anteriores
+
     void Move()
     {
         float rad = rotation * DEG2RAD;
@@ -452,6 +419,7 @@ protected:
     float rotation;
     bool isMoving;
     bool isBoosting;
+    bool isDrifting;
     const float maxSpeed = 2.5f;
     const float boostedMaxSpeed = 4.5f;
     const float deceleration = 0.05f;
@@ -560,6 +528,11 @@ update_status ModuleGame::Update()
     if (IsKeyPressed(KEY_THREE))
     {
         entities.emplace_back(new Kart_Player_2(App->physics, GetMouseX(), GetMouseY(), this, redCar, App, CONE));
+    }
+
+    if (IsKeyPressed(KEY_M))
+    {
+        entities.emplace_back(new Cone(App->physics, GetMouseX(), GetMouseY(), this, cone, App)); // Pasa el puntero a Application y el sonido de boost
     }
 
 
