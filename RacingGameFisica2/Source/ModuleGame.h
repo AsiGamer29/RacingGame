@@ -13,7 +13,9 @@ class PhysicEntity;
 
 enum CollisionType
 {
-	DEFAULT
+	DEFAULT,
+	SNOW,
+	DARKENED_SNOW
 };
 
 enum KartType
@@ -35,6 +37,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+	void OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) override;
+
 
 public:
 	std::vector<PhysicEntity*> entities;

@@ -26,13 +26,668 @@ public:
 	}
 
     CollisionType GetCollisionType() const { return collisionType; }
-
+	PhysBody* body;
 
 protected:
-	PhysBody* body;
+
 	Module* listener;
     CollisionType collisionType;
 };
+
+//------------------------------------------------------------------------------------ Snow Zone -------------------------------------------------------------------------------------
+
+class SnowZone_1 : public PhysicEntity {
+public:
+    SnowZone_1(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(175, 371, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y                                         
+    {
+        collisionType = SNOW; 
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_2 : public PhysicEntity {
+public:
+    SnowZone_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(175, 607, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y   
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_3 : public PhysicEntity {
+public:
+    SnowZone_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(275, 435, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_4 : public PhysicEntity {
+public:
+    SnowZone_4(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(356, 559, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_5 : public PhysicEntity {
+public:
+    SnowZone_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(365, 175, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_14 : public PhysicEntity {
+public:
+    SnowZone_14(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(789, 495, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_15 : public PhysicEntity {
+public:
+    SnowZone_15(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(894, 528, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_16 : public PhysicEntity {
+public:
+    SnowZone_16(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(704, 460, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_17 : public PhysicEntity {
+public:
+    SnowZone_17(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1060, 275, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_18 : public PhysicEntity {
+public:
+    SnowZone_18(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(925, 300, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_19 : public PhysicEntity {
+public:
+    SnowZone_19(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(738, 188, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW; 
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_20 : public PhysicEntity {
+public:
+    SnowZone_20(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(807, 329, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW; 
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_21 : public PhysicEntity {
+public:
+    SnowZone_21(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(807, 97, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_22 : public PhysicEntity {
+public:
+    SnowZone_22(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(955, 62, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+
+class SnowZone_23 : public PhysicEntity {
+public:
+    SnowZone_23(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1245, 279, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_24 : public PhysicEntity {
+public: 
+    SnowZone_24(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1158, 574, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {                                           
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_25 : public PhysicEntity {
+public:
+    SnowZone_25(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(895, 692, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_6 : public PhysicEntity {
+public:
+    SnowZone_6(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(562, 210, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_7 : public PhysicEntity {
+public:
+    SnowZone_7(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(608, 370, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_8 : public PhysicEntity {
+public:
+    SnowZone_8(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(414, 35, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_9 : public PhysicEntity {
+public:
+    SnowZone_9(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(75, 98, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_10 : public PhysicEntity {
+public:
+    SnowZone_10(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(43, 522, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+
+class SnowZone_11 : public PhysicEntity {
+public:
+    SnowZone_11(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(230, 692, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_12 : public PhysicEntity {
+public:
+    SnowZone_12(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(480, 570, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_13 : public PhysicEntity {
+public:
+    SnowZone_13(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(448, 368, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_26 : public PhysicEntity {
+public:
+    SnowZone_26(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(43, 205, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class SnowZone_27 : public PhysicEntity {
+public:
+    SnowZone_27(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(644, 663, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+//------------------------------------------------------------------------------------ Darkened Snow Zone -------------------------------------------------------------------------------------
+
+class DarkenedSnowZone_1 : public PhysicEntity {
+public:
+    DarkenedSnowZone_1(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(175, 542, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = DARKENED_SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class DarkenedSnowZone_2 : public PhysicEntity {
+public:
+    DarkenedSnowZone_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(220, 176, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = DARKENED_SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class DarkenedSnowZone_3 : public PhysicEntity {
+public:
+    DarkenedSnowZone_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(560, 142, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = DARKENED_SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class DarkenedSnowZone_4 : public PhysicEntity {
+public:
+    DarkenedSnowZone_4(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(43, 296, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = DARKENED_SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class DarkenedSnowZone_5 : public PhysicEntity {
+public:
+    DarkenedSnowZone_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(660, 527, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = DARKENED_SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class DarkenedSnowZone_6 : public PhysicEntity {
+public:
+    DarkenedSnowZone_6(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(807, 237, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = DARKENED_SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+class DarkenedSnowZone_7 : public PhysicEntity {
+public:
+    DarkenedSnowZone_7(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1170, 62, coords, coordCount), _listener)
+        , texture(_texture) //             position:   x    y  
+    {
+        collisionType = DARKENED_SNOW;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+
+//------------------------------------------------------------------------------------ Collisions -------------------------------------------------------------------------------------
 
 class Collisions : public PhysicEntity {
 public:
@@ -40,7 +695,7 @@ public:
         : PhysicEntity(physics->CreateChain(0, 0, coords, coordCount), _listener)
         , texture(_texture)
     {
-        collisionType = DEFAULT; // Inicializa con el tipo de colisión por defecto
+        collisionType = DEFAULT;
     }
 
     virtual void Update() override {
@@ -354,7 +1009,7 @@ public:
             }
         }
         else {
-            // Deceleración gradual
+            // Deceleraciï¿½n gradual
             if (speed > 0.0f) {
                 speed -= deceleration;
                 if (speed < 0.0f) {
@@ -476,6 +1131,8 @@ bool ModuleGame::Start()
 
     sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
+    //------------------------------ Collision ----------------------------------------
+
     entities.emplace_back(new Internal_Collision(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_2(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_3(App->physics, 0, 0, this, default));
@@ -490,6 +1147,47 @@ bool ModuleGame::Start()
     entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default)); 
     entities.emplace_back(new Bloque2Arriba(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque3Arriba(App->physics, 0, 0, this, default));
+
+    //----------------------------- Snow Zone -----------------------------------------
+    //                                                width/height 
+    entities.emplace_back(new SnowZone_1(App->physics, 100, 252, this, default));
+    entities.emplace_back(new SnowZone_2(App->physics, 100, 40, this, default));
+    entities.emplace_back(new SnowZone_3(App->physics, 100, 382, this, default));
+    entities.emplace_back(new SnowZone_4(App->physics, 62, 135, this, default));
+    entities.emplace_back(new SnowZone_5(App->physics, 230, 138, this, default));
+    entities.emplace_back(new SnowZone_6(App->physics, 164, 70, this, default));
+    entities.emplace_back(new SnowZone_7(App->physics, 72, 250, this, default));
+    entities.emplace_back(new SnowZone_8(App->physics, 564, 40, this, default));
+    entities.emplace_back(new SnowZone_9(App->physics, 115, 165, this, default));
+    entities.emplace_back(new SnowZone_10(App->physics, 52, 320, this, default));
+    entities.emplace_back(new SnowZone_11(App->physics, 426, 20, this, default));
+    entities.emplace_back(new SnowZone_12(App->physics, 74, 267, this, default));
+    entities.emplace_back(new SnowZone_13(App->physics, 136, 137, this, default));
+    entities.emplace_back(new SnowZone_14(App->physics, 75, 140, this, default));
+    entities.emplace_back(new SnowZone_15(App->physics, 134, 206, this, default));
+    entities.emplace_back(new SnowZone_16(App->physics, 94, 70, this, default));
+    entities.emplace_back(new SnowZone_17(App->physics, 198, 200, this, default));
+    entities.emplace_back(new SnowZone_18(App->physics, 70, 250, this, default));
+    entities.emplace_back(new SnowZone_19(App->physics, 80, 374, this, default));
+    entities.emplace_back(new SnowZone_20(App->physics, 57, 93, this, default));
+    entities.emplace_back(new SnowZone_21(App->physics, 57, 189, this, default));
+    entities.emplace_back(new SnowZone_22(App->physics, 240, 118, this, default));
+    entities.emplace_back(new SnowZone_23(App->physics, 70, 296, this, default));
+    entities.emplace_back(new SnowZone_24(App->physics, 280, 294, this, default));
+    entities.emplace_back(new SnowZone_25(App->physics, 246, 20, this, default));
+    entities.emplace_back(new SnowZone_26(App->physics, 52, 50, this, default));
+    entities.emplace_back(new SnowZone_27(App->physics, 256, 84, this, default));
+
+    //----------------------------- Darkened Snow Zone  -----------------------------------------
+    //                                                       width/height 
+    entities.emplace_back(new DarkenedSnowZone_1(App->physics, 100, 91, this, default));
+    entities.emplace_back(new DarkenedSnowZone_2(App->physics, 60, 137, this, default));
+    entities.emplace_back(new DarkenedSnowZone_3(App->physics, 162, 64, this, default));
+    entities.emplace_back(new DarkenedSnowZone_4(App->physics, 52, 132, this, default));
+    entities.emplace_back(new DarkenedSnowZone_5(App->physics, 168, 64, this, default));
+    entities.emplace_back(new DarkenedSnowZone_6(App->physics, 57, 91, this, default));
+    entities.emplace_back(new DarkenedSnowZone_7(App->physics, 190, 118, this, default));
+
 
     return ret;
 }
@@ -517,7 +1215,7 @@ update_status ModuleGame::Update()
 
     if (IsKeyPressed(KEY_ONE))
     {
-        entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, circle));
+       // entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, circle));
 
     }
     if (IsKeyPressed(KEY_TWO))
@@ -579,7 +1277,85 @@ update_status ModuleGame::Update()
     return UPDATE_CONTINUE;
 }
 
-void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
-{
-    App->audio->PlayFx(bump_fx);
+void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
+
+    int length = entities.size();
+    for (int i = 0; i < length; ++i) {
+        if (bodyA == entities[i]->body) {
+            Kart* kart = dynamic_cast<Kart*>(entities[i]);
+            if (kart) {
+                for (int j = 0; j < length; ++j) {
+                    //SNOW ZONE
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == SNOW) {
+                        if (kart->snowZoneCount == 0) {
+                            printf("Kart entered snow zone.\n");
+                            kart->inSnowZone = true;
+                            kart->maxSpeed = 1.5f;
+                            kart->boostedMaxSpeed = 3.0f;
+                        }
+                        kart->snowZoneCount++;
+                        return;
+                    }
+                    //DARKENED SNOW ZONE
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == DARKENED_SNOW) {
+                        if (kart->DarkenedsnowZoneCount == 0) {
+                            printf("Kart entered darkened snow zone.\n");
+                            kart->inDarkenedSnowZone = true;
+                            kart->maxSpeed = 1.0f;
+                            kart->boostedMaxSpeed = 1.5f;
+                        }
+                        kart->DarkenedsnowZoneCount++;
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }
+
+
+void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
+    int length = entities.size();
+    for (int i = 0; i < length; ++i) {
+        if (bodyA == entities[i]->body) {
+            Kart* kart = dynamic_cast<Kart*>(entities[i]);
+            if (kart) {
+                for (int j = 0; j < length; ++j) {
+                    if (bodyB == entities[j]->body) {
+                        // SNOW ZONE
+                        if (entities[j]->GetCollisionType() == SNOW) {
+                            kart->snowZoneCount--;
+                            if (kart->snowZoneCount == 0 && kart->DarkenedsnowZoneCount == 0) {
+                                printf("Kart exited snow zone.\n");
+                                kart->inSnowZone = false;
+                                kart->inDarkenedSnowZone = false;
+                                kart->maxSpeed = 2.5f;
+                                kart->boostedMaxSpeed = 4.5f;
+                            }
+                        }
+                        //DARKENED SNOW ZONE
+                        if (entities[j]->GetCollisionType() == DARKENED_SNOW) {
+                            kart->DarkenedsnowZoneCount--;
+                            if (kart->DarkenedsnowZoneCount == 0 && kart->snowZoneCount == 0) {
+                                printf("Kart exited darkened snow zone.\n");
+                                kart->inSnowZone = false;
+                                kart->inDarkenedSnowZone = false;
+                                kart->maxSpeed = 2.5f;
+                                kart->boostedMaxSpeed = 4.5f;
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+

@@ -32,7 +32,7 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
     ClearBackground(background);
-
+    //SetTargetFPS(60);
     // NOTE: This function setups render batching system for
     // maximum performance, all consecutive Draw() calls are
     // not processed until EndDrawing() is called
@@ -46,6 +46,7 @@ update_status ModuleRender::PostUpdate()
 {
     // Draw everything in our batch!
     DrawFPS(10, 10);
+    SetTargetFPS(60);
 
     EndDrawing();
 
