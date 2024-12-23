@@ -771,7 +771,13 @@ public:
         body->GetPhysicPosition(x, y);
         DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
     }
-
+public: 
+    int CountSensor = 0;
+    int isActivated_1 = false;
+    int isActivated_2 = false;
+    int isActivated_3 = false;
+    int isActivated_4 = false;
+    int lap = 0;
 private:
     Texture2D texture;
 };
@@ -1071,11 +1077,6 @@ public:
     Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
         : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type), player(player){}
 
-    int currentSensor = 0;    // Índice del sensor actual que el kart debe cruzar
-    int totalSensors = 10;    // Número total de sensores en el circuito
-    bool sensors[10] = { false }; // Estado de los sensores (cruzados o no)
-    int laps = 0;             // Contador de vueltas completadas
-    int countsensors = 0;     // Sensores cruzados en total
 
     virtual void HandleInput() {
         
@@ -1298,12 +1299,6 @@ public:
     int snowZoneCount = 0;
     int DarkenedsnowZoneCount = 0;
 
-    int CountSensor = 0;
-    int isActivated_1 = false;
-    int isActivated_2 = false;
-    int isActivated_3 = false;
-    int isActivated_4 = false;
-    int lap = 0;
 
     KartType kartType;
 
@@ -1488,9 +1483,9 @@ update_status ModuleGame::Update()
 
             for (PhysicEntity* entity : entities)
         {
-            if (Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entity))
+            if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
-                printf("Lap: %d\n", kart->lap);
+                printf("Lap: %d\n", finish->lap);
             }
 
             entity->Update();
@@ -1626,6 +1621,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
     for (int i = 0; i < length; ++i) {
         if (bodyA == entities[i]->body) {
             Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entities[i]);
+            FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entities[i]);
             if (kart) {
                 for (int j = 0; j < length; ++j) {
                     //SNOW ZONE
@@ -1680,44 +1676,50 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         return;
                     }
                     //------------------------------------  CHECKPOINTS  --------------------------------------
-                    // CHECKPOINT 1
-                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1 && kart->isActivated_1 == false) {
-                        kart->CountSensor++;
-                        kart->isActivated_1 = true;
-                        printf("Checkpoint %d", kart->CountSensor);
-                        return;
-                    }
-                    // CHECKPOINT 2
-                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_2 && kart->isActivated_1 == true && kart->isActivated_2 == false) {
-                        kart->CountSensor++;
-                        kart->isActivated_2 = true;
-                        printf("Checkpoint %d", kart->CountSensor);
-                        return;
-                    }
-                    // CHECKPOINT 3
-                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_3 && kart->isActivated_2 == true && kart->isActivated_3 == false) {
-                        kart->CountSensor++;
-                        kart->isActivated_3 = true;
-                        printf("Checkpoint %d", kart->CountSensor);
-                        return;
-                    }
-                    // CHECKPOINT 4
-                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_4 && kart->isActivated_3 == true && kart->isActivated_4 == false) {
-                        kart->CountSensor++;
-                        kart->isActivated_4 = true;
-                        printf("Checkpoint %d", kart->CountSensor);
-                        return;
-                    }
-                    // FINISH CHECKPOINT
-                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == FINISH_CHECKPOINT_SENSOR && kart->isActivated_4 == true && kart->CountSensor == 4) {
-                        kart->CountSensor = 0;
-                        kart->lap++;
-                        kart->isActivated_1 = false;
-                        kart->isActivated_2 = false;
-                        kart->isActivated_3 = false;
-                        kart->isActivated_4 = false;
-                        
-                        return;
+                    // CHECKPOINT 
+                    for (PhysicEntity* entity : entities)
+                    {
+                        if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
+                        {
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1 && finish->isActivated_1 == false) {
+                                finish->CountSensor++;
+                                finish->isActivated_1 = true;
+                                printf("Checkpoint %d", finish->CountSensor);
+                                return;
+                            }
+                            // CHECKPOINT 2
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_2 && finish->isActivated_1 == true && finish->isActivated_2 == false) {
+                                finish->CountSensor++;
+                                finish->isActivated_2 = true;
+                                printf("Checkpoint %d", finish->CountSensor);
+                                return;
+                            }
+                            // CHECKPOINT 3
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_3 && finish->isActivated_2 == true && finish->isActivated_3 == false) {
+                                finish->CountSensor++;
+                                finish->isActivated_3 = true;
+                                printf("Checkpoint %d", finish->CountSensor);
+                                return;
+                            }
+                            // CHECKPOINT 4
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_4 && finish->isActivated_3 == true && finish->isActivated_4 == false) {
+                                finish->CountSensor++;
+                                finish->isActivated_4 = true;
+                                printf("Checkpoint %d", finish->CountSensor);
+                                return;
+                            }
+                            // FINISH CHECKPOINT
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == FINISH_CHECKPOINT_SENSOR && finish->isActivated_4 == true && finish->CountSensor == 4) {
+                                finish->CountSensor = 0;
+                                finish->lap++;
+                                finish->isActivated_1 = false;
+                                finish->isActivated_2 = false;
+                                finish->isActivated_3 = false;
+                                finish->isActivated_4 = false;
+
+                                return;
+                            }
+                        }
                     }
                 }
             }
