@@ -979,12 +979,63 @@ protected:
 
 class Kart_Controller : public Kart {
 public:
-    Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
-        : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type){}
+    Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
+        : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type), player(player){}
 
     virtual void HandleInput() {
         
-        float currentMaxSpeed = maxSpeed;
+        float currentMaxSpeed;
+        float kartRotation;
+        float kartAcceleration;
+
+        if (kartType == KARTO) {
+            currentMaxSpeed = maxSpeedKa;
+        }
+        else if (kartType == HAOLIEN) {
+			currentMaxSpeed = maxSpeedHa;
+		}
+		else if (kartType == JOHANA) {
+			currentMaxSpeed = maxSpeedJo;
+		}
+		else if (kartType == TANKETO) {
+			currentMaxSpeed = maxSpeedTa;
+		}
+		else {
+			currentMaxSpeed = maxSpeed;
+		}
+
+        if (kartType == KARTO) {
+            kartRotation = rotationKa;
+        }
+        else if (kartType == HAOLIEN) {
+            kartRotation = rotationHa;
+        }
+        else if (kartType == JOHANA) {
+            kartRotation = rotationJo;
+        }
+        else if (kartType == TANKETO) {
+            kartRotation = rotationTa;
+        }
+        else {
+            kartRotation = rotation;
+        }
+
+        if (kartType == KARTO) {
+			kartAcceleration = accelerationKa;
+        }
+		else if (kartType == HAOLIEN) {
+			kartAcceleration = accelerationHa;
+		}
+		else if (kartType == JOHANA) {
+			kartAcceleration = accelerationJo;
+		}
+		else if (kartType == TANKETO) {
+			kartAcceleration = accelerationTa;
+		}
+		else {
+			kartAcceleration = acceleration;
+		}
+        
 
         if (speed != 0.0f && !isMoving)
         {
@@ -996,34 +1047,65 @@ public:
             isMoving = false;
         }
 
-        if (IsKeyDown(KEY_W)) {
-            speed += 0.1f;
-            if (speed > currentMaxSpeed) {
-                speed = currentMaxSpeed;
-            }
-        }
-        else if (IsKeyDown(KEY_S)) {
-            speed -= 0.1f;
-            if (speed < -currentMaxSpeed) {
-                speed = -currentMaxSpeed;
-            }
-        }
-        else {
-            // Deceleraci�n gradual
-            if (speed > 0.0f) {
-                speed -= deceleration;
-                if (speed < 0.0f) {
-                    speed = 0.0f;
+        if (player == PLAYER1) {
+            if (IsKeyDown(KEY_W)) {
+                speed += kartAcceleration;
+                if (speed > currentMaxSpeed) {
+                    speed = currentMaxSpeed;
                 }
             }
-            else if (speed < 0.0f) {
-                speed += deceleration;
+            else if (IsKeyDown(KEY_S)) {
+                speed -= kartAcceleration;
+                if (speed < -currentMaxSpeed) {
+                    speed = -currentMaxSpeed;
+                }
+            }
+            else {
+                // Deceleraci�n gradual
                 if (speed > 0.0f) {
-                    speed = 0.0f;
+                    speed -= deceleration;
+                    if (speed < 0.0f) {
+                        speed = 0.0f;
+                    }
+                }
+                else if (speed < 0.0f) {
+                    speed += deceleration;
+                    if (speed > 0.0f) {
+                        speed = 0.0f;
+                    }
                 }
             }
         }
-
+        else if (player == PLAYER2) {
+            if (IsKeyDown(KEY_UP)) {
+                speed += 0.1f;
+                if (speed > currentMaxSpeed) {
+                    speed = currentMaxSpeed;
+                }
+            }
+            else if (IsKeyDown(KEY_DOWN)) {
+                speed -= 0.1f;
+                if (speed < -currentMaxSpeed) {
+                    speed = -currentMaxSpeed;
+                }
+            }
+            else {
+                // Deceleraci�n gradual
+                if (speed > 0.0f) {
+                    speed -= deceleration;
+                    if (speed < 0.0f) {
+                        speed = 0.0f;
+                    }
+                }
+                else if (speed < 0.0f) {
+                    speed += deceleration;
+                    if (speed > 0.0f) {
+                        speed = 0.0f;
+                    }
+                }
+            }
+        }
+       
         if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
 			isDrifting = true;
         }
@@ -1032,20 +1114,41 @@ public:
         }
 
         if (isDrifting) {
-            if (IsKeyDown(KEY_A)) {
-                rotation -= 3.5f;
+            if (player == PLAYER1) {
+                if (IsKeyDown(KEY_A)) {
+                    rotation -= 3.5f;
+                }
+                if (IsKeyDown(KEY_D)) {
+                    rotation += 3.5f;
+                }
             }
-            if (IsKeyDown(KEY_D)) {
-                rotation += 3.5f;
+			else if (player == PLAYER2) {
+				if (IsKeyDown(KEY_LEFT)) {
+					rotation -= 3.5f;
+				}
+				if (IsKeyDown(KEY_RIGHT)) {
+					rotation += 3.5f;
+				}
 			}
+            
 		}
 		else {
-			if (IsKeyDown(KEY_A)) {
-				rotation -= 2.0f;
-			}
-			if (IsKeyDown(KEY_D)) {
-				rotation += 2.0f;
-			}
+            if (player == PLAYER1) {
+				if (IsKeyDown(KEY_A)) {
+                    rotation -= kartRotation;
+				}
+				if (IsKeyDown(KEY_D)) {
+                    rotation += kartRotation;
+				}
+            }
+            else if (player == PLAYER2) {
+                if (IsKeyDown(KEY_LEFT)) {
+					rotation -= kartRotation;
+                }
+                if (IsKeyDown(KEY_RIGHT)) {
+                    rotation += kartRotation;
+                }
+            }
         }
         
     }
@@ -1066,15 +1169,43 @@ public:
 		
     }
 public:
-    float maxSpeed = 2.5f;
-    float boostedMaxSpeed = 4.5f; 
+    // Accelerations
+	float accelerationKa = 0.1f;
+	float accelerationJo = 0.1f;
+	float accelerationTa = 0.25f;
+    float accelerationHa = 0.25f;
+	
+    // Max speeds for each kart
+	float maxSpeedKa = 2.5f;
+    float maxSpeedTa = 1.5f;
+	float maxSpeedHa = 3.0f;
+	float maxSpeedJo = 1.0f;
+
+	// Max boosted speed for each kart
+    float boostedMaxSpeedKa = 4.0f;
+    float boostedMaxSpeedJo = 3.0f;
+    float boostedMaxSpeedTa = 6.0f;
+    float boostedMaxSpeedHa = 5.0f;
+
+	// Rotations for each kart
+	float rotationKa = 2.5f;
+	float rotationTa = 2.0f;
+    float rotationHa = 2.0f;
+	float rotationJo = 3.0f;
+
+	float maxSpeed = 2.0f;
+    float acceleration = 1.0f;
+	float rotationDefault = 2.0f;
+	float boostedMaxSpeed = 4.0f;
+
     bool inSnowZone = false;
     bool inDarkenedSnowZone = false;
     int snowZoneCount = 0;
     int DarkenedsnowZoneCount = 0;
-protected:
-	Cone* coneEntity;
     KartType kartType;
+
+protected:
+	Player player;
     std::vector<PhysicEntity*> entities;
     float speed;
     float rotation;
@@ -1083,19 +1214,19 @@ protected:
     bool isDrifting;
     const float deceleration = 0.05f;
     uint32 boostSound = app->audio->LoadFx("Assets/boost.wav");
-	uint32 engineSound = app->audio->LoadFx("Assets/drive.wav");;
+	uint32 engineSound = app->audio->LoadFx("Assets/drive.wav");
 };
 
 class Kart_Player_1 : public Kart_Controller {
 public:
-    Kart_Player_1(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType BOOST)
-        : Kart_Controller(physics, x, y, _listener, _texture, _app, BOOST) {}
+    Kart_Player_1(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
+        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) {}
 };
 
 class Kart_Player_2 : public Kart_Controller {
 public:
-    Kart_Player_2(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType CONE)
-        : Kart_Controller(physics, x, y, _listener, _texture, _app, CONE) {
+    Kart_Player_2(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
+        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) {
     }
 };
 
@@ -1116,13 +1247,19 @@ bool ModuleGame::Start()
     LOG("Loading Intro assets");
     bool ret = true;
 
+	gameState = TITLESCREEN;
+
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
     cone = LoadTexture("Assets/cone.png");
-    circle = LoadTexture("Assets/wheel.png");
-    yellowCar = LoadTexture("Assets/car.png");
-    redCar = LoadTexture("Assets/redcar.png");
-    rick = LoadTexture("Assets/rick_head.png");
+    yellowCar = LoadTexture("Assets/yellow.png");
+    redCar = LoadTexture("Assets/red.png");
+    greenCar = LoadTexture("Assets/green.png");
+    blueCar = LoadTexture("Assets/blue.png");
+
+	mainScreen = LoadTexture("Assets/mainScreen.png");
+    player1Select = LoadTexture("Assets/player1select.png");
+	player2Select = LoadTexture("Assets/player2select.png");
 	background = LoadTexture("Assets/Mapa1Racing.png");
 
     engine_fx = App->audio->LoadFx("Assets/drive.wav");
@@ -1130,68 +1267,12 @@ bool ModuleGame::Start()
     bump_fx = App->audio->LoadFx("Assets/Bump.wav");
 
     bgm = LoadMusicStream("Assets/music.ogg");
+	playerSelect = LoadMusicStream("Assets/playerselect.ogg");
+	title = LoadMusicStream("Assets/title.ogg");
 
+    PlayMusicStream(title);
+	PlayMusicStream(playerSelect);
     PlayMusicStream(bgm);
-
-    sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
-
-    //------------------------------ Collision ----------------------------------------
-
-    entities.emplace_back(new Internal_Collision(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Internal_Collision_2(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Internal_Collision_3(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Internal_Collision_4(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Internal_Collision_5(App->physics, 0, 0, this, default));
-    entities.emplace_back(new External(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque1Izq(App->physics, 0, 0, this, default)); 
-    entities.emplace_back(new Bloque2Izq(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque1Abajo(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque2Abajo(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque3Abajo(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default)); 
-    entities.emplace_back(new Bloque2Arriba(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque3Arriba(App->physics, 0, 0, this, default));
-
-    //----------------------------- Snow Zone -----------------------------------------
-    //                                                width/height 
-    entities.emplace_back(new SnowZone_1(App->physics, 100, 252, this, default));
-    entities.emplace_back(new SnowZone_2(App->physics, 100, 40, this, default));
-    entities.emplace_back(new SnowZone_3(App->physics, 100, 382, this, default));
-    entities.emplace_back(new SnowZone_4(App->physics, 62, 135, this, default));
-    entities.emplace_back(new SnowZone_5(App->physics, 230, 138, this, default));
-    entities.emplace_back(new SnowZone_6(App->physics, 164, 70, this, default));
-    entities.emplace_back(new SnowZone_7(App->physics, 72, 250, this, default));
-    entities.emplace_back(new SnowZone_8(App->physics, 564, 40, this, default));
-    entities.emplace_back(new SnowZone_9(App->physics, 115, 165, this, default));
-    entities.emplace_back(new SnowZone_10(App->physics, 52, 320, this, default));
-    entities.emplace_back(new SnowZone_11(App->physics, 426, 20, this, default));
-    entities.emplace_back(new SnowZone_12(App->physics, 74, 267, this, default));
-    entities.emplace_back(new SnowZone_13(App->physics, 136, 137, this, default));
-    entities.emplace_back(new SnowZone_14(App->physics, 75, 140, this, default));
-    entities.emplace_back(new SnowZone_15(App->physics, 134, 206, this, default));
-    entities.emplace_back(new SnowZone_16(App->physics, 94, 70, this, default));
-    entities.emplace_back(new SnowZone_17(App->physics, 198, 200, this, default));
-    entities.emplace_back(new SnowZone_18(App->physics, 70, 250, this, default));
-    entities.emplace_back(new SnowZone_19(App->physics, 80, 374, this, default));
-    entities.emplace_back(new SnowZone_20(App->physics, 57, 93, this, default));
-    entities.emplace_back(new SnowZone_21(App->physics, 57, 189, this, default));
-    entities.emplace_back(new SnowZone_22(App->physics, 240, 118, this, default));
-    entities.emplace_back(new SnowZone_23(App->physics, 70, 296, this, default));
-    entities.emplace_back(new SnowZone_24(App->physics, 280, 294, this, default));
-    entities.emplace_back(new SnowZone_25(App->physics, 246, 20, this, default));
-    entities.emplace_back(new SnowZone_26(App->physics, 52, 50, this, default));
-    entities.emplace_back(new SnowZone_27(App->physics, 256, 84, this, default));
-
-    //----------------------------- Darkened Snow Zone  -----------------------------------------
-    //                                                       width/height 
-    entities.emplace_back(new DarkenedSnowZone_1(App->physics, 100, 91, this, default));
-    entities.emplace_back(new DarkenedSnowZone_2(App->physics, 60, 137, this, default));
-    entities.emplace_back(new DarkenedSnowZone_3(App->physics, 162, 64, this, default));
-    entities.emplace_back(new DarkenedSnowZone_4(App->physics, 52, 132, this, default));
-    entities.emplace_back(new DarkenedSnowZone_5(App->physics, 168, 64, this, default));
-    entities.emplace_back(new DarkenedSnowZone_6(App->physics, 57, 91, this, default));
-    entities.emplace_back(new DarkenedSnowZone_7(App->physics, 190, 118, this, default));
-
 
     return ret;
 }
@@ -1199,44 +1280,98 @@ bool ModuleGame::Start()
 bool ModuleGame::CleanUp()
 {
     LOG("Unloading Intro scene");
-
+	UnloadTexture(cone);
+	UnloadTexture(yellowCar);
+	UnloadTexture(redCar);
+	UnloadTexture(greenCar);
+	UnloadTexture(blueCar);
+	UnloadTexture(mainScreen);
+	UnloadTexture(background);
+	UnloadMusicStream(bgm);
+	UnloadMusicStream(title);
     return true;
 }
 
 // Update: draw background
 update_status ModuleGame::Update()
 {
-	UpdateMusicStream(bgm);
-
-    DrawTexture(background, 0, 0, WHITE);
-
-    if (IsKeyPressed(KEY_SPACE))
-    {
-        ray_on = !ray_on;
-        ray.x = GetMouseX();
-        ray.y = GetMouseY();
+    switch (gameState) {
+    case TITLESCREEN:
+        
+        UpdateMusicStream(title);
+        DrawTexture(mainScreen, 0, 0, WHITE);
+        if (IsKeyPressed(KEY_SPACE)) {
+            gameState = PLAYER1SELECT;
+        }
+        break;
+    case PLAYER1SELECT:
+        UpdateMusicStream(playerSelect);
+        DrawTexture(player1Select, 0, 0, WHITE);
+        if (IsKeyPressed(KEY_SPACE)) {
+            gameState = PLAYER2SELECT;
+        }
+        break;
+    case PLAYER2SELECT:
+        UpdateMusicStream(playerSelect);
+        DrawTexture(player2Select, 0, 0, WHITE);
+        if (IsKeyPressed(KEY_SPACE)) {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
+            gameState = PLAYING;
+        }
+        break;
+    case PLAYING:
+        UpdateMusicStream(bgm);
+        DrawTexture(background, 0, 0, WHITE);
+        if (IsKeyPressed(KEY_Z)) {
+            if (hasDeleted == false) {
+                RemoveAllCollisionsAndSensors();
+				hasDeleted = true;
+                hasStarted = false;
+            }
+            gameState = TITLESCREEN;
+            
+        }
+        break;
     }
 
-    if (IsKeyPressed(KEY_ONE))
-    {
-       // entities.emplace_back(new Circle(App->physics, GetMouseX(), GetMouseY(), this, circle));
+    
+    if (gameState == PLAYING) {
+        if (IsKeyPressed(KEY_SPACE))
+        {
+            ray_on = !ray_on;
+            ray.x = GetMouseX();
+            ray.y = GetMouseY();
+        }
 
-    }
-    if (IsKeyPressed(KEY_TWO))
-    {
-        entities.emplace_back(new Kart_Player_1(App->physics, GetMouseX(), GetMouseY(), this, yellowCar, App, BOOST));
-    }
+        if (IsKeyPressed(KEY_ONE))
+        {
+            entities.emplace_back(new Kart_Player_1(App->physics, GetMouseX(), GetMouseY(), this, blueCar, App, KARTO, PLAYER1));
+        }
 
-    if (IsKeyPressed(KEY_THREE))
-    {
-        entities.emplace_back(new Kart_Player_2(App->physics, GetMouseX(), GetMouseY(), this, redCar, App, CONE));
-    }
+        if (IsKeyPressed(KEY_TWO))
+        {
+            entities.emplace_back(new Kart_Player_2(App->physics, GetMouseX(), GetMouseY(), this, yellowCar, App, HAOLIEN, PLAYER2));
+        }
 
-    if (IsKeyPressed(KEY_M))
-    {
-        entities.emplace_back(new Cone(App->physics, GetMouseX(), GetMouseY(), this, cone, App)); // Pasa el puntero a Application y el sonido de boost
-    }
+        if (IsKeyPressed(KEY_THREE))
+        {
+            entities.emplace_back(new Kart_Player_1(App->physics, GetMouseX(), GetMouseY(), this, greenCar, App, JOHANA, PLAYER1));
+        }
 
+        if (IsKeyPressed(KEY_FOUR))
+        {
+            entities.emplace_back(new Kart_Player_2(App->physics, GetMouseX(), GetMouseY(), this, redCar, App, TANKETO, PLAYER2));
+        }
+
+        if (IsKeyPressed(KEY_M))
+        {
+            entities.emplace_back(new Cone(App->physics, GetMouseX(), GetMouseY(), this, cone, App)); // Pasa el puntero a Application y el sonido de boost
+        }
+    }
 
     // Prepare for raycast ------------------------------------------------------
     vec2i mouse;
@@ -1282,7 +1417,6 @@ update_status ModuleGame::Update()
 }
 
 void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
-
     int length = entities.size();
     for (int i = 0; i < length; ++i) {
         if (bodyA == entities[i]->body) {
@@ -1294,8 +1428,23 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         if (kart->snowZoneCount == 0) {
                             printf("Kart entered snow zone.\n");
                             kart->inSnowZone = true;
-                            kart->maxSpeed = 1.5f;
-                            kart->boostedMaxSpeed = 3.0f;
+                            if (kart->kartType == KARTO) {
+								kart->maxSpeedKa = 1.5f;
+								kart->boostedMaxSpeedKa = 3.0f;
+							}
+                            else if (kart->kartType == HAOLIEN) {
+                                kart->maxSpeedHa = 1.5f;
+                                kart->boostedMaxSpeedHa = 2.5f;
+                            }
+							else if (kart->kartType == JOHANA) {
+								kart->maxSpeedJo = 2.5f;
+								kart->boostedMaxSpeedJo = 4.0f;
+							}
+							else if (kart->kartType == TANKETO) {
+								kart->maxSpeedTa = 1.5f;
+								kart->boostedMaxSpeedTa = 6.0f;
+							}
+                            
                         }
                         kart->snowZoneCount++;
                         return;
@@ -1305,8 +1454,22 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         if (kart->DarkenedsnowZoneCount == 0) {
                             printf("Kart entered darkened snow zone.\n");
                             kart->inDarkenedSnowZone = true;
-                            kart->maxSpeed = 1.0f;
-                            kart->boostedMaxSpeed = 1.5f;
+                            if (kart->kartType == KARTO) {
+                                kart->maxSpeedKa = 1.0f;
+                                kart->boostedMaxSpeedKa = 2.5f;
+                            }
+                            else if (kart->kartType == HAOLIEN) {
+                                kart->maxSpeedHa = 1.0f;
+                                kart->boostedMaxSpeedHa = 2.0f;
+                            }
+                            else if (kart->kartType == JOHANA) {
+                                kart->maxSpeedJo = 2.5f;
+                                kart->boostedMaxSpeedJo = 4.0f;
+                            }
+                            else if (kart->kartType == TANKETO) {
+                                kart->maxSpeedTa = 1.5f;
+                                kart->boostedMaxSpeedTa = 6.0f;
+                            }
                         }
                         kart->DarkenedsnowZoneCount++;
                         return;
@@ -1333,8 +1496,22 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
                                 printf("Kart exited snow zone.\n");
                                 kart->inSnowZone = false;
                                 kart->inDarkenedSnowZone = false;
-                                kart->maxSpeed = 2.5f;
-                                kart->boostedMaxSpeed = 4.5f;
+                                if (kart->kartType == KARTO) {
+                                    kart->maxSpeedKa = 2.5f;
+                                    kart->boostedMaxSpeedKa = 4.0f;
+                                }
+                                else if (kart->kartType == HAOLIEN) {
+                                    kart->maxSpeedHa = 3.0f;
+                                    kart->boostedMaxSpeedHa = 5.0f;
+                                }
+                                else if (kart->kartType == JOHANA) {
+                                    kart->maxSpeedJo = 1.0f;
+                                    kart->boostedMaxSpeedJo = 3.0f;
+                                }
+                                else if (kart->kartType == TANKETO) {
+                                    kart->maxSpeedTa = 1.5f;
+                                    kart->boostedMaxSpeedTa = 6.0f;
+                                }
                             }
                         }
                         //DARKENED SNOW ZONE
@@ -1344,8 +1521,22 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
                                 printf("Kart exited darkened snow zone.\n");
                                 kart->inSnowZone = false;
                                 kart->inDarkenedSnowZone = false;
-                                kart->maxSpeed = 2.5f;
-                                kart->boostedMaxSpeed = 4.5f;
+                                if (kart->kartType == KARTO) {
+                                    kart->maxSpeedKa = 2.5f;
+                                    kart->boostedMaxSpeedKa = 4.0f;
+                                }
+                                else if (kart->kartType == HAOLIEN) {
+                                    kart->maxSpeedHa = 3.0f;
+                                    kart->boostedMaxSpeedHa = 5.0f;
+                                }
+                                else if (kart->kartType == JOHANA) {
+                                    kart->maxSpeedJo = 1.0f;
+                                    kart->boostedMaxSpeedJo = 3.0f;
+                                }
+                                else if (kart->kartType == TANKETO) {
+                                    kart->maxSpeedTa = 1.5f;
+                                    kart->boostedMaxSpeedTa = 6.0f;
+                                }
                             }
                         }
                         return;
@@ -1356,10 +1547,74 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
     }
 }
 
+void ModuleGame::CreateCollisionsAndSensors()
+{
+    //------------------------------ Collision ----------------------------------------
 
+    entities.emplace_back(new Internal_Collision(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Internal_Collision_2(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Internal_Collision_3(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Internal_Collision_4(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Internal_Collision_5(App->physics, 0, 0, this, default));
+    entities.emplace_back(new External(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque1Izq(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque2Izq(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque1Abajo(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque2Abajo(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque3Abajo(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque2Arriba(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque3Arriba(App->physics, 0, 0, this, default));
 
+    //----------------------------- Snow Zone -----------------------------------------
+    //                                                width/height 
+    entities.emplace_back(new SnowZone_1(App->physics, 100, 252, this, default));
+    entities.emplace_back(new SnowZone_2(App->physics, 100, 40, this, default));
+    entities.emplace_back(new SnowZone_3(App->physics, 100, 382, this, default));
+    entities.emplace_back(new SnowZone_4(App->physics, 62, 135, this, default));
+    entities.emplace_back(new SnowZone_5(App->physics, 230, 138, this, default));
+    entities.emplace_back(new SnowZone_6(App->physics, 164, 70, this, default));
+    entities.emplace_back(new SnowZone_7(App->physics, 72, 250, this, default));
+    entities.emplace_back(new SnowZone_8(App->physics, 564, 40, this, default));
+    entities.emplace_back(new SnowZone_9(App->physics, 115, 165, this, default));
+    entities.emplace_back(new SnowZone_10(App->physics, 52, 320, this, default));
+    entities.emplace_back(new SnowZone_11(App->physics, 426, 20, this, default));
+    entities.emplace_back(new SnowZone_12(App->physics, 74, 267, this, default));
+    entities.emplace_back(new SnowZone_13(App->physics, 136, 137, this, default));
+    entities.emplace_back(new SnowZone_14(App->physics, 75, 140, this, default));
+    entities.emplace_back(new SnowZone_15(App->physics, 134, 206, this, default));
+    entities.emplace_back(new SnowZone_16(App->physics, 94, 70, this, default));
+    entities.emplace_back(new SnowZone_17(App->physics, 198, 200, this, default));
+    entities.emplace_back(new SnowZone_18(App->physics, 70, 250, this, default));
+    entities.emplace_back(new SnowZone_19(App->physics, 80, 374, this, default));
+    entities.emplace_back(new SnowZone_20(App->physics, 57, 93, this, default));
+    entities.emplace_back(new SnowZone_21(App->physics, 57, 189, this, default));
+    entities.emplace_back(new SnowZone_22(App->physics, 240, 118, this, default));
+    entities.emplace_back(new SnowZone_23(App->physics, 70, 296, this, default));
+    entities.emplace_back(new SnowZone_24(App->physics, 280, 294, this, default));
+    entities.emplace_back(new SnowZone_25(App->physics, 246, 20, this, default));
+    entities.emplace_back(new SnowZone_26(App->physics, 52, 50, this, default));
+    entities.emplace_back(new SnowZone_27(App->physics, 256, 84, this, default));
 
+    //----------------------------- Darkened Snow Zone  -----------------------------------------
+    //                                                       width/height 
+    entities.emplace_back(new DarkenedSnowZone_1(App->physics, 100, 91, this, default));
+    entities.emplace_back(new DarkenedSnowZone_2(App->physics, 60, 137, this, default));
+    entities.emplace_back(new DarkenedSnowZone_3(App->physics, 162, 64, this, default));
+    entities.emplace_back(new DarkenedSnowZone_4(App->physics, 52, 132, this, default));
+    entities.emplace_back(new DarkenedSnowZone_5(App->physics, 168, 64, this, default));
+    entities.emplace_back(new DarkenedSnowZone_6(App->physics, 57, 91, this, default));
+    entities.emplace_back(new DarkenedSnowZone_7(App->physics, 190, 118, this, default));
 
+}
 
-
-
+void ModuleGame::RemoveAllCollisionsAndSensors() {
+    for (auto entity : entities) {
+        if (entity->body != nullptr && entity->body->body != nullptr) {
+            App->physics->world->DestroyBody(entity->body->body);
+            entity->body->body = nullptr;
+        }
+        delete entity;
+    }
+    entities.clear();
+}

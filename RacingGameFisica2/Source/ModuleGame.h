@@ -20,11 +20,24 @@ enum CollisionType
 
 enum KartType
 {
-	BOOST,
-	CONE,
-	SHOOT,
-	TANK,
+	KARTO,
+	HAOLIEN,
+	JOHANA,
+	TANKETO,
 	DEFAULT_KART
+};
+
+enum Player {
+	PLAYER1,
+	PLAYER2,
+	NPC
+};
+
+enum GameState {
+	TITLESCREEN,
+	PLAYER1SELECT,
+	PLAYER2SELECT,
+	PLAYING
 };
 
 class ModuleGame : public Module
@@ -38,11 +51,15 @@ public:
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 	void OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) override;
-
+	void CreateCollisionsAndSensors();
+	void RemoveAllCollisionsAndSensors();
 
 public:
 	std::vector<PhysicEntity*> entities;
 
+	Texture2D mainScreen;
+	Texture2D player1Select;
+	Texture2D player2Select;
 	Texture2D background;
 	
 	PhysBody* m_body;
@@ -52,6 +69,8 @@ public:
 	Texture2D circle;
 	Texture2D yellowCar;
 	Texture2D redCar;
+	Texture2D blueCar;
+	Texture2D greenCar;
 	Texture2D rick;
 	Texture2D cone;
 	Texture2D default;
@@ -60,10 +79,16 @@ public:
 	uint32 engine_fx;
 	uint32 bump_fx;
 	uint32 boost_fx;
+	uint32 horn_fx;
+
 	Music bgm;
+	Music playerSelect;
+	Music title;
 
+	bool hasStarted = false;
+	bool hasDeleted = false;
 	bool hasSpawnedCar = false;
-
+	GameState gameState;
 
 	vec2<int> ray;
 	bool ray_on;
