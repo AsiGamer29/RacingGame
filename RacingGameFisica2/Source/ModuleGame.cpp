@@ -689,7 +689,7 @@ protected:
 class CheckpointSensor : public PhysicEntity {
 public:
     CheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture) 
-        : PhysicEntity(physics->CreateRectangleSensor(130, 300, coords, coordCount), _listener)  
+        : PhysicEntity(physics->CreateRectangleSensor(545, 430, coords, coordCount), _listener)  
     {                                               // x y
         collisionType = CHECKPOINT_SENSOR;
     }
@@ -704,6 +704,23 @@ private:
     Texture2D texture;
 };
 
+class CheckpointSensor_2 : public PhysicEntity {
+public:
+    CheckpointSensor_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1192, 232, coords, coordCount), _listener)
+    {                                               // x y
+        collisionType = CHECKPOINT_SENSOR;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
 
 //------------------------------------------------------------------------------------ Collisions -------------------------------------------------------------------------------------
 
@@ -1218,8 +1235,8 @@ bool ModuleGame::Start()
 
     //----------------------------- Checkpoints  -----------------------------------------
     //                                                       width/height 
-    entities.emplace_back(new CheckpointSensor(App->physics, 256, 10, this, default)); 
-   // entities.emplace_back(new CheckpointSensor_2(App->physics, 100, 91, this, default));
+    entities.emplace_back(new CheckpointSensor(App->physics, 93, 10, this, default)); 
+    entities.emplace_back(new CheckpointSensor_2(App->physics, 140, 10, this, default));
 
 
     return ret;
@@ -1411,11 +1428,3 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
         }
     }
 }
-
-
-
-
-
-
-
-
