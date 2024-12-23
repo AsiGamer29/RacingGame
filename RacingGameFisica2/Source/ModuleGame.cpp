@@ -722,6 +722,42 @@ private:
     Texture2D texture;
 };
 
+class CheckpointSensor_3 : public PhysicEntity {
+public:
+    CheckpointSensor_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(700, 600, coords, coordCount), _listener)
+    {                                               // x    y
+        collisionType = CHECKPOINT_SENSOR;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
+
+class CheckpointSensor_4 : public PhysicEntity {
+public:
+    CheckpointSensor_4(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(260, 650, coords, coordCount), _listener)
+    {                                               // x    y
+        collisionType = CHECKPOINT_SENSOR;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
+
 //------------------------------------------------------------------------------------ Collisions -------------------------------------------------------------------------------------
 
 class Collisions : public PhysicEntity {
@@ -1237,7 +1273,8 @@ bool ModuleGame::Start()
     //                                                       width/height 
     entities.emplace_back(new CheckpointSensor(App->physics, 93, 10, this, default)); 
     entities.emplace_back(new CheckpointSensor_2(App->physics, 140, 10, this, default));
-
+    entities.emplace_back(new CheckpointSensor_3(App->physics, 10, 206, this, default));
+    entities.emplace_back(new CheckpointSensor_4(App->physics, 10, 116, this, default));
 
     return ret;
 }
