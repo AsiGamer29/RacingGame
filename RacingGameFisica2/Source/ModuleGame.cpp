@@ -689,7 +689,7 @@ protected:
 class CheckpointSensor : public PhysicEntity {
 public:
     CheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture) 
-        : PhysicEntity(physics->CreateRectangleSensor(545, 430, coords, coordCount), _listener)  
+        : PhysicEntity(physics->CreateRectangleSensor(670, 270, coords, coordCount), _listener)  
     {                                               // x y
         collisionType = CHECKPOINT_SENSOR;
     }
@@ -1149,6 +1149,7 @@ public:
     bool inDarkenedSnowZone = false;
     int snowZoneCount = 0;
     int DarkenedsnowZoneCount = 0;
+    int CountSensor = 0;
 protected:
 	Cone* coneEntity;
     KartType kartType;
@@ -1271,7 +1272,7 @@ bool ModuleGame::Start()
 
     //----------------------------- Checkpoints  -----------------------------------------
     //                                                       width/height 
-    entities.emplace_back(new CheckpointSensor(App->physics, 93, 10, this, default)); 
+    entities.emplace_back(new CheckpointSensor(App->physics, 130, 10, this, default)); 
     entities.emplace_back(new CheckpointSensor_2(App->physics, 140, 10, this, default));
     entities.emplace_back(new CheckpointSensor_3(App->physics, 10, 206, this, default));
     entities.emplace_back(new CheckpointSensor_4(App->physics, 10, 116, this, default));
@@ -1396,31 +1397,13 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                     }
                     // CHECKPOINTS
                     if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR) {
-                        int sensorIndex = std::distance(entities.begin(), std::find(entities.begin(), entities.end(), entities[j]));
-
-                        // Verificar que el kart está pasando el sensor correcto
-                        if (sensorIndex == kart->currentSensor) {
-                            printf("Kart passed checkpoint %d.\n", sensorIndex + 1);
-                            kart->sensors[sensorIndex] = true; // Marca este sensor como cruzado
-                            kart->currentSensor++;            // Avanza al siguiente sensor
-                            kart->countsensors++;             // Incrementa el contador de sensores cruzados
-
-                            // Si cruzó todos los sensores, se completa una vuelta
-                            if (kart->currentSensor == kart->totalSensors) {
-                                kart->laps++;
-                                kart->currentSensor = 0; // Reinicia para la siguiente vuelta
-                                printf("Lap completed! Total laps: %d\n", kart->laps);
-
-                                // Reinicia el estado de los sensores
-                                std::fill(std::begin(kart->sensors), std::end(kart->sensors), false);
-                            }
+                        if (kart->CountSensor == 0) {
+                            printf("Checkpoint.\n");
                         }
-                        else {
-                            printf("Checkpoint out of order! Current sensor: %d, passed: %d\n", kart->currentSensor, sensorIndex);
-                        }
+                        kart->CountSensor++;
+                        printf("%d", kart->CountSensor);
                         return;
                     }
-
                 }
             }
         }
