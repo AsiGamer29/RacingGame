@@ -691,7 +691,7 @@ public:
     CheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture) 
         : PhysicEntity(physics->CreateRectangleSensor(670, 270, coords, coordCount), _listener)  
     {                                               // x y
-        collisionType = CHECKPOINT_SENSOR;
+        collisionType = CHECKPOINT_SENSOR_1;
     }
 
     virtual void Update() override {
@@ -709,7 +709,7 @@ public:
     CheckpointSensor_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
         : PhysicEntity(physics->CreateRectangleSensor(1192, 232, coords, coordCount), _listener)
     {                                               // x y
-        collisionType = CHECKPOINT_SENSOR;
+        collisionType = CHECKPOINT_SENSOR_2;
     }
 
     virtual void Update() override {
@@ -727,7 +727,7 @@ public:
     CheckpointSensor_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
         : PhysicEntity(physics->CreateRectangleSensor(700, 600, coords, coordCount), _listener)
     {                                               // x    y
-        collisionType = CHECKPOINT_SENSOR;
+        collisionType = CHECKPOINT_SENSOR_3;
     }
 
     virtual void Update() override {
@@ -745,7 +745,25 @@ public:
     CheckpointSensor_4(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
         : PhysicEntity(physics->CreateRectangleSensor(260, 650, coords, coordCount), _listener)
     {                                               // x    y
-        collisionType = CHECKPOINT_SENSOR;
+        collisionType = CHECKPOINT_SENSOR_4;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
+
+class FinishCheckpointSensor : public PhysicEntity {
+public:
+    FinishCheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(88, 450, coords, coordCount), _listener)
+    {                                               // x    y
+        collisionType = FINISH_CHECKPOINT_SENSOR;
     }
 
     virtual void Update() override {
@@ -1150,6 +1168,11 @@ public:
     int snowZoneCount = 0;
     int DarkenedsnowZoneCount = 0;
     int CountSensor = 0;
+    int isActivated_1 = false;
+    int isActivated_2 = false;
+    int isActivated_3 = false;
+    int isActivated_4 = false;
+    int lap = 0;
 protected:
 	Cone* coneEntity;
     KartType kartType;
@@ -1276,6 +1299,7 @@ bool ModuleGame::Start()
     entities.emplace_back(new CheckpointSensor_2(App->physics, 140, 10, this, default));
     entities.emplace_back(new CheckpointSensor_3(App->physics, 10, 206, this, default));
     entities.emplace_back(new CheckpointSensor_4(App->physics, 10, 116, this, default));
+    entities.emplace_back(new FinishCheckpointSensor(App->physics, 142, 10, this, default));
 
     return ret;
 }
@@ -1290,6 +1314,16 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
+    for (PhysicEntity* entity : entities)
+    {
+        if (Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entity))
+        {
+            printf("Lap: %d\n", kart->lap);
+        }
+
+        entity->Update();
+    }
+
 	UpdateMusicStream(bgm);
 
     DrawTexture(background, 0, 0, WHITE);
@@ -1395,13 +1429,44 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         kart->DarkenedsnowZoneCount++;
                         return;
                     }
-                    // CHECKPOINTS
-                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR) {
-                        if (kart->CountSensor == 0) {
-                            printf("Checkpoint.\n");
-                        }
+                    //------------------------------------  CHECKPOINTS  --------------------------------------
+                    // CHECKPOINT 1
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1 && kart->isActivated_1 == false) {
                         kart->CountSensor++;
-                        printf("%d", kart->CountSensor);
+                        kart->isActivated_1 = true;
+                        printf("Checkpoint %d", kart->CountSensor);
+                        return;
+                    }
+                    // CHECKPOINT 2
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_2 && kart->isActivated_1 == true && kart->isActivated_2 == false) {
+                        kart->CountSensor++;
+                        kart->isActivated_2 = true;
+                        printf("Checkpoint %d", kart->CountSensor);
+                        return;
+                    }
+                    // CHECKPOINT 3
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_3 && kart->isActivated_2 == true && kart->isActivated_3 == false) {
+                        kart->CountSensor++;
+                        kart->isActivated_3 = true;
+                        printf("Checkpoint %d", kart->CountSensor);
+                        return;
+                    }
+                    // CHECKPOINT 4
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_4 && kart->isActivated_3 == true && kart->isActivated_4 == false) {
+                        kart->CountSensor++;
+                        kart->isActivated_4 = true;
+                        printf("Checkpoint %d", kart->CountSensor);
+                        return;
+                    }
+                    // FINISH CHECKPOINT
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == FINISH_CHECKPOINT_SENSOR && kart->isActivated_4 == true && kart->CountSensor == 4) {
+                        kart->CountSensor = 0;
+                        kart->lap++;
+                        kart->isActivated_1 = false;
+                        kart->isActivated_2 = false;
+                        kart->isActivated_3 = false;
+                        kart->isActivated_4 = false;
+                        
                         return;
                     }
                 }

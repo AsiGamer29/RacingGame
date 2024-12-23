@@ -16,7 +16,11 @@ enum CollisionType
 	DEFAULT,
 	SNOW,
 	DARKENED_SNOW,
-	CHECKPOINT_SENSOR
+	CHECKPOINT_SENSOR_1,
+	CHECKPOINT_SENSOR_2,
+	CHECKPOINT_SENSOR_3,
+	CHECKPOINT_SENSOR_4,
+	FINISH_CHECKPOINT_SENSOR
 };
 
 enum KartType
@@ -27,6 +31,8 @@ enum KartType
 	TANK,
 	DEFAULT_KART
 };
+
+
 
 class ModuleGame : public Module
 {
