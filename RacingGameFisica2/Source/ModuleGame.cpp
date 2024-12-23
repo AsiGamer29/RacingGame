@@ -1116,18 +1116,18 @@ public:
         if (isDrifting) {
             if (player == PLAYER1) {
                 if (IsKeyDown(KEY_A)) {
-                    rotation -= 3.5f;
+                    rotation -= kartRotation + 0.5f;
                 }
                 if (IsKeyDown(KEY_D)) {
-                    rotation += 3.5f;
+                    rotation += kartRotation + 0.5f;
                 }
             }
 			else if (player == PLAYER2) {
 				if (IsKeyDown(KEY_LEFT)) {
-					rotation -= 3.5f;
+					rotation -= kartRotation + 0.5f;
 				}
 				if (IsKeyDown(KEY_RIGHT)) {
-					rotation += 3.5f;
+					rotation += kartRotation + 0.5f;
 				}
 			}
             
@@ -1307,14 +1307,71 @@ update_status ModuleGame::Update()
     case PLAYER1SELECT:
         UpdateMusicStream(playerSelect);
         DrawTexture(player1Select, 0, 0, WHITE);
-        if (IsKeyPressed(KEY_SPACE)) {
+        
+        if (IsKeyPressed(KEY_ONE)) {
+            chosenKartop1 = true;
+            hasChosenPlayer1 = true;
             gameState = PLAYER2SELECT;
         }
+        else if (IsKeyPressed(KEY_TWO))
+        {
+            chosenHaolienp1 = true;
+			hasChosenPlayer1 = true;
+            gameState = PLAYER2SELECT;
+        }
+		else if (IsKeyPressed(KEY_THREE))
+		{
+			chosenJohanap1 = true;
+			hasChosenPlayer1 = true;
+            gameState = PLAYER2SELECT;
+		}
+		else if (IsKeyPressed(KEY_FOUR))
+		{
+			chosenTanketop1 = true;
+			hasChosenPlayer1 = true;
+            gameState = PLAYER2SELECT;
+		}
         break;
+
     case PLAYER2SELECT:
         UpdateMusicStream(playerSelect);
         DrawTexture(player2Select, 0, 0, WHITE);
-        if (IsKeyPressed(KEY_SPACE)) {
+        if (IsKeyPressed(KEY_ONE)) {
+            chosenKartop2 = true;
+            hasChosenPlayer2 = true;
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
+            gameState = PLAYING;
+        }
+        else if (IsKeyPressed(KEY_TWO))
+        {
+            chosenHaolienp2 = true;
+            hasChosenPlayer2 = true;
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
+            gameState = PLAYING;
+        }
+        else if (IsKeyPressed(KEY_THREE))
+        {
+            chosenJohanap2 = true;
+            hasChosenPlayer2 = true;
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
+            gameState = PLAYING;
+        }
+        else if (IsKeyPressed(KEY_FOUR))
+        {
+            chosenTanketop2 = true;
+            hasChosenPlayer2 = true;
             if (hasStarted == false) {
                 CreateCollisionsAndSensors();
                 hasStarted = true;
@@ -1323,6 +1380,7 @@ update_status ModuleGame::Update()
             gameState = PLAYING;
         }
         break;
+
     case PLAYING:
         UpdateMusicStream(bgm);
         DrawTexture(background, 0, 0, WHITE);
@@ -1331,6 +1389,22 @@ update_status ModuleGame::Update()
                 RemoveAllCollisionsAndSensors();
 				hasDeleted = true;
                 hasStarted = false;
+
+                chosenKartop1 = false;
+                chosenHaolienp1 = false;
+                chosenJohanap1 = false;
+                chosenTanketop1 = false;
+
+                chosenKartop2 = false;
+                chosenHaolienp2 = false;
+                chosenJohanap2 = false;
+                chosenTanketop2 = false;
+
+                hasChosenPlayer1 = false;
+                hasChosenPlayer2 = false;
+
+                hasSpawnedPlayer1Car = false;
+                hasSpawnedPlayer2Car = false;
             }
             gameState = TITLESCREEN;
             
@@ -1347,24 +1421,42 @@ update_status ModuleGame::Update()
             ray.y = GetMouseY();
         }
 
-        if (IsKeyPressed(KEY_ONE))
+        if (chosenKartop1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(new Kart_Player_1(App->physics, GetMouseX(), GetMouseY(), this, blueCar, App, KARTO, PLAYER1));
+            entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, blueCar, App, KARTO, PLAYER1));
+			hasChosenPlayer1 = false;
+		}
+        else if (chosenHaolienp1 == true && hasChosenPlayer1 == true)
+        {
+            entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, yellowCar, App, HAOLIEN, PLAYER1));
+            hasChosenPlayer1 = false;
+        }
+        else if (chosenJohanap1 == true && hasChosenPlayer1 == true)
+        {
+			entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, greenCar, App, JOHANA, PLAYER1));
+            hasChosenPlayer1 = false;
+        }
+        else if (chosenTanketop1 == true && hasChosenPlayer1 == true)
+        {
+			entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, redCar, App, TANKETO, PLAYER1));
+            hasChosenPlayer1 = false;
         }
 
-        if (IsKeyPressed(KEY_TWO))
-        {
-            entities.emplace_back(new Kart_Player_2(App->physics, GetMouseX(), GetMouseY(), this, yellowCar, App, HAOLIEN, PLAYER2));
-        }
-
-        if (IsKeyPressed(KEY_THREE))
-        {
-            entities.emplace_back(new Kart_Player_1(App->physics, GetMouseX(), GetMouseY(), this, greenCar, App, JOHANA, PLAYER1));
-        }
-
-        if (IsKeyPressed(KEY_FOUR))
-        {
-            entities.emplace_back(new Kart_Player_2(App->physics, GetMouseX(), GetMouseY(), this, redCar, App, TANKETO, PLAYER2));
+        if (chosenKartop2 == true && hasChosenPlayer2 == true) {
+            entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, blueCar, App, KARTO, PLAYER2));
+			hasChosenPlayer2 = false;
+		}
+		else if (chosenHaolienp2 == true && hasChosenPlayer2 == true) {
+			entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, yellowCar, App, HAOLIEN, PLAYER2));
+			hasChosenPlayer2 = false;
+		}
+		else if (chosenJohanap2 == true && hasChosenPlayer2 == true) {
+			entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, greenCar, App, JOHANA, PLAYER2));
+			hasChosenPlayer2 = false;
+		}
+        else if (chosenTanketop2 == true && hasChosenPlayer2 == true) {
+            entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, redCar, App, TANKETO, PLAYER2));
+            hasChosenPlayer2 = false;
         }
 
         if (IsKeyPressed(KEY_M))

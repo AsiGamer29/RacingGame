@@ -85,9 +85,24 @@ public:
 	Music playerSelect;
 	Music title;
 
+	bool chosenKartop1 = false;
+	bool chosenHaolienp1 = false;
+	bool chosenJohanap1 = false;
+	bool chosenTanketop1 = false;
+
+	bool chosenKartop2 = false;
+	bool chosenHaolienp2 = false;
+	bool chosenJohanap2 = false;
+	bool chosenTanketop2 = false;
+
+	bool hasChosenPlayer1 = false;
+	bool hasChosenPlayer2 = false;
+
+	bool hasSpawnedPlayer1Car = false;
+	bool hasSpawnedPlayer2Car = false;
+
 	bool hasStarted = false;
 	bool hasDeleted = false;
-	bool hasSpawnedCar = false;
 	GameState gameState;
 
 	vec2<int> ray;
