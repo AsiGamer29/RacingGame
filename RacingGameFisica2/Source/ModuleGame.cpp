@@ -686,6 +686,95 @@ protected:
     Texture2D texture;
 };
 
+class CheckpointSensor : public PhysicEntity {
+public:
+    CheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture) 
+        : PhysicEntity(physics->CreateRectangleSensor(670, 270, coords, coordCount), _listener)  
+    {                                               // x y
+        collisionType = CHECKPOINT_SENSOR_1;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
+
+class CheckpointSensor_2 : public PhysicEntity {
+public:
+    CheckpointSensor_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(1192, 232, coords, coordCount), _listener)
+    {                                               // x y
+        collisionType = CHECKPOINT_SENSOR_2;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
+
+class CheckpointSensor_3 : public PhysicEntity {
+public:
+    CheckpointSensor_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(700, 600, coords, coordCount), _listener)
+    {                                               // x    y
+        collisionType = CHECKPOINT_SENSOR_3;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
+
+class CheckpointSensor_4 : public PhysicEntity {
+public:
+    CheckpointSensor_4(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(260, 650, coords, coordCount), _listener)
+    {                                               // x    y
+        collisionType = CHECKPOINT_SENSOR_4;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
+
+class FinishCheckpointSensor : public PhysicEntity {
+public:
+    FinishCheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(88, 450, coords, coordCount), _listener)
+    {                                               // x    y
+        collisionType = FINISH_CHECKPOINT_SENSOR;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
 
 //------------------------------------------------------------------------------------ Collisions -------------------------------------------------------------------------------------
 
@@ -982,6 +1071,12 @@ public:
     Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
         : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type), player(player){}
 
+    int currentSensor = 0;    // Índice del sensor actual que el kart debe cruzar
+    int totalSensors = 10;    // Número total de sensores en el circuito
+    bool sensors[10] = { false }; // Estado de los sensores (cruzados o no)
+    int laps = 0;             // Contador de vueltas completadas
+    int countsensors = 0;     // Sensores cruzados en total
+
     virtual void HandleInput() {
         
         float currentMaxSpeed;
@@ -1202,6 +1297,14 @@ public:
     bool inDarkenedSnowZone = false;
     int snowZoneCount = 0;
     int DarkenedsnowZoneCount = 0;
+
+    int CountSensor = 0;
+    int isActivated_1 = false;
+    int isActivated_2 = false;
+    int isActivated_3 = false;
+    int isActivated_4 = false;
+    int lap = 0;
+
     KartType kartType;
 
 protected:
@@ -1382,6 +1485,16 @@ update_status ModuleGame::Update()
         break;
 
     case PLAYING:
+
+            for (PhysicEntity* entity : entities)
+        {
+            if (Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entity))
+            {
+                printf("Lap: %d\n", kart->lap);
+            }
+
+            entity->Update();
+        }
         UpdateMusicStream(bgm);
         DrawTexture(background, 0, 0, WHITE);
         if (IsKeyPressed(KEY_Z)) {
@@ -1566,6 +1679,46 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         kart->DarkenedsnowZoneCount++;
                         return;
                     }
+                    //------------------------------------  CHECKPOINTS  --------------------------------------
+                    // CHECKPOINT 1
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1 && kart->isActivated_1 == false) {
+                        kart->CountSensor++;
+                        kart->isActivated_1 = true;
+                        printf("Checkpoint %d", kart->CountSensor);
+                        return;
+                    }
+                    // CHECKPOINT 2
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_2 && kart->isActivated_1 == true && kart->isActivated_2 == false) {
+                        kart->CountSensor++;
+                        kart->isActivated_2 = true;
+                        printf("Checkpoint %d", kart->CountSensor);
+                        return;
+                    }
+                    // CHECKPOINT 3
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_3 && kart->isActivated_2 == true && kart->isActivated_3 == false) {
+                        kart->CountSensor++;
+                        kart->isActivated_3 = true;
+                        printf("Checkpoint %d", kart->CountSensor);
+                        return;
+                    }
+                    // CHECKPOINT 4
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_4 && kart->isActivated_3 == true && kart->isActivated_4 == false) {
+                        kart->CountSensor++;
+                        kart->isActivated_4 = true;
+                        printf("Checkpoint %d", kart->CountSensor);
+                        return;
+                    }
+                    // FINISH CHECKPOINT
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == FINISH_CHECKPOINT_SENSOR && kart->isActivated_4 == true && kart->CountSensor == 4) {
+                        kart->CountSensor = 0;
+                        kart->lap++;
+                        kart->isActivated_1 = false;
+                        kart->isActivated_2 = false;
+                        kart->isActivated_3 = false;
+                        kart->isActivated_4 = false;
+                        
+                        return;
+                    }
                 }
             }
         }
@@ -1641,7 +1794,7 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
 
 void ModuleGame::CreateCollisionsAndSensors()
 {
-    //------------------------------ Collision ----------------------------------------
+//------------------------------ Collision ----------------------------------------
 
     entities.emplace_back(new Internal_Collision(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_2(App->physics, 0, 0, this, default));
@@ -1649,12 +1802,12 @@ void ModuleGame::CreateCollisionsAndSensors()
     entities.emplace_back(new Internal_Collision_4(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_5(App->physics, 0, 0, this, default));
     entities.emplace_back(new External(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque1Izq(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque1Izq(App->physics, 0, 0, this, default)); 
     entities.emplace_back(new Bloque2Izq(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque1Abajo(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque2Abajo(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque3Abajo(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default));
+    entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default)); 
     entities.emplace_back(new Bloque2Arriba(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque3Arriba(App->physics, 0, 0, this, default));
 
@@ -1697,6 +1850,14 @@ void ModuleGame::CreateCollisionsAndSensors()
     entities.emplace_back(new DarkenedSnowZone_5(App->physics, 168, 64, this, default));
     entities.emplace_back(new DarkenedSnowZone_6(App->physics, 57, 91, this, default));
     entities.emplace_back(new DarkenedSnowZone_7(App->physics, 190, 118, this, default));
+
+    //----------------------------- Checkpoints  -----------------------------------------
+    //                                                       width/height 
+    entities.emplace_back(new CheckpointSensor(App->physics, 130, 10, this, default)); 
+    entities.emplace_back(new CheckpointSensor_2(App->physics, 140, 10, this, default));
+    entities.emplace_back(new CheckpointSensor_3(App->physics, 10, 206, this, default));
+    entities.emplace_back(new CheckpointSensor_4(App->physics, 10, 116, this, default));
+    entities.emplace_back(new FinishCheckpointSensor(App->physics, 142, 10, this, default));
 
 }
 
