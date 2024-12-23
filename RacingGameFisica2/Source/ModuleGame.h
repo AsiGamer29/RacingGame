@@ -15,7 +15,8 @@ enum CollisionType
 {
 	DEFAULT,
 	SNOW,
-	DARKENED_SNOW
+	DARKENED_SNOW,
+	CHECKPOINT_SENSOR
 };
 
 enum KartType

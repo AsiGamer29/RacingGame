@@ -686,6 +686,24 @@ protected:
     Texture2D texture;
 };
 
+class CheckpointSensor : public PhysicEntity {
+public:
+    CheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture) 
+        : PhysicEntity(physics->CreateRectangleSensor(130, 300, coords, coordCount), _listener)  
+    {                                               // x y
+        collisionType = CHECKPOINT_SENSOR;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+private:
+    Texture2D texture;
+};
+
 
 //------------------------------------------------------------------------------------ Collisions -------------------------------------------------------------------------------------
 
@@ -982,6 +1000,12 @@ public:
     Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
         : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type){}
 
+    int currentSensor = 0;    // Índice del sensor actual que el kart debe cruzar
+    int totalSensors = 10;    // Número total de sensores en el circuito
+    bool sensors[10] = { false }; // Estado de los sensores (cruzados o no)
+    int laps = 0;             // Contador de vueltas completadas
+    int countsensors = 0;     // Sensores cruzados en total
+
     virtual void HandleInput() {
         
         float currentMaxSpeed = maxSpeed;
@@ -1192,6 +1216,11 @@ bool ModuleGame::Start()
     entities.emplace_back(new DarkenedSnowZone_6(App->physics, 57, 91, this, default));
     entities.emplace_back(new DarkenedSnowZone_7(App->physics, 190, 118, this, default));
 
+    //----------------------------- Checkpoints  -----------------------------------------
+    //                                                       width/height 
+    entities.emplace_back(new CheckpointSensor(App->physics, 256, 10, this, default)); 
+   // entities.emplace_back(new CheckpointSensor_2(App->physics, 100, 91, this, default));
+
 
     return ret;
 }
@@ -1311,6 +1340,33 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         kart->DarkenedsnowZoneCount++;
                         return;
                     }
+                    // CHECKPOINTS
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR) {
+                        int sensorIndex = std::distance(entities.begin(), std::find(entities.begin(), entities.end(), entities[j]));
+
+                        // Verificar que el kart está pasando el sensor correcto
+                        if (sensorIndex == kart->currentSensor) {
+                            printf("Kart passed checkpoint %d.\n", sensorIndex + 1);
+                            kart->sensors[sensorIndex] = true; // Marca este sensor como cruzado
+                            kart->currentSensor++;            // Avanza al siguiente sensor
+                            kart->countsensors++;             // Incrementa el contador de sensores cruzados
+
+                            // Si cruzó todos los sensores, se completa una vuelta
+                            if (kart->currentSensor == kart->totalSensors) {
+                                kart->laps++;
+                                kart->currentSensor = 0; // Reinicia para la siguiente vuelta
+                                printf("Lap completed! Total laps: %d\n", kart->laps);
+
+                                // Reinicia el estado de los sensores
+                                std::fill(std::begin(kart->sensors), std::end(kart->sensors), false);
+                            }
+                        }
+                        else {
+                            printf("Checkpoint out of order! Current sensor: %d, passed: %d\n", kart->currentSensor, sensorIndex);
+                        }
+                        return;
+                    }
+
                 }
             }
         }
