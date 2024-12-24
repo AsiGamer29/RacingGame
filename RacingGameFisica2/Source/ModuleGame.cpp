@@ -2008,12 +2008,3 @@ void ModuleGame::RemoveAllCollisionsAndSensors() {
     }
     entities.clear();
 }
-
-PhysicEntity* ModuleGame::GetEntityByBody(PhysBody* body) {
-    for (PhysicEntity* entity : entities) {
-        if (entity->body == body) {
-            return entity;
-        }
-    }
-    return nullptr;
-}

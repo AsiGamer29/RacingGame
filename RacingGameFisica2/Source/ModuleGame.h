@@ -32,20 +32,6 @@ enum KartType
 	DEFAULT_KART
 };
 
-enum Karts
-{
-	ONE,
-	TWO,
-	THREE,
-	FOUR, 
-	FIVE,
-	SIX,
-	SEVEN,
-	EIGHT,
-	NINE,
-	TEN
-};
-
 enum Player {
 	PLAYER1,
 	PLAYER2,
@@ -72,7 +58,6 @@ public:
 	void OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) override;
 	void CreateCollisionsAndSensors();
 	void RemoveAllCollisionsAndSensors();
-	PhysicEntity* GetEntityByBody(PhysBody* body);
 
 public:
 	std::vector<PhysicEntity*> entities;
