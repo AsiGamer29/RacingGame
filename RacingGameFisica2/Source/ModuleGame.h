@@ -56,8 +56,6 @@ public:
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 	void OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) override;
-	void CreateCollisionsAndSensors();
-	void RemoveAllCollisionsAndSensors();
 
 public:
 	std::vector<PhysicEntity*> entities;

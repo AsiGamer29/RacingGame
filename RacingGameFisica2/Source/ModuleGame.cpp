@@ -1493,19 +1493,21 @@ update_status ModuleGame::Update()
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
                 DrawText(TextFormat("Lap: %d", finish->lap), 200, 80, 20, RED);
+                //printf("Lap: %d\n", finish->lap);
             }
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
                 DrawText(TextFormat("Kart 1 - Top: %d", kart_1->CurrentRank), 200, 80, 20, RED);
+                //printf("Top: %d\n", kart_1->CurrentRank);
             }
             if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
             {
                 DrawText(TextFormat("Kart 2 - Top: %d", kart_2->CurrentRank), 200, 80, 20, RED);
+                printf("Top: %d\n", kart_2->CurrentRank);
             }
 
             entity->Update();
         }
-
         UpdateMusicStream(bgm);
         DrawTexture(background, 0, 0, WHITE);
         if (IsKeyPressed(KEY_Z)) {

@@ -11,16 +11,15 @@
 class PhysBody;
 class PhysicEntity;
 
-enum CollisionType
-{
-	DEFAULT,
+enum CollisionType {
 	SNOW,
 	DARKENED_SNOW,
 	CHECKPOINT_SENSOR_1,
 	CHECKPOINT_SENSOR_2,
 	CHECKPOINT_SENSOR_3,
 	CHECKPOINT_SENSOR_4,
-	FINISH_CHECKPOINT_SENSOR
+	FINISH_CHECKPOINT_SENSOR,
+	DEFAULT
 };
 
 class LevelSetup : public Module
