@@ -1284,9 +1284,9 @@ public:
     float boostedMaxSpeedHa = 5.0f;
 
 	// Rotations for each kart
-	float rotationKa = 2.5f;
-	float rotationTa = 2.0f;
-    float rotationHa = 2.0f;
+	float rotationKa = 2.0f;
+	float rotationTa = 2.25f;
+    float rotationHa = 1.5f;
 	float rotationJo = 3.0f;
 
 	float maxSpeed = 2.0f;
