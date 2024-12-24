@@ -1286,8 +1286,8 @@ public:
 	// Rotations for each kart
 	float rotationKa = 2.0f;
 	float rotationTa = 2.25f;
-    float rotationHa = 1.5f;
-	float rotationJo = 3.0f;
+    float rotationHa = 1.0f;
+	float rotationJo = 1.5f;
 
 	float maxSpeed = 2.0f;
     float acceleration = 1.0f;
@@ -1503,7 +1503,7 @@ update_status ModuleGame::Update()
             if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
             {
                 DrawText(TextFormat("Kart 2 - Top: %d", kart_2->CurrentRank), 200, 80, 20, RED);
-                printf("Top: %d\n", kart_2->CurrentRank);
+                /*printf("Top: %d\n", kart_2->CurrentRank);*/
             }
 
             entity->Update();
