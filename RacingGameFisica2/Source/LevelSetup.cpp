@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRender.h"
+#include "LevelSetup.h"
 #include "ModuleGame.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
@@ -9,28 +10,28 @@ class PhysicEntity
 {
 protected:
 
-	PhysicEntity(PhysBody* _body, Module* _listener)
-		: body(_body)
-		, listener(_listener)
-	{
-		body->listener = listener;
-	}
+    PhysicEntity(PhysBody* _body, Module* _listener)
+        : body(_body)
+        , listener(_listener)
+    {
+        body->listener = listener;
+    }
 
 public:
-	virtual ~PhysicEntity() = default;
-	virtual void Update() = 0;
+    virtual ~PhysicEntity() = default;
+    virtual void Update() = 0;
 
-	virtual int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal)
-	{
-		return 0;
-	}
+    virtual int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal)
+    {
+        return 0;
+    }
 
     CollisionType GetCollisionType() const { return collisionType; }
-	PhysBody* body;
+    PhysBody* body;
 
 protected:
 
-	Module* listener;
+    Module* listener;
     CollisionType collisionType;
 };
 
@@ -42,7 +43,7 @@ public:
         : PhysicEntity(physics->CreateRectangleSensor(175, 371, coords, coordCount), _listener)
         , texture(_texture) //             position:   x    y                                         
     {
-        collisionType = SNOW; 
+        collisionType = SNOW;
     }
 
     virtual void Update() override {
@@ -232,7 +233,7 @@ public:
         : PhysicEntity(physics->CreateRectangleSensor(738, 188, coords, coordCount), _listener)
         , texture(_texture) //             position:   x    y  
     {
-        collisionType = SNOW; 
+        collisionType = SNOW;
     }
 
     virtual void Update() override {
@@ -251,7 +252,7 @@ public:
         : PhysicEntity(physics->CreateRectangleSensor(807, 329, coords, coordCount), _listener)
         , texture(_texture) //             position:   x    y  
     {
-        collisionType = SNOW; 
+        collisionType = SNOW;
     }
 
     virtual void Update() override {
@@ -323,11 +324,11 @@ protected:
 };
 
 class SnowZone_24 : public PhysicEntity {
-public: 
+public:
     SnowZone_24(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
         : PhysicEntity(physics->CreateRectangleSensor(1158, 574, coords, coordCount), _listener)
         , texture(_texture) //             position:   x    y  
-    {                                           
+    {
         collisionType = SNOW;
     }
 
@@ -688,8 +689,8 @@ protected:
 
 class CheckpointSensor : public PhysicEntity {
 public:
-    CheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture) 
-        : PhysicEntity(physics->CreateRectangleSensor(670, 270, coords, coordCount), _listener)  
+    CheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(670, 270, coords, coordCount), _listener)
     {                                               // x y
         collisionType = CHECKPOINT_SENSOR_1;
     }
@@ -771,7 +772,7 @@ public:
         body->GetPhysicPosition(x, y);
         DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
     }
-public: 
+public:
     int CountSensor = 0;
     int isActivated_1 = false;
     int isActivated_2 = false;
@@ -833,7 +834,7 @@ public:
     175, 447, 175, 479
     };
 
-    Internal_Collision_2(ModulePhysics * physics, int x, int y, Module * _listener, Texture2D _texture)
+    Internal_Collision_2(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture)
         : Collisions(physics, coords, 16, _listener, _texture) {}
 };
 
@@ -876,7 +877,7 @@ public:
         : Collisions(physics, coords, 8, _listener, _texture) {}
 };
 
-class External : public Collisions { 
+class External : public Collisions {
 public:
     static constexpr int coords[108] = {
         1263, 509, 1263, 31, 1248, 31, 1247, 15, 784, 15, 782, 30, 768, 31, 767, 334,
@@ -998,346 +999,8 @@ public:
         : Collisions(physics, coords, 8, _listener, _texture) {}
 };
 
-class Circle : public PhysicEntity
-{
-public:
-	Circle(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 25), _listener)
-		, texture(_texture)
-	{
 
-	}
-
-	void Update() override
-	{
-		int x, y;
-		body->GetPhysicPosition(x, y);
-		Vector2 position{ (float)x, (float)y };
-		float scale = 1.0f;
-		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
-		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f};
-		float rotation = 0;
-		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-	}
-
-private:
-	Texture2D texture;
-
-};
-
-class Cone : public PhysicEntity
-{
-public:
-    Cone(ModulePhysics* physics, int x, int y, Module* listener, Texture2D _texture, Application* _app)
-        : PhysicEntity(physics->CreateStaticCircle(x, y, 6), listener), texture(_texture), app(_app)
-    {
-    }
-
-    void Update() override
-    {
-        int x, y;
-        body->GetPhysicPosition(x, y);
-
-        float scale = 2.0f;
-        DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-            Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
-            Vector2{ (float)texture.width, (float)texture.height }, 0.0f, WHITE);
-    }
-
-private:
-    Texture2D texture;
-    Application* app;
-};
-
-
-class Kart : public PhysicEntity {
-public:
-    Kart(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
-        : PhysicEntity(physics->CreateCircle(x, y, 9), _listener), texture(_texture), app(_app) {}
-
-    virtual void Update() override {
-        int x, y;
-        body->GetPhysicPosition(x, y);
-        float rotationDegrees = body->GetRotation() * RAD2DEG;
-        float scale = 1.5f; // Escala de la imagen
-        DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-            Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
-            Vector2{ (float)texture.width - 1.0f, (float)texture.height - 2.0f }, rotationDegrees, WHITE);
-
-    }
-
-protected:
-    Texture2D texture;
-    Application* app;
-};
-
-class Kart_Controller : public Kart {
-public:
-    Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
-        : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type), player(player){}
-
-
-    virtual void HandleInput() {
-        
-        float currentMaxSpeed;
-        float kartRotation;
-        float kartAcceleration;
-
-        if (kartType == KARTO) {
-            currentMaxSpeed = maxSpeedKa;
-        }
-        else if (kartType == HAOLIEN) {
-			currentMaxSpeed = maxSpeedHa;
-		}
-		else if (kartType == JOHANA) {
-			currentMaxSpeed = maxSpeedJo;
-		}
-		else if (kartType == TANKETO) {
-			currentMaxSpeed = maxSpeedTa;
-		}
-		else {
-			currentMaxSpeed = maxSpeed;
-		}
-
-        if (kartType == KARTO) {
-            kartRotation = rotationKa;
-        }
-        else if (kartType == HAOLIEN) {
-            kartRotation = rotationHa;
-        }
-        else if (kartType == JOHANA) {
-            kartRotation = rotationJo;
-        }
-        else if (kartType == TANKETO) {
-            kartRotation = rotationTa;
-        }
-        else {
-            kartRotation = rotation;
-        }
-
-        if (kartType == KARTO) {
-			kartAcceleration = accelerationKa;
-        }
-		else if (kartType == HAOLIEN) {
-			kartAcceleration = accelerationHa;
-		}
-		else if (kartType == JOHANA) {
-			kartAcceleration = accelerationJo;
-		}
-		else if (kartType == TANKETO) {
-			kartAcceleration = accelerationTa;
-		}
-		else {
-			kartAcceleration = acceleration;
-		}
-        
-
-        if (speed != 0.0f && !isMoving)
-        {
-            app->audio->PlayFx(engineSound, -1); // Reproduce en bucle
-            isMoving = true;
-        }
-        else if (speed == 0.0f && isMoving)
-        {
-            isMoving = false;
-        }
-
-        if (player == PLAYER1) {
-            if (IsKeyDown(KEY_W)) {
-                speed += kartAcceleration;
-                if (speed > currentMaxSpeed) {
-                    speed = currentMaxSpeed;
-                }
-            }
-            else if (IsKeyDown(KEY_S)) {
-                speed -= kartAcceleration;
-                if (speed < -currentMaxSpeed) {
-                    speed = -currentMaxSpeed;
-                }
-            }
-            else {
-                // Deceleraci�n gradual
-                if (speed > 0.0f) {
-                    speed -= deceleration;
-                    if (speed < 0.0f) {
-                        speed = 0.0f;
-                    }
-                }
-                else if (speed < 0.0f) {
-                    speed += deceleration;
-                    if (speed > 0.0f) {
-                        speed = 0.0f;
-                    }
-                }
-            }
-        }
-        else if (player == PLAYER2) {
-            if (IsKeyDown(KEY_UP)) {
-                speed += 0.1f;
-                if (speed > currentMaxSpeed) {
-                    speed = currentMaxSpeed;
-                }
-            }
-            else if (IsKeyDown(KEY_DOWN)) {
-                speed -= 0.1f;
-                if (speed < -currentMaxSpeed) {
-                    speed = -currentMaxSpeed;
-                }
-            }
-            else {
-                // Deceleraci�n gradual
-                if (speed > 0.0f) {
-                    speed -= deceleration;
-                    if (speed < 0.0f) {
-                        speed = 0.0f;
-                    }
-                }
-                else if (speed < 0.0f) {
-                    speed += deceleration;
-                    if (speed > 0.0f) {
-                        speed = 0.0f;
-                    }
-                }
-            }
-        }
-       
-        if (IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) {
-			isDrifting = true;
-        }
-        else {
-			isDrifting = false;
-        }
-
-        if (isDrifting) {
-            if (player == PLAYER1) {
-                if (IsKeyDown(KEY_A)) {
-                    rotation -= kartRotation + 0.5f;
-                }
-                if (IsKeyDown(KEY_D)) {
-                    rotation += kartRotation + 0.5f;
-                }
-            }
-			else if (player == PLAYER2) {
-				if (IsKeyDown(KEY_LEFT)) {
-					rotation -= kartRotation + 0.5f;
-				}
-				if (IsKeyDown(KEY_RIGHT)) {
-					rotation += kartRotation + 0.5f;
-				}
-			}
-            
-		}
-		else {
-            if (player == PLAYER1) {
-				if (IsKeyDown(KEY_A)) {
-                    rotation -= kartRotation;
-				}
-				if (IsKeyDown(KEY_D)) {
-                    rotation += kartRotation;
-				}
-            }
-            else if (player == PLAYER2) {
-                if (IsKeyDown(KEY_LEFT)) {
-					rotation -= kartRotation;
-                }
-                if (IsKeyDown(KEY_RIGHT)) {
-                    rotation += kartRotation;
-                }
-            }
-        }
-        
-    }
-    
-    // La logica para boostear esta en los commits anteriores
-
-    void Move()
-    {
-        float rad = rotation * DEG2RAD;
-        body->body->SetLinearVelocity(b2Vec2(speed * sin(rad), -speed * cos(rad)));
-        body->body->SetTransform(body->body->GetPosition(), rad);
-    }
-
-    virtual void Update() override {
-        HandleInput();
-        Move();
-        Kart::Update();
-		
-    }
-public:
-    // Accelerations
-	float accelerationKa = 0.1f;
-	float accelerationJo = 0.1f;
-	float accelerationTa = 0.25f;
-    float accelerationHa = 0.25f;
-	
-    // Max speeds for each kart
-	float maxSpeedKa = 2.5f;
-    float maxSpeedTa = 1.5f;
-	float maxSpeedHa = 3.0f;
-	float maxSpeedJo = 1.0f;
-
-	// Max boosted speed for each kart
-    float boostedMaxSpeedKa = 4.0f;
-    float boostedMaxSpeedJo = 3.0f;
-    float boostedMaxSpeedTa = 6.0f;
-    float boostedMaxSpeedHa = 5.0f;
-
-	// Rotations for each kart
-	float rotationKa = 2.0f;
-	float rotationTa = 2.25f;
-    float rotationHa = 1.0f;
-	float rotationJo = 1.5f;
-
-	float maxSpeed = 2.0f;
-    float acceleration = 1.0f;
-	float rotationDefault = 2.0f;
-	float boostedMaxSpeed = 4.0f;
-
-    bool inSnowZone = false;
-    bool inDarkenedSnowZone = false;
-    int snowZoneCount = 0;
-    int DarkenedsnowZoneCount = 0;
-
-
-    KartType kartType;
-
-protected:
-	Player player;
-    std::vector<PhysicEntity*> entities;
-    float speed;
-    float rotation;
-    bool isMoving;
-    bool isBoosting;
-    bool isDrifting;
-    const float deceleration = 0.05f;
-    uint32 boostSound = app->audio->LoadFx("Assets/boost.wav");
-	uint32 engineSound = app->audio->LoadFx("Assets/drive.wav");
-};
-
-class Kart_Player_1 : public Kart_Controller {
-public:
-    Kart_Player_1(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
-        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) {}
-
-public:
-    int CurrentRank = 1;
-
-};
-
-class Kart_Player_2 : public Kart_Controller {
-public:
-    Kart_Player_2(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
-        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) {
-    }
-    
-public:
-    int CurrentRank = 2;
-};
-
-
-
-ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
+LevelSetup::LevelSetup(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
     ray_on = false;
     sensed = false;
@@ -1352,7 +1015,7 @@ bool ModuleGame::Start()
     LOG("Loading Intro assets");
     bool ret = true;
 
-	gameState = TITLESCREEN;
+    gameState = TITLESCREEN;
 
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -1362,21 +1025,21 @@ bool ModuleGame::Start()
     greenCar = LoadTexture("Assets/green.png");
     blueCar = LoadTexture("Assets/blue.png");
 
-	mainScreen = LoadTexture("Assets/mainScreen.png");
+    mainScreen = LoadTexture("Assets/mainScreen.png");
     player1Select = LoadTexture("Assets/player1select.png");
-	player2Select = LoadTexture("Assets/player2select.png");
-	background = LoadTexture("Assets/Mapa1Racing.png");
+    player2Select = LoadTexture("Assets/player2select.png");
+    background = LoadTexture("Assets/Mapa1Racing.png");
 
     engine_fx = App->audio->LoadFx("Assets/drive.wav");
     boost_fx = App->audio->LoadFx("Assets/boost.wav"); // Cargar el sonido de boost
     bump_fx = App->audio->LoadFx("Assets/Bump.wav");
 
     bgm = LoadMusicStream("Assets/music.ogg");
-	playerSelect = LoadMusicStream("Assets/playerselect.ogg");
-	title = LoadMusicStream("Assets/title.ogg");
+    playerSelect = LoadMusicStream("Assets/playerselect.ogg");
+    title = LoadMusicStream("Assets/title.ogg");
 
     PlayMusicStream(title);
-	PlayMusicStream(playerSelect);
+    PlayMusicStream(playerSelect);
     PlayMusicStream(bgm);
 
     return ret;
@@ -1385,15 +1048,15 @@ bool ModuleGame::Start()
 bool ModuleGame::CleanUp()
 {
     LOG("Unloading Intro scene");
-	UnloadTexture(cone);
-	UnloadTexture(yellowCar);
-	UnloadTexture(redCar);
-	UnloadTexture(greenCar);
-	UnloadTexture(blueCar);
-	UnloadTexture(mainScreen);
-	UnloadTexture(background);
-	UnloadMusicStream(bgm);
-	UnloadMusicStream(title);
+    UnloadTexture(cone);
+    UnloadTexture(yellowCar);
+    UnloadTexture(redCar);
+    UnloadTexture(greenCar);
+    UnloadTexture(blueCar);
+    UnloadTexture(mainScreen);
+    UnloadTexture(background);
+    UnloadMusicStream(bgm);
+    UnloadMusicStream(title);
     return true;
 }
 
@@ -1402,7 +1065,7 @@ update_status ModuleGame::Update()
 {
     switch (gameState) {
     case TITLESCREEN:
-        
+
         UpdateMusicStream(title);
         DrawTexture(mainScreen, 0, 0, WHITE);
         if (IsKeyPressed(KEY_SPACE)) {
@@ -1412,7 +1075,7 @@ update_status ModuleGame::Update()
     case PLAYER1SELECT:
         UpdateMusicStream(playerSelect);
         DrawTexture(player1Select, 0, 0, WHITE);
-        
+
         if (IsKeyPressed(KEY_ONE)) {
             chosenKartop1 = true;
             hasChosenPlayer1 = true;
@@ -1421,21 +1084,21 @@ update_status ModuleGame::Update()
         else if (IsKeyPressed(KEY_TWO))
         {
             chosenHaolienp1 = true;
-			hasChosenPlayer1 = true;
+            hasChosenPlayer1 = true;
             gameState = PLAYER2SELECT;
         }
-		else if (IsKeyPressed(KEY_THREE))
-		{
-			chosenJohanap1 = true;
-			hasChosenPlayer1 = true;
+        else if (IsKeyPressed(KEY_THREE))
+        {
+            chosenJohanap1 = true;
+            hasChosenPlayer1 = true;
             gameState = PLAYER2SELECT;
-		}
-		else if (IsKeyPressed(KEY_FOUR))
-		{
-			chosenTanketop1 = true;
-			hasChosenPlayer1 = true;
+        }
+        else if (IsKeyPressed(KEY_FOUR))
+        {
+            chosenTanketop1 = true;
+            hasChosenPlayer1 = true;
             gameState = PLAYER2SELECT;
-		}
+        }
         break;
 
     case PLAYER2SELECT:
@@ -1488,7 +1151,7 @@ update_status ModuleGame::Update()
 
     case PLAYING:
 
-            for (PhysicEntity* entity : entities)
+        for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
@@ -1511,7 +1174,7 @@ update_status ModuleGame::Update()
         if (IsKeyPressed(KEY_Z)) {
             if (hasDeleted == false) {
                 RemoveAllCollisionsAndSensors();
-				hasDeleted = true;
+                hasDeleted = true;
                 hasStarted = false;
 
                 chosenKartop1 = false;
@@ -1531,12 +1194,12 @@ update_status ModuleGame::Update()
                 hasSpawnedPlayer2Car = false;
             }
             gameState = TITLESCREEN;
-            
+
         }
         break;
     }
 
-    
+
     if (gameState == PLAYING) {
         if (IsKeyPressed(KEY_SPACE))
         {
@@ -1548,8 +1211,8 @@ update_status ModuleGame::Update()
         if (chosenKartop1 == true && hasChosenPlayer1 == true)
         {
             entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, blueCar, App, KARTO, PLAYER1));
-			hasChosenPlayer1 = false;
-		}
+            hasChosenPlayer1 = false;
+        }
         else if (chosenHaolienp1 == true && hasChosenPlayer1 == true)
         {
             entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, yellowCar, App, HAOLIEN, PLAYER1));
@@ -1557,27 +1220,27 @@ update_status ModuleGame::Update()
         }
         else if (chosenJohanap1 == true && hasChosenPlayer1 == true)
         {
-			entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, greenCar, App, JOHANA, PLAYER1));
+            entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, greenCar, App, JOHANA, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenTanketop1 == true && hasChosenPlayer1 == true)
         {
-			entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, redCar, App, TANKETO, PLAYER1));
+            entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, redCar, App, TANKETO, PLAYER1));
             hasChosenPlayer1 = false;
         }
 
         if (chosenKartop2 == true && hasChosenPlayer2 == true) {
             entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, blueCar, App, KARTO, PLAYER2));
-			hasChosenPlayer2 = false;
-		}
-		else if (chosenHaolienp2 == true && hasChosenPlayer2 == true) {
-			entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, yellowCar, App, HAOLIEN, PLAYER2));
-			hasChosenPlayer2 = false;
-		}
-		else if (chosenJohanap2 == true && hasChosenPlayer2 == true) {
-			entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, greenCar, App, JOHANA, PLAYER2));
-			hasChosenPlayer2 = false;
-		}
+            hasChosenPlayer2 = false;
+        }
+        else if (chosenHaolienp2 == true && hasChosenPlayer2 == true) {
+            entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, yellowCar, App, HAOLIEN, PLAYER2));
+            hasChosenPlayer2 = false;
+        }
+        else if (chosenJohanap2 == true && hasChosenPlayer2 == true) {
+            entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, greenCar, App, JOHANA, PLAYER2));
+            hasChosenPlayer2 = false;
+        }
         else if (chosenTanketop2 == true && hasChosenPlayer2 == true) {
             entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, redCar, App, TANKETO, PLAYER2));
             hasChosenPlayer2 = false;
@@ -1646,22 +1309,22 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                             printf("Kart entered snow zone.\n");
                             kart->inSnowZone = true;
                             if (kart->kartType == KARTO) {
-								kart->maxSpeedKa = 1.5f;
-								kart->boostedMaxSpeedKa = 3.0f;
-							}
+                                kart->maxSpeedKa = 1.5f;
+                                kart->boostedMaxSpeedKa = 3.0f;
+                            }
                             else if (kart->kartType == HAOLIEN) {
                                 kart->maxSpeedHa = 1.5f;
                                 kart->boostedMaxSpeedHa = 2.5f;
                             }
-							else if (kart->kartType == JOHANA) {
-								kart->maxSpeedJo = 2.5f;
-								kart->boostedMaxSpeedJo = 4.0f;
-							}
-							else if (kart->kartType == TANKETO) {
-								kart->maxSpeedTa = 1.5f;
-								kart->boostedMaxSpeedTa = 6.0f;
-							}
-                            
+                            else if (kart->kartType == JOHANA) {
+                                kart->maxSpeedJo = 2.5f;
+                                kart->boostedMaxSpeedJo = 4.0f;
+                            }
+                            else if (kart->kartType == TANKETO) {
+                                kart->maxSpeedTa = 1.5f;
+                                kart->boostedMaxSpeedTa = 6.0f;
+                            }
+
                         }
                         kart->snowZoneCount++;
                         return;
@@ -1897,7 +1560,7 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
 
 void ModuleGame::CreateCollisionsAndSensors()
 {
-//------------------------------ Collision ----------------------------------------
+    //------------------------------ Collision ----------------------------------------
 
     entities.emplace_back(new Internal_Collision(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_2(App->physics, 0, 0, this, default));
@@ -1905,12 +1568,12 @@ void ModuleGame::CreateCollisionsAndSensors()
     entities.emplace_back(new Internal_Collision_4(App->physics, 0, 0, this, default));
     entities.emplace_back(new Internal_Collision_5(App->physics, 0, 0, this, default));
     entities.emplace_back(new External(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque1Izq(App->physics, 0, 0, this, default)); 
+    entities.emplace_back(new Bloque1Izq(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque2Izq(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque1Abajo(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque2Abajo(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque3Abajo(App->physics, 0, 0, this, default));
-    entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default)); 
+    entities.emplace_back(new Bloque1Arriba(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque2Arriba(App->physics, 0, 0, this, default));
     entities.emplace_back(new Bloque3Arriba(App->physics, 0, 0, this, default));
 
@@ -1956,7 +1619,7 @@ void ModuleGame::CreateCollisionsAndSensors()
 
     //----------------------------- Checkpoints  -----------------------------------------
     //                                                       width/height 
-    entities.emplace_back(new CheckpointSensor(App->physics, 130, 10, this, default)); 
+    entities.emplace_back(new CheckpointSensor(App->physics, 130, 10, this, default));
     entities.emplace_back(new CheckpointSensor_2(App->physics, 140, 10, this, default));
     entities.emplace_back(new CheckpointSensor_3(App->physics, 10, 206, this, default));
     entities.emplace_back(new CheckpointSensor_4(App->physics, 10, 116, this, default));
