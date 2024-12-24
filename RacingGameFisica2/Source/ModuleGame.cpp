@@ -26,12 +26,14 @@ public:
 	}
 
     CollisionType GetCollisionType() const { return collisionType; }
+    KartType GetKartType() const { return kartType; }
 	PhysBody* body;
 
 protected:
 
 	Module* listener;
     CollisionType collisionType;
+    KartType kartType;
 };
 
 //------------------------------------------------------------------------------------ Snow Zone -------------------------------------------------------------------------------------
@@ -1322,7 +1324,6 @@ public:
 
 public:
     int CurrentRank = 1;
-
 };
 
 class Kart_Player_2 : public Kart_Controller {
@@ -1487,29 +1488,31 @@ update_status ModuleGame::Update()
         break;
 
     case PLAYING:
-
+        DrawTexture(background, 0, 0, WHITE);
             for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
-                DrawText(TextFormat("Lap: %d", finish->lap), 200, 80, 20, RED);
+                DrawText(TextFormat("Lap: %d", finish->lap), 1080, 500, 20, RED);
                 //printf("Lap: %d\n", finish->lap);
             }
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
-                DrawText(TextFormat("Kart 1 - Top: %d", kart_1->CurrentRank), 200, 80, 20, RED);
+                if(kart_1->CurrentRank == 1) DrawText(TextFormat("Kart 1 - Top: %d", kart_1->CurrentRank), 1080, 530, 20, RED);
+                else DrawText(TextFormat("Kart 1 - Top: %d", kart_1->CurrentRank), 1080, 560, 20, RED);
                 //printf("Top: %d\n", kart_1->CurrentRank);
             }
             if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
             {
-                DrawText(TextFormat("Kart 2 - Top: %d", kart_2->CurrentRank), 200, 80, 20, RED);
+                if(kart_2->CurrentRank == 1) DrawText(TextFormat("Kart 2 - Top: %d", kart_2->CurrentRank), 1080, 530, 20, RED);
+                else DrawText(TextFormat("Kart 2 - Top: %d", kart_2->CurrentRank), 1080, 560, 20, RED);
                 /*printf("Top: %d\n", kart_2->CurrentRank);*/
             }
 
             entity->Update();
         }
         UpdateMusicStream(bgm);
-        DrawTexture(background, 0, 0, WHITE);
+       
         if (IsKeyPressed(KEY_Z)) {
             if (hasDeleted == false) {
                 RemoveAllCollisionsAndSensors();
@@ -1699,24 +1702,31 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                     {
                         if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
                         {
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1 && finish->isActivated_1 == false) {
-                                for (PhysicEntity* entity : entities) {
-                                    if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity)) {
-                                        for (PhysicEntity* entity : entities) {
-                                            if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity)) {
 
-                                                if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                                    kart_1->CurrentRank = 1;
-                                                    kart_2->CurrentRank = 2;
-                                                }
-                                                else {
-                                                    kart_1->CurrentRank = 2;
-                                                    kart_2->CurrentRank = 1;
-                                                }
-                                            }
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1 && finish->isActivated_1 == false) {
+                                Kart_Player_1* kart_1 = nullptr;
+                                Kart_Player_2* kart_2 = nullptr;
+
+                                for (PhysicEntity* entity : entities) { // search karts
+                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
+                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
+                                    if (kart_1 && kart_2) break; 
+                                }
+                                if (kart_1 && kart_2) {
+                                    if (kart_1->body == bodyA) { //first kart_1
+                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
+                                            kart_1->CurrentRank = 1;
+                                            kart_2->CurrentRank = 2;
+                                        }
+                                    }
+                                    else if (kart_2->body == bodyA) { //first kart_2
+                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
+                                            kart_2->CurrentRank = 1;
+                                            kart_1->CurrentRank = 2;
                                         }
                                     }
                                 }
+
                                 finish->CountSensor++;
                                 finish->isActivated_1 = true;
                                 printf("Checkpoint %d", finish->CountSensor);
@@ -1724,20 +1734,25 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                             }
                             // CHECKPOINT 2
                             if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_2 && finish->isActivated_1 == true && finish->isActivated_2 == false) {
-                                for (PhysicEntity* entity : entities) {
-                                    if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity)) {
-                                        for (PhysicEntity* entity : entities) {
-                                            if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity)) {
+                                Kart_Player_1* kart_1 = nullptr;
+                                Kart_Player_2* kart_2 = nullptr;
 
-                                                if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                                    kart_1->CurrentRank = 1;
-                                                    kart_2->CurrentRank = 2;
-                                                }
-                                                else {
-                                                    kart_1->CurrentRank = 2;
-                                                    kart_2->CurrentRank = 1;
-                                                }
-                                            }
+                                for (PhysicEntity* entity : entities) { // search karts
+                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
+                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
+                                    if (kart_1 && kart_2) break;
+                                }
+                                if (kart_1 && kart_2) {
+                                    if (kart_1->body == bodyA) { //first kart_1
+                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
+                                            kart_1->CurrentRank = 1;
+                                            kart_2->CurrentRank = 2;
+                                        }
+                                    }
+                                    else if (kart_2->body == bodyA) { //first kart_2
+                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
+                                            kart_2->CurrentRank = 1;
+                                            kart_1->CurrentRank = 2;
                                         }
                                     }
                                 }
@@ -1748,20 +1763,25 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                             }
                             // CHECKPOINT 3
                             if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_3 && finish->isActivated_2 == true && finish->isActivated_3 == false) {
-                                for (PhysicEntity* entity : entities) {
-                                    if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity)) {
-                                        for (PhysicEntity* entity : entities) {
-                                            if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity)) {
+                                Kart_Player_1* kart_1 = nullptr;
+                                Kart_Player_2* kart_2 = nullptr;
 
-                                                if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                                    kart_1->CurrentRank = 1;
-                                                    kart_2->CurrentRank = 2;
-                                                }
-                                                else {
-                                                    kart_1->CurrentRank = 2;
-                                                    kart_2->CurrentRank = 1;
-                                                }
-                                            }
+                                for (PhysicEntity* entity : entities) { // search karts
+                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
+                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
+                                    if (kart_1 && kart_2) break;
+                                }
+                                if (kart_1 && kart_2) {
+                                    if (kart_1->body == bodyA) { //first kart_1
+                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
+                                            kart_1->CurrentRank = 1;
+                                            kart_2->CurrentRank = 2;
+                                        }
+                                    }
+                                    else if (kart_2->body == bodyA) { //first kart_2
+                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
+                                            kart_2->CurrentRank = 1;
+                                            kart_1->CurrentRank = 2;
                                         }
                                     }
                                 }
@@ -1772,20 +1792,26 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                             }
                             // CHECKPOINT 4
                             if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_4 && finish->isActivated_3 == true && finish->isActivated_4 == false) {
-                                for (PhysicEntity* entity : entities) {
-                                    if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity)) {
-                                        for (PhysicEntity* entity : entities) {
-                                            if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity)) {
+                                
+                                Kart_Player_1* kart_1 = nullptr;
+                                Kart_Player_2* kart_2 = nullptr;
 
-                                                if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                                    kart_1->CurrentRank = 1;
-                                                    kart_2->CurrentRank = 2;
-                                                }
-                                                else {
-                                                    kart_1->CurrentRank = 2;
-                                                    kart_2->CurrentRank = 1;
-                                                }
-                                            }
+                                for (PhysicEntity* entity : entities) { // search karts
+                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
+                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
+                                    if (kart_1 && kart_2) break;
+                                }
+                                if (kart_1 && kart_2) {
+                                    if (kart_1->body == bodyA) { //first kart_1
+                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
+                                            kart_1->CurrentRank = 1;
+                                            kart_2->CurrentRank = 2;
+                                        }
+                                    }
+                                    else if (kart_2->body == bodyA) { //first kart_2
+                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
+                                            kart_2->CurrentRank = 1;
+                                            kart_1->CurrentRank = 2;
                                         }
                                     }
                                 }
@@ -1796,20 +1822,26 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                             }
                             // FINISH CHECKPOINT
                             if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == FINISH_CHECKPOINT_SENSOR && finish->isActivated_4 == true && finish->CountSensor == 4) {
-                                for (PhysicEntity* entity : entities) {
-                                    if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity)) {
-                                        for (PhysicEntity* entity : entities) {
-                                            if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity)) {
 
-                                                if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                                    kart_1->CurrentRank = 1;
-                                                    kart_2->CurrentRank = 2;
-                                                }
-                                                else {
-                                                    kart_1->CurrentRank = 2;
-                                                    kart_2->CurrentRank = 1;
-                                                }
-                                            }
+                                Kart_Player_1* kart_1 = nullptr;
+                                Kart_Player_2* kart_2 = nullptr;
+
+                                for (PhysicEntity* entity : entities) { // search karts
+                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
+                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
+                                    if (kart_1 && kart_2) break;
+                                }
+                                if (kart_1 && kart_2) {
+                                    if (kart_1->body == bodyA) { //first kart_1
+                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
+                                            kart_1->CurrentRank = 1;
+                                            kart_2->CurrentRank = 2;
+                                        }
+                                    }
+                                    else if (kart_2->body == bodyA) { //first kart_2
+                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
+                                            kart_2->CurrentRank = 1;
+                                            kart_1->CurrentRank = 2;
                                         }
                                     }
                                 }
@@ -1975,4 +2007,13 @@ void ModuleGame::RemoveAllCollisionsAndSensors() {
         delete entity;
     }
     entities.clear();
+}
+
+PhysicEntity* ModuleGame::GetEntityByBody(PhysBody* body) {
+    for (PhysicEntity* entity : entities) {
+        if (entity->body == body) {
+            return entity;
+        }
+    }
+    return nullptr;
 }
