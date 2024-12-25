@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleGame.h"
 #include "ModuleAudio.h"
+#include "ModuleFonts.h"
 #include "ModulePhysics.h"
 
 class PhysicEntity
@@ -1354,6 +1355,11 @@ bool ModuleGame::Start()
     bool ret = true;
 
 	gameState = TITLESCREEN;
+
+    /*App->fontsModule->DrawText(10, 10, TextFormat("%d", suma), WHITE);
+    App->fontsModule->DrawText(10, 30, TextFormat(":%d", lives), WHITE);
+    App->fontsModule->DrawText(100, 40, TextFormat("%d", highscore), WHITE);
+    App->fontsModule->DrawText(400, 40, TextFormat("%d", previousScore), WHITE);*/
 
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
