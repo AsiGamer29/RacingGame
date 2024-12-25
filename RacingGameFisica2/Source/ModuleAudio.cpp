@@ -73,25 +73,26 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 // Load WAV
 unsigned int ModuleAudio::LoadFx(const char* path)
 {
-	if(IsEnabled() == false)
+	if (IsEnabled() == false)
 		return 0;
 
 	unsigned int ret = 0;
 
 	Sound sound = LoadSound(path);
 
-	if(sound.stream.buffer == NULL)
+	if (sound.stream.buffer == NULL)
 	{
 		LOG("Cannot load sound: %s", path);
 	}
 	else
 	{
-        fx[fx_count] = sound;
+		fx[fx_count] = sound;
 		ret = fx_count++;
 	}
 
 	return ret;
 }
+
 
 // Play WAV
 bool ModuleAudio::PlayFx(unsigned int id, int repeat)

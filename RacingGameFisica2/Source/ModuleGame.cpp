@@ -4,6 +4,7 @@
 #include "ModuleGame.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include "time.h"
 
 class PhysicEntity
 {
@@ -1336,10 +1337,31 @@ public:
     int CurrentRank = 2;
 };
 
+class Kart_Player_3 : public Kart_Controller {
+public:
+    Kart_Player_3(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
+        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) {
+    }
+
+public:
+    int CurrentRank = 3;
+};
+
+class Kart_Player_4 : public Kart_Controller {
+public:
+    Kart_Player_4(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
+        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) {
+    }
+
+public:
+    int CurrentRank = 4;
+};
+
 
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+    srand(time(NULL));
     ray_on = false;
     sensed = false;
 }
@@ -1445,47 +1467,66 @@ update_status ModuleGame::Update()
         if (IsKeyPressed(KEY_ONE)) {
             chosenKartop2 = true;
             hasChosenPlayer2 = true;
-            if (hasStarted == false) {
-                CreateCollisionsAndSensors();
-                hasStarted = true;
-                hasDeleted = false;
-            }
-            gameState = PLAYING;
+            gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_TWO))
         {
             chosenHaolienp2 = true;
             hasChosenPlayer2 = true;
-            if (hasStarted == false) {
-                CreateCollisionsAndSensors();
-                hasStarted = true;
-                hasDeleted = false;
-            }
-            gameState = PLAYING;
+            gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_THREE))
         {
             chosenJohanap2 = true;
             hasChosenPlayer2 = true;
-            if (hasStarted == false) {
-                CreateCollisionsAndSensors();
-                hasStarted = true;
-                hasDeleted = false;
-            }
-            gameState = PLAYING;
+            gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_FOUR))
         {
             chosenTanketop2 = true;
             hasChosenPlayer2 = true;
-            if (hasStarted == false) {
-                CreateCollisionsAndSensors();
-                hasStarted = true;
-                hasDeleted = false;
-            }
-            gameState = PLAYING;
+            gameState = NPCSELECTION;
         }
         break;
+
+    case NPCSELECTION:
+        int type[2];
+        KartType kartType[2];
+        type[0] = randomKart();
+        type[1] = randomKart();
+        for (int i = 0; i < 2; ++i) {
+
+            switch (type[i]) {
+            case 0:
+                kartType[i] = KARTO;
+                break;
+            case 1:
+                kartType[i] = HAOLIEN;
+                break;
+            case 2:
+                kartType[i] = JOHANA;
+                break;
+            case 3:
+                kartType[i] = TANKETO;
+                break;
+            default:
+                kartType[i] = KARTO;
+            }
+
+            if (i == 0) {
+                entities.emplace_back(new Kart_Player_3(App->physics, 81, 482, this, getCarTexture(kartType[i]), App, kartType[i], NPC));
+            }
+            else {
+                entities.emplace_back(new Kart_Player_4(App->physics, 104, 494, this, getCarTexture(kartType[i]), App, kartType[i], NPC));
+                if (hasStarted == false) {
+                    CreateCollisionsAndSensors();
+                    hasStarted = true;
+                    hasDeleted = false;
+                }
+                gameState = PLAYING;
+                break; 
+            }
+        }
 
     case PLAYING:
         DrawTexture(background, 0, 0, WHITE);
@@ -1587,6 +1628,12 @@ update_status ModuleGame::Update()
             entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, redCar, App, TANKETO, PLAYER2));
             hasChosenPlayer2 = false;
         }
+
+
+
+
+
+
 
         if (IsKeyPressed(KEY_M))
         {
@@ -1710,7 +1757,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                 for (PhysicEntity* entity : entities) { // search karts
                                     if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
                                     if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
-                                    if (kart_1 && kart_2) break; 
+                                    if (kart_1 && kart_2) break;
                                 }
                                 if (kart_1 && kart_2) {
                                     if (kart_1->body == bodyA) { //first kart_1
@@ -2007,4 +2054,20 @@ void ModuleGame::RemoveAllCollisionsAndSensors() {
         delete entity;
     }
     entities.clear();
+}
+
+Texture2D ModuleGame::getCarTexture(KartType kartType) {
+    switch (kartType) {
+    case KARTO: return blueCar;
+    case HAOLIEN: return yellowCar;
+    case JOHANA: return greenCar;
+    case TANKETO: return redCar;
+    default: return blueCar;
+    }
+}
+
+
+int ModuleGame::randomKart() {
+    int kart = rand() % 4;
+    return kart;
 }

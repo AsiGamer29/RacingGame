@@ -42,6 +42,7 @@ enum GameState {
 	TITLESCREEN,
 	PLAYER1SELECT,
 	PLAYER2SELECT,
+	NPCSELECTION,
 	PLAYING
 };
 
@@ -58,6 +59,8 @@ public:
 	void OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) override;
 	void CreateCollisionsAndSensors();
 	void RemoveAllCollisionsAndSensors();
+	Texture2D getCarTexture(KartType kartType);
+	int randomKart();
 
 public:
 	std::vector<PhysicEntity*> entities;
