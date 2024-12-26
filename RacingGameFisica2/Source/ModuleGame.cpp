@@ -786,6 +786,44 @@ private:
     Texture2D texture;
 };
 
+class IA_1 : public PhysicEntity {
+public:
+    IA_1(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(95, 250, coords, coordCount), _listener)
+    {                                               // x    y
+        collisionType = IA; 
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_2 : public PhysicEntity {
+public:
+    IA_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+        : PhysicEntity(physics->CreateRectangleSensor(125, 210, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
 //------------------------------------------------------------------------------------ Collisions -------------------------------------------------------------------------------------
 
 class Collisions : public PhysicEntity {
@@ -2048,6 +2086,8 @@ void ModuleGame::CreateCollisionsAndSensors()
     entities.emplace_back(new CheckpointSensor_3(App->physics, 10, 206, this, default));
     entities.emplace_back(new CheckpointSensor_4(App->physics, 10, 116, this, default));
     entities.emplace_back(new FinishCheckpointSensor(App->physics, 142, 10, this, default));
+    entities.emplace_back(new IA_1(App->physics, 110, 10, this, default)); 
+    entities.emplace_back(new IA_2(App->physics, 10, 70, this, default));
 
 }
 
