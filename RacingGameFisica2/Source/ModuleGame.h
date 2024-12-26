@@ -34,8 +34,7 @@ enum KartType
 
 enum Player {
 	PLAYER1,
-	PLAYER2,
-	NPC
+	PLAYER2
 };
 
 enum GameState {
@@ -79,7 +78,10 @@ public:
 	Texture2D redCar;
 	Texture2D blueCar;
 	Texture2D greenCar;
-	Texture2D rick;
+	Texture2D npc1;
+	Texture2D npc2;
+	Texture2D npc3;
+	Texture2D npc4;
 	Texture2D cone;
 	Texture2D default;
 
