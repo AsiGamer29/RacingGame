@@ -22,24 +22,26 @@ bool ModuleFonts::LoadFontTexture(const std::string& file_path, char first_chara
     }
 
     this->first_character = first_character;
-    this->character_size = 16;
+    this->character_size = character_size;
     columns = font_texture.width / character_size;
     rows = font_texture.height / character_size;
 
     return true;
 }
 
-void ModuleFonts::DrawText(int x, int y, const std::string& text, const Color& col) const
+void ModuleFonts::DrawText(int x, int y, const std::string& text, int fontSize, const Color& col) const
 {
     int offset_x = x;
-    for (int i = 0; i < text.length(); ++i)
+    float scale = fontSize / (float)character_size; // Escala basada en el tamaño de fuente
+
+    for (char c : text)
     {
-        DrawCharacter(offset_x, y, text[i], col);
-        offset_x += character_size;
+        DrawCharacter(offset_x, y, c, fontSize, col);
+        offset_x += (int)(character_size * scale); // Avanza según el tamaño escalado
     }
 }
 
-void ModuleFonts::DrawCharacter(int x, int y, char c, const Color& col) const
+void ModuleFonts::DrawCharacter(int x, int y, char c, int fontSize, const Color& col) const
 {
     int char_index = c - first_character;
     int coord_x = char_index % columns;
@@ -51,10 +53,18 @@ void ModuleFonts::DrawCharacter(int x, int y, char c, const Color& col) const
         return;
     }
 
-    Rectangle srcRect = { (float)(coord_x * character_size), (float)(coord_y * character_size), 16.0f, 32.0f };
-    Vector2 pos = { (float)x, (float)y };
+    // Calcular la escala
+    float scale = fontSize / (float)character_size;
 
-    DrawTextureRec(font_texture, srcRect, pos, col);
+    // Rectángulo de origen en la textura
+    Rectangle srcRect = { (float)(coord_x * character_size), (float)(coord_y * character_size),
+                          (float)character_size, (float)character_size };
+
+    // Rectángulo de destino escalado
+    Rectangle destRect = { (float)x, (float)y, (float)(character_size * scale), (float)(character_size * scale) };
+
+    // Dibujar el carácter escalado
+    DrawTexturePro(font_texture, srcRect, destRect, Vector2{ 0.0f, 0.0f }, 0.0f, col);
 }
 
 bool ModuleFonts::CleanUp()

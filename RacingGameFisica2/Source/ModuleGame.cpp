@@ -1373,15 +1373,11 @@ ModuleGame::~ModuleGame()
 // Load assets
 bool ModuleGame::Start()
 {
+
     LOG("Loading Intro assets");
     bool ret = true;
 
 	gameState = TITLESCREEN;
-
-    /*App->fontsModule->DrawText(10, 10, TextFormat("%d", suma), WHITE);
-    App->fontsModule->DrawText(10, 30, TextFormat(":%d", lives), WHITE);
-    App->fontsModule->DrawText(100, 40, TextFormat("%d", highscore), WHITE);
-    App->fontsModule->DrawText(400, 40, TextFormat("%d", previousScore), WHITE);*/
 
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -1403,6 +1399,9 @@ bool ModuleGame::Start()
     bgm = LoadMusicStream("Assets/music.ogg");
 	playerSelect = LoadMusicStream("Assets/playerselect.ogg");
 	title = LoadMusicStream("Assets/title.ogg");
+
+    App->fontsModule->LoadFontTexture("Assets/fuente32_16.png", ' ', 32);
+    //App->fontsModule->LoadFontTexture("Assets/Font8x8.png", ' ', 8);
 
     PlayMusicStream(title);
 	PlayMusicStream(playerSelect);
@@ -1536,24 +1535,35 @@ update_status ModuleGame::Update()
 
     case PLAYING:
         DrawTexture(background, 0, 0, WHITE);
+        
             for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
-                DrawText(TextFormat("Lap: %d", finish->lap), 1080, 500, 20, RED);
-                //printf("Lap: %d\n", finish->lap);
+                DrawRectangle(1060, 500, 100, 20, BROWN);
+                App->fontsModule->DrawText(1060, 500, TextFormat("LAP:%d", finish->lap),20, WHITE);
             }
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
-                if(kart_1->CurrentRank == 1) DrawText(TextFormat("Kart 1 - Top: %d", kart_1->CurrentRank), 1080, 530, 20, RED);
-                else DrawText(TextFormat("Kart 1 - Top: %d", kart_1->CurrentRank), 1080, 560, 20, RED);
-                //printf("Top: %d\n", kart_1->CurrentRank);
+                if (kart_1->CurrentRank == 1) {
+                    DrawRectangle(1060, 530, 218, 20, BROWN);
+                    App->fontsModule->DrawText(1060, 530, TextFormat("KART1-TOP:%d", kart_1->CurrentRank), 20, WHITE);
+                }
+                else {
+                    DrawRectangle(1060, 560, 218, 20, BROWN);
+                    App->fontsModule->DrawText(1060, 560, TextFormat("KART1-TOP:%d", kart_1->CurrentRank), 20, WHITE);
+                }
             }
             if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
             {
-                if(kart_2->CurrentRank == 1) DrawText(TextFormat("Kart 2 - Top: %d", kart_2->CurrentRank), 1080, 530, 20, RED);
-                else DrawText(TextFormat("Kart 2 - Top: %d", kart_2->CurrentRank), 1080, 560, 20, RED);
-                /*printf("Top: %d\n", kart_2->CurrentRank);*/
+                if (kart_2->CurrentRank == 1) {
+                    DrawRectangle(1060, 530, 218, 20, BROWN);
+                    App->fontsModule->DrawText(1060, 530, TextFormat("KART2-TOP:%d", kart_2->CurrentRank), 20, WHITE);
+                }
+                else {
+                    DrawRectangle(1060, 560, 218, 20, BROWN);
+                    App->fontsModule->DrawText(1060, 560, TextFormat("KART2-TOP:%d", kart_2->CurrentRank), 20, WHITE);
+                }
             }
 
             entity->Update();

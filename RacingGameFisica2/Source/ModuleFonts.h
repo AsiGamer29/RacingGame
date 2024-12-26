@@ -13,12 +13,12 @@ public:
 
     bool LoadFontTexture(const std::string& file_path, char first_character, int character_size);
 
-    void DrawText(int x, int y, const std::string& text, const Color& col = WHITE) const;
+    void DrawText(int x, int y, const std::string& text, int fontSize, const Color& col = WHITE) const;
 
     bool CleanUp();
 
 private:
-    void DrawCharacter(int x, int y, char c, const Color& col = WHITE) const;
+    void DrawCharacter(int x, int y, char c, int fontSize, const Color& col = WHITE) const;
 
     char first_character;
     int character_size;
