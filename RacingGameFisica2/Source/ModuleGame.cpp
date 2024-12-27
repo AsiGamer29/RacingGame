@@ -1950,24 +1950,44 @@ update_status ModuleGame::Update()
         UpdateMusicStream(playerSelect);
         DrawTexture(player2Select, 0, 0, WHITE);
         if (IsKeyPressed(KEY_ONE)) {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
             chosenKartop2 = true;
             hasChosenPlayer2 = true;
             gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_TWO))
         {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
             chosenHaolienp2 = true;
             hasChosenPlayer2 = true;
             gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_THREE))
         {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
             chosenJohanap2 = true;
             hasChosenPlayer2 = true;
             gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_FOUR))
         {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
             chosenTanketop2 = true;
             hasChosenPlayer2 = true;
             gameState = NPCSELECTION;
@@ -2003,11 +2023,6 @@ update_status ModuleGame::Update()
             }
             else {
                 entities.emplace_back(new Kart_Player_4(App->physics, 104, 494, this, kartTexture[i], App, DEFAULT_KART));
-                if (hasStarted == false) {
-                    CreateCollisionsAndSensors();
-                    hasStarted = true;
-                    hasDeleted = false;
-                }
                 gameState = PLAYING;
                 break; 
             }
