@@ -43,7 +43,7 @@ protected:
 
 //------------------------------------------------------------------------------------ Snow Zone -------------------------------------------------------------------------------------
 
-// Clase base genérica para zonas de nieve
+// Clase base
 class SnowZone : public PhysicEntity {
 public:
     SnowZone(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture)
@@ -61,7 +61,6 @@ protected:
     Texture2D texture;
 };
 
-// Inicialización de zonas de nieve
 void InitializeSnowZones(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
     // Datos de configuración: x, y, width, height
     struct SnowZoneParams {
@@ -83,7 +82,6 @@ void InitializeSnowZones(ModulePhysics* physics, Module* listener, std::vector<P
         {448, 368, 136, 137}, {43, 205, 52, 50}, {644, 663, 256, 84} // 13 26 27
     };
 
-    // Crear cada zona de nieve y añadirla a la lista de entidades
     for (const auto& zone : snowZoneData) {
         entities.emplace_back(new SnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
     }
@@ -91,7 +89,7 @@ void InitializeSnowZones(ModulePhysics* physics, Module* listener, std::vector<P
 
 //------------------------------------------------------------------------------------ Darkened Snow Zone -------------------------------------------------------------------------------------
 
-// Clase base genérica para DarkenedSnowZone
+// Clase base 
 class DarkenedSnowZone : public PhysicEntity {
 public:
     DarkenedSnowZone(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture)
@@ -109,9 +107,7 @@ protected:
     Texture2D texture;
 };
 
-// Inicialización de zonas de DarkenedSnowZone
 void InitializeDarkenedSnowZones(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
-    // Datos de configuración: x, y, width, height
     struct DarkenedSnowZoneParams {
         int x;
         int y;
@@ -133,7 +129,7 @@ void InitializeDarkenedSnowZones(ModulePhysics* physics, Module* listener, std::
 
 //------------------------------------------------------------------------------------ CHECKPOINTS -------------------------------------------------------------------------------------
 
-// Clase base genérica para Checkpoint Sensors
+// Clase base 
 class CheckpointSensor : public PhysicEntity {
 public:
     CheckpointSensor(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture, CollisionType type)
@@ -151,9 +147,7 @@ protected:
     Texture2D texture;
 };
 
-// Inicialización de los cuatro Checkpoint Sensors
 void InitializeCheckpointSensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
-    // Datos de configuración: x, y, width, height
     struct CheckpointParams {
         int x;
         int y;
@@ -169,7 +163,6 @@ void InitializeCheckpointSensors(ModulePhysics* physics, Module* listener, std::
         {260, 650, 10, 116, CHECKPOINT_SENSOR_4}
     };
 
-    // Crear cada checkpoint y añadirlo a la lista de entidades
     for (const auto& checkpoint : checkpointData) {
         entities.emplace_back(new CheckpointSensor(physics, checkpoint.x, checkpoint.y, checkpoint.width, checkpoint.height, listener, defaultTexture, checkpoint.type));
     }
@@ -201,7 +194,7 @@ private:
 
 //------------------------------------------------------------------------------------ IA -------------------------------------------------------------------------------------
 
-// Clase base genérica para IA
+// Clase base 
 class AISensor : public PhysicEntity {
 public:
     AISensor(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture, TurnDirection direction)
@@ -220,7 +213,6 @@ protected:
     Texture2D texture;
 };
 
-// Datos de configuración para los sensores IA
 struct AISensorParams {
     int x;
     int y;
@@ -229,8 +221,6 @@ struct AISensorParams {
     TurnDirection direction;
 };
 
-// Inicialización de sensores IA
-// Inicialización de sensores IA
 void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
     std::vector<AISensorParams> aiSensorData = {
         {95, 250, 180, 10, RIGHT}, {280, 75, 10, 180, RIGHT}, // 1 2
@@ -243,7 +233,7 @@ void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<P
         {532, 550, 80, 10, RIGHT}, {450, 270, 10, 180, LEFT}, {430, 270, 10, 180, LEFT}, // 21 22 23
         {350, 430, 180, 10, LEFT}, {350, 350, 180, 10, LEFT}, {400, 430, 10, 180, RIGHT}, // 24 25 26 
         {415, 618, 180, 10, RIGHT}, {300, 653, 10, 180, RIGHT}, {225, 653, 10, 180, RIGHT}, // 27 28 29
-        {88, 550, 180, 10, RIGHT} // 30
+        {88, 550, 180, 10, RIGHT} // 30 
     };
 
     // Crear cada sensor IA y añadirlo a la lista de entidades
@@ -271,14 +261,12 @@ protected:
     Texture2D texture;
 };
 
-// Datos de configuración para colisiones
 struct CollisionParams {
     const int* coords;
     int coordCount;
     CollisionType type;
 };
 
-// Inicialización de colisiones
 void InitializeCollisions(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
     // Lista de datos para cada colisión
     static constexpr int internalCollisionCoords[] = {
@@ -372,7 +360,6 @@ void InitializeCollisions(ModulePhysics* physics, Module* listener, std::vector<
         {externalCollisionCoords, sizeof(externalCollisionCoords) / sizeof(int), DEFAULT} 
     };
 
-    // Crear cada colisión y añadirla a la lista de entidades
     for (const auto& collision : collisionData) {
         entities.emplace_back(new CollisionZone(physics, collision.coords, collision.coordCount, listener, defaultTexture, collision.type));
     }
