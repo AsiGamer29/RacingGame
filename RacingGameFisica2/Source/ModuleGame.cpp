@@ -2111,6 +2111,8 @@ bool ModuleGame::Start()
     player1Select = LoadTexture("Assets/player1select.png");
 	player2Select = LoadTexture("Assets/player2select.png");
 	background = LoadTexture("Assets/Mapa1Racing.png");
+    leaderboard = LoadTexture("Assets/leaderboard.png");
+    leaderboard2 = LoadTexture("Assets/leaderboard2.png");
 
     engine_fx = App->audio->LoadFx("Assets/drive.wav");
     boost_fx = App->audio->LoadFx("Assets/boost.wav"); // Cargar el sonido de boost
@@ -2120,8 +2122,8 @@ bool ModuleGame::Start()
 	playerSelect = LoadMusicStream("Assets/playerselect.ogg");
 	title = LoadMusicStream("Assets/title.ogg");
 
-    App->fontsModule->LoadFontTexture("Assets/fuente32_16.png", ' ', 32);
-    //App->fontsModule->LoadFontTexture("Assets/Font8x8.png", ' ', 8);
+    //App->fontsModule->LoadFontTexture("Assets/fuente32_16.png", ' ', 32);
+    App->fontsModule->LoadFontTexture("Assets/Font8x8.png", ' ', 8);
 
     PlayMusicStream(title);
 	PlayMusicStream(playerSelect);
@@ -2140,6 +2142,7 @@ bool ModuleGame::CleanUp()
 	UnloadTexture(blueCar);
 	UnloadTexture(mainScreen);
 	UnloadTexture(background);
+    UnloadTexture(leaderboard);
 	UnloadMusicStream(bgm);
 	UnloadMusicStream(title);
     return true;
@@ -2255,34 +2258,30 @@ update_status ModuleGame::Update()
 
     case PLAYING:
         DrawTexture(background, 0, 0, WHITE);
+        DrawTexture(leaderboard, 970, 400, WHITE);
         
             for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
-                DrawRectangle(1060, 500, 100, 20, BROWN);
-                App->fontsModule->DrawText(1060, 500, TextFormat("LAP:%d", finish->lap),20, WHITE);
-            }
+                App->fontsModule->DrawText(1100, 500, TextFormat("LAP:%d", finish->lap),20, WHITE);
+            } 
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
                 if (kart_1->CurrentRank == 1) {
-                    DrawRectangle(1060, 530, 218, 20, BROWN);
-                    App->fontsModule->DrawText(1060, 530, TextFormat("KART1-TOP:%d", kart_1->CurrentRank), 20, WHITE);
+                    App->fontsModule->DrawText(1090, 538, TextFormat("KART 1"), 16, WHITE);
                 }
                 else {
-                    DrawRectangle(1060, 560, 218, 20, BROWN);
-                    App->fontsModule->DrawText(1060, 560, TextFormat("KART1-TOP:%d", kart_1->CurrentRank), 20, WHITE);
+                    App->fontsModule->DrawText(1090, 572, TextFormat("KART 1"), 16, WHITE);
                 }
             }
             if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
             {
                 if (kart_2->CurrentRank == 1) {
-                    DrawRectangle(1060, 530, 218, 20, BROWN);
-                    App->fontsModule->DrawText(1060, 530, TextFormat("KART2-TOP:%d", kart_2->CurrentRank), 20, WHITE);
+                    App->fontsModule->DrawText(1090, 538, TextFormat("KART 2"), 16, WHITE);
                 }
                 else {
-                    DrawRectangle(1060, 560, 218, 20, BROWN);
-                    App->fontsModule->DrawText(1060, 560, TextFormat("KART2-TOP:%d", kart_2->CurrentRank), 20, WHITE);
+                    App->fontsModule->DrawText(1090, 572, TextFormat("KART 2"), 16, WHITE);
                 }
             }
 
