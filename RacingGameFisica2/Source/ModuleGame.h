@@ -33,6 +33,13 @@ enum KartType
 	DEFAULT_KART
 };
 
+enum TurnDirection
+{
+	LEFT,
+	RIGHT,
+	NONE
+};
+
 enum Player {
 	PLAYER1,
 	PLAYER2
