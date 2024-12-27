@@ -848,6 +848,10 @@ bool ModuleGame::Start()
 
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
+    lap_start_time = GetTime();
+    lap_time = 0.0f;
+    best_lap_time = 0.0f;
+
     cone = LoadTexture("Assets/cone.png");
     yellowCar = LoadTexture("Assets/yellow.png");
     redCar = LoadTexture("Assets/red.png");
@@ -944,24 +948,44 @@ update_status ModuleGame::Update()
         UpdateMusicStream(playerSelect);
         DrawTexture(player2Select, 0, 0, WHITE);
         if (IsKeyPressed(KEY_ONE)) {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
             chosenKartop2 = true;
             hasChosenPlayer2 = true;
             gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_TWO))
         {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
             chosenHaolienp2 = true;
             hasChosenPlayer2 = true;
             gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_THREE))
         {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
             chosenJohanap2 = true;
             hasChosenPlayer2 = true;
             gameState = NPCSELECTION;
         }
         else if (IsKeyPressed(KEY_FOUR))
         {
+            if (hasStarted == false) {
+                CreateCollisionsAndSensors();
+                hasStarted = true;
+                hasDeleted = false;
+            }
             chosenTanketop2 = true;
             hasChosenPlayer2 = true;
             gameState = NPCSELECTION;
@@ -997,11 +1021,6 @@ update_status ModuleGame::Update()
             }
             else {
                 entities.emplace_back(new Kart_Player_4(App->physics, 104, 494, this, kartTexture[i], App, DEFAULT_KART));
-                if (hasStarted == false) {
-                    CreateCollisionsAndSensors();
-                    hasStarted = true;
-                    hasDeleted = false;
-                }
                 gameState = PLAYING;
                 break; 
             }
@@ -1010,7 +1029,9 @@ update_status ModuleGame::Update()
     case PLAYING:
         DrawTexture(background, 0, 0, WHITE);
         DrawTexture(leaderboard, 970, 400, WHITE);
-        
+        lap_time = GetTime() - lap_start_time;
+        App->fontsModule->DrawText(1000, 672, TextFormat("Best Lap Time:%.2f", best_lap_time), 14, WHITE);
+        App->fontsModule->DrawText(1000, 692, TextFormat("Lap Time:%.2f", lap_time ), 14, WHITE);
             for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
@@ -1425,6 +1446,9 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                         }
                                     }
                                 }
+                                best_lap_time = lap_time;
+                                lap_time = 0;
+                                lap_start_time = GetTime(); 
                                 finish->CountSensor = 0;
                                 finish->lap++;
                                 finish->isActivated_1 = false;
