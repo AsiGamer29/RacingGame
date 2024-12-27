@@ -97,7 +97,11 @@ public:
 	Music bgm;
 	Music playerSelect;
 	Music title;
-
+	
+	float lap_time = 0.0f;
+	float best_lap_time = 0.0f;
+	float lap_start_time = 0.0f;
+	
 	bool chosenKartop1 = false;
 	bool chosenHaolienp1 = false;
 	bool chosenJohanap1 = false;

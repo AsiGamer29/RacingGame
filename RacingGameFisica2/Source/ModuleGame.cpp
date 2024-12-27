@@ -1854,6 +1854,10 @@ bool ModuleGame::Start()
 
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
+    lap_start_time = GetTime();
+    lap_time = 0.0f;
+    best_lap_time = 0.0f;
+
     cone = LoadTexture("Assets/cone.png");
     yellowCar = LoadTexture("Assets/yellow.png");
     redCar = LoadTexture("Assets/red.png");
@@ -2031,7 +2035,9 @@ update_status ModuleGame::Update()
     case PLAYING:
         DrawTexture(background, 0, 0, WHITE);
         DrawTexture(leaderboard, 970, 400, WHITE);
-        
+        lap_time = GetTime() - lap_start_time;
+        App->fontsModule->DrawText(1000, 672, TextFormat("Best Lap Time:%.2f", best_lap_time), 14, WHITE);
+        App->fontsModule->DrawText(1000, 692, TextFormat("Lap Time:%.2f", lap_time ), 14, WHITE);
             for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
@@ -2407,6 +2413,9 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                         }
                                     }
                                 }
+                                best_lap_time = lap_time;
+                                lap_time = 0;
+                                lap_start_time = GetTime(); 
                                 finish->CountSensor = 0;
                                 finish->lap++;
                                 finish->isActivated_1 = false;
