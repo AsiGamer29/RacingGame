@@ -69,6 +69,8 @@ public:
 	Texture2D player1Select;
 	Texture2D player2Select;
 	Texture2D background;
+	Texture2D leaderboard;
+	Texture2D leaderboard2;
 	
 	PhysBody* m_body;
 	PhysBody* sensor;
