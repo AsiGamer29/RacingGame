@@ -244,7 +244,7 @@ private:
 class IA_3 : public PhysicEntity {
 public:
     IA_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
-        : PhysicEntity(physics->CreateRectangleSensor(300, 75, coords, coordCount), _listener)
+        : PhysicEntity(physics->CreateRectangleSensor(280, 75, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
         turnDirection = direction;
@@ -1290,28 +1290,22 @@ public:
             speed = maxSpeed;
         }
 
-        // Lógica de rotación cada cierto tiempo
         if (rotationTimer.ReadSec() >= waitTime) {
-            // Cambia la dirección de rotación (izquierda o derecha)
+
             if (left == true) {
-                rotation -= 45.0f; // Rotación hacia la izquierda
+                rotation -= 45.0f; 
 				left = false;
 
             }
             else if (right == true) {
-                rotation += 45.0f; // Rotación hacia la derecha
+                rotation += 45.0f;
 				right = false;
             }
 
-            // Reinicia el temporizador y determina la próxima dirección y tiempo de espera
             rotationTimer.Start();
 			waitTime = 0;
         }
         
-    }
-
-    int randomInRange(int min, int max) {
-        return min + rand() % (max - min + 1);
     }
 
     void Move()
@@ -1330,9 +1324,8 @@ public:
 public:
     int waitTime = 1;
 	float timeToRotate = 0.75f;
-    float maxSpeed = 4.0f;
+    float maxSpeed = 2.0f;
     float acceleration = 1.0f;
-	float rotationDefault = randomInRange(15, 30);
     float boostedMaxSpeed = 4.0f;
 
     float rotation;
