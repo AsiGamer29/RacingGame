@@ -923,7 +923,7 @@ private:
 class IA_8 : public PhysicEntity {
 public:
     IA_8(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(1182, 172, coords, coordCount), _listener)
+        : PhysicEntity(physics->CreateRectangleSensor(1160, 150, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
     }
@@ -2553,27 +2553,26 @@ void ModuleGame::CreateCollisionsAndSensors()
 
     //----------------------------- IA  -----------------------------------------
 
-    entities.emplace_back(new IA_1(App->physics, 110, 10, this, default)); 
-    entities.emplace_back(new IA_2(App->physics, 10, 70, this, default));
-    entities.emplace_back(new IA_3(App->physics, 70, 10, this, default));
-    entities.emplace_back(new IA_4(App->physics, 10, 60, this, default));
-    entities.emplace_back(new IA_5(App->physics, 60, 10, this, default));
-    entities.emplace_back(new IA_6(App->physics, 10, 55, this, default));
-    entities.emplace_back(new IA_7(App->physics, 55, 10, this, default));
-    entities.emplace_back(new IA_8(App->physics, 55, 10, this, default));
-    entities.emplace_back(new IA_9(App->physics, 55, 10, this, default));
-    entities.emplace_back(new IA_10(App->physics, 10, 55, this, default));
-    entities.emplace_back(new IA_11(App->physics, 55, 10, this, default));
-    entities.emplace_back(new IA_12(App->physics, 10, 50, this, default));
-    entities.emplace_back(new IA_13(App->physics, 50, 10, this, default));
-    entities.emplace_back(new IA_14(App->physics, 10, 50, this, default));
-    entities.emplace_back(new IA_15(App->physics, 50, 10, this, default));
-    entities.emplace_back(new IA_16(App->physics, 10, 50, this, default));
-    entities.emplace_back(new IA_17(App->physics, 50, 10, this, default));
-    entities.emplace_back(new IA_18(App->physics, 10, 50, this, default));
-    entities.emplace_back(new IA_19(App->physics, 50, 10, this, default));
-    entities.emplace_back(new IA_20(App->physics, 10, 50, this, default));
-
+    entities.emplace_back(new IA_1(App->physics, 180, 10, this, default)); 
+    entities.emplace_back(new IA_2(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_3(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_4(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_5(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_6(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_7(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_8(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_9(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_10(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_11(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_12(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_13(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_14(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_15(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_16(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_17(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_18(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_19(App->physics, 180, 10, this, default));
+    entities.emplace_back(new IA_20(App->physics, 10, 180, this, default));
 
 }
 
