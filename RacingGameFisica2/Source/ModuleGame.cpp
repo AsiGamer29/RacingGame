@@ -29,6 +29,7 @@ public:
 	}
 
     CollisionType GetCollisionType() const { return collisionType; }
+	TurnDirection GetTurnDirection() const { return turnDirection; }
     KartType GetKartType() const { return kartType; }
 	PhysBody* body;
 
@@ -37,6 +38,7 @@ protected:
 	Module* listener;
     CollisionType collisionType;
     KartType kartType;
+    TurnDirection turnDirection;
 };
 
 //------------------------------------------------------------------------------------ Snow Zone -------------------------------------------------------------------------------------
@@ -201,10 +203,11 @@ private:
 
 class IA_1 : public PhysicEntity {
 public:
-    IA_1(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+    IA_1(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
         : PhysicEntity(physics->CreateRectangleSensor(95, 250, coords, coordCount), _listener)
     {                                               // x    y
         collisionType = IA; 
+		turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -220,10 +223,11 @@ private:
 
 class IA_2 : public PhysicEntity {
 public:
-    IA_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+    IA_2(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
         : PhysicEntity(physics->CreateRectangleSensor(125, 210, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+		turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -239,10 +243,11 @@ private:
 
 class IA_3 : public PhysicEntity {
 public:
-    IA_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(160, 115, coords, coordCount), _listener)
+    IA_3(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(300, 75, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -258,10 +263,11 @@ private:
 
 class IA_4 : public PhysicEntity {
 public:
-    IA_4(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(636, 82, coords, coordCount), _listener)
+    IA_4(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(580, 82, coords, coordCount), _listener)
     {                                               // x    y                   
-        collisionType = IA; 
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -275,12 +281,54 @@ private:
     Texture2D texture;
 };
 
-class IA_5 : public PhysicEntity {
+class IA_4_5 : public PhysicEntity {
 public:
-    IA_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(670, 365, coords, coordCount), _listener)
+    IA_4_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(680, 150, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_4_75 : public PhysicEntity {
+public:
+    IA_4_75(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(680, 350, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+
+class IA_5 : public PhysicEntity {
+public:
+    IA_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(745, 390, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -296,10 +344,51 @@ private:
 
 class IA_6 : public PhysicEntity {
 public:
-    IA_6(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(830, 400, coords, coordCount), _listener)
+    IA_6(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(800, 390, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_6_5 : public PhysicEntity {
+public:
+    IA_6_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(850, 325, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_6_75 : public PhysicEntity {
+public:
+    IA_6_75(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(850, 225, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -315,10 +404,11 @@ private:
 
 class IA_7 : public PhysicEntity {
 public:
-    IA_7(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(860, 172, coords, coordCount), _listener)
+    IA_7(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(975, 125, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -334,10 +424,11 @@ private:
 
 class IA_8 : public PhysicEntity {
 public:
-    IA_8(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(1160, 150, coords, coordCount), _listener)
+    IA_8(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(1100, 125, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -353,10 +444,11 @@ private:
 
 class IA_9 : public PhysicEntity {
 public:
-    IA_9(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(1185, 370, coords, coordCount), _listener)
+    IA_9(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(1185, 235, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -372,10 +464,31 @@ private:
 
 class IA_10 : public PhysicEntity {
 public:
-    IA_10(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(1020, 400, coords, coordCount), _listener)
+    IA_10(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(1185, 245, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_10_5 : public PhysicEntity {
+public:
+    IA_10_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(1000, 425, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -391,10 +504,31 @@ private:
 
 class IA_11 : public PhysicEntity {
 public:
-    IA_11(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(993, 620, coords, coordCount), _listener)
+    IA_11(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(993, 570, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_11_5 : public PhysicEntity {
+public:
+    IA_11_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(925, 650, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -410,10 +544,11 @@ private:
 
 class IA_12 : public PhysicEntity {
 public:
-    IA_12(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(830, 654, coords, coordCount), _listener)
+    IA_12(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(830, 650, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -429,10 +564,11 @@ private:
 
 class IA_13 : public PhysicEntity {
 public:
-    IA_13(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(800, 620, coords, coordCount), _listener)
+    IA_13(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(800, 580, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -448,10 +584,11 @@ private:
 
 class IA_14 : public PhysicEntity {
 public:
-    IA_14(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(574, 590, coords, coordCount), _listener)
+    IA_14(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(574, 650, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -467,10 +604,31 @@ private:
 
 class IA_15 : public PhysicEntity {
 public:
-    IA_15(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(542, 300, coords, coordCount), _listener)
+    IA_15(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(542, 350, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_15_5 : public PhysicEntity {
+public:
+    IA_15_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(532, 550, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -486,10 +644,31 @@ private:
 
 class IA_16 : public PhysicEntity {
 public:
-    IA_16(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(380, 270, coords, coordCount), _listener)
+    IA_16(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(450, 270, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_16_5 : public PhysicEntity {
+public:
+    IA_16_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(430, 270, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -505,10 +684,31 @@ private:
 
 class IA_17 : public PhysicEntity {
 public:
-    IA_17(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+    IA_17(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
         : PhysicEntity(physics->CreateRectangleSensor(350, 430, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_17_5 : public PhysicEntity {
+public:
+    IA_17_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(350, 350, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -524,10 +724,11 @@ private:
 
 class IA_18 : public PhysicEntity {
 public:
-    IA_18(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(385, 465, coords, coordCount), _listener)
+    IA_18(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(400, 430, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -543,10 +744,11 @@ private:
 
 class IA_19 : public PhysicEntity {
 public:
-    IA_19(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
+    IA_19(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
         : PhysicEntity(physics->CreateRectangleSensor(415, 618, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -562,10 +764,51 @@ private:
 
 class IA_20 : public PhysicEntity {
 public:
-    IA_20(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(130, 653, coords, coordCount), _listener)
+    IA_20(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(300, 653, coords, coordCount), _listener)
     {                                               // x    y                   
         collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_20_5 : public PhysicEntity {
+public:
+    IA_20_5(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(225, 653, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
+    }
+
+    virtual void Update() override {
+        int x, y;
+        body->GetPhysicPosition(x, y);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+public:
+
+private:
+    Texture2D texture;
+};
+
+class IA_21 : public PhysicEntity {
+public:
+    IA_21(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture, TurnDirection direction)
+        : PhysicEntity(physics->CreateRectangleSensor(88, 550, coords, coordCount), _listener)
+    {                                               // x    y                   
+        collisionType = IA;
+        turnDirection = direction;
     }
 
     virtual void Update() override {
@@ -1050,20 +1293,19 @@ public:
         // Lógica de rotación cada cierto tiempo
         if (rotationTimer.ReadSec() >= waitTime) {
             // Cambia la dirección de rotación (izquierda o derecha)
-            if (leftRight == -1) {
-                rotation -= randomInRange(15, 30); // Rotación hacia la izquierda
+            if (left == true) {
+                rotation -= 45.0f; // Rotación hacia la izquierda
+				left = false;
+
             }
-            else if (leftRight == 1) {
-                rotation += randomInRange(15, 30); // Rotación hacia la derecha
+            else if (right == true) {
+                rotation += 45.0f; // Rotación hacia la derecha
+				right = false;
             }
 
             // Reinicia el temporizador y determina la próxima dirección y tiempo de espera
             rotationTimer.Start();
-            leftRight = randomInRange(-1, 1); // -1 para izquierda, 1 para derecha
-            if (leftRight == 0) {
-                leftRight = (rand() % 2 == 0) ? -1 : 1; // Fuerza una dirección si es 0
-            }
-            waitTime = rand() % 3 + 1; // Espera entre 1 y 3 segundos
+			waitTime = 0;
         }
         
     }
@@ -1080,22 +1322,23 @@ public:
     }
 
     virtual void Update() override {
-        if (leftRight == 0) {
-            leftRight = randomInRange(-1, 1);
-        }
         MovingLogic();
         Move();
         Kart::Update();
     }
 
 public:
-    int waitTime = 3;
-    int leftRight = randomInRange(-1, 1);
-
-    float maxSpeed = 2.0f;
+    int waitTime = 1;
+	float timeToRotate = 0.75f;
+    float maxSpeed = 4.0f;
     float acceleration = 1.0f;
 	float rotationDefault = randomInRange(15, 30);
     float boostedMaxSpeed = 4.0f;
+
+    float rotation;
+
+	bool left = false;
+	bool right = false;
 
     bool inSnowZone = false;
     bool inDarkenedSnowZone = false;
@@ -1107,10 +1350,10 @@ public:
 protected:
     std::vector<PhysicEntity*> entities;
     float speed;
-    float rotation;
     bool isMoving;
     bool isBoosting;
     Timer rotationTimer;
+    Timer hasRotatedEnough;
     const float deceleration = 0.05f;
 };
 
@@ -1195,6 +1438,8 @@ bool ModuleGame::Start()
     player1Select = LoadTexture("Assets/player1select.png");
 	player2Select = LoadTexture("Assets/player2select.png");
 	background = LoadTexture("Assets/Mapa1Racing.png");
+    leaderboard = LoadTexture("Assets/leaderboard.png");
+    leaderboard2 = LoadTexture("Assets/leaderboard2.png");
 
     engine_fx = App->audio->LoadFx("Assets/drive.wav");
     boost_fx = App->audio->LoadFx("Assets/boost.wav"); // Cargar el sonido de boost
@@ -1204,8 +1449,8 @@ bool ModuleGame::Start()
 	playerSelect = LoadMusicStream("Assets/playerselect.ogg");
 	title = LoadMusicStream("Assets/title.ogg");
 
-    App->fontsModule->LoadFontTexture("Assets/fuente32_16.png", ' ', 32);
-    //App->fontsModule->LoadFontTexture("Assets/Font8x8.png", ' ', 8);
+    //App->fontsModule->LoadFontTexture("Assets/fuente32_16.png", ' ', 32);
+    App->fontsModule->LoadFontTexture("Assets/Font8x8.png", ' ', 8);
 
     PlayMusicStream(title);
 	PlayMusicStream(playerSelect);
@@ -1224,6 +1469,7 @@ bool ModuleGame::CleanUp()
 	UnloadTexture(blueCar);
 	UnloadTexture(mainScreen);
 	UnloadTexture(background);
+    UnloadTexture(leaderboard);
 	UnloadMusicStream(bgm);
 	UnloadMusicStream(title);
     return true;
@@ -1339,34 +1585,30 @@ update_status ModuleGame::Update()
 
     case PLAYING:
         DrawTexture(background, 0, 0, WHITE);
+        DrawTexture(leaderboard, 970, 400, WHITE);
         
             for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
-                DrawRectangle(1060, 500, 100, 20, BROWN);
-                App->fontsModule->DrawText(1060, 500, TextFormat("LAP:%d", finish->lap),20, WHITE);
-            }
+                App->fontsModule->DrawText(1100, 500, TextFormat("LAP:%d", finish->lap),20, WHITE);
+            } 
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
                 if (kart_1->CurrentRank == 1) {
-                    DrawRectangle(1060, 530, 218, 20, BROWN);
-                    App->fontsModule->DrawText(1060, 530, TextFormat("KART1-TOP:%d", kart_1->CurrentRank), 20, WHITE);
+                    App->fontsModule->DrawText(1090, 538, TextFormat("KART 1"), 16, WHITE);
                 }
                 else {
-                    DrawRectangle(1060, 560, 218, 20, BROWN);
-                    App->fontsModule->DrawText(1060, 560, TextFormat("KART1-TOP:%d", kart_1->CurrentRank), 20, WHITE);
+                    App->fontsModule->DrawText(1090, 572, TextFormat("KART 1"), 16, WHITE);
                 }
             }
             if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
             {
                 if (kart_2->CurrentRank == 1) {
-                    DrawRectangle(1060, 530, 218, 20, BROWN);
-                    App->fontsModule->DrawText(1060, 530, TextFormat("KART2-TOP:%d", kart_2->CurrentRank), 20, WHITE);
+                    App->fontsModule->DrawText(1090, 538, TextFormat("KART 2"), 16, WHITE);
                 }
                 else {
-                    DrawRectangle(1060, 560, 218, 20, BROWN);
-                    App->fontsModule->DrawText(1060, 560, TextFormat("KART2-TOP:%d", kart_2->CurrentRank), 20, WHITE);
+                    App->fontsModule->DrawText(1090, 572, TextFormat("KART 2"), 16, WHITE);
                 }
             }
 
@@ -1509,7 +1751,46 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
     for (int i = 0; i < length; ++i) {
         if (bodyA == entities[i]->body) {
             Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entities[i]);
+			Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entities[i]);
+			Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entities[i]);
             FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entities[i]);
+            
+            // NPC KART AI MANAGEMENT
+            if (kart3) {
+                for (int k = 0; k < length; k++)
+                {
+                    if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetTurnDirection() == LEFT) {
+                        kart3->left = true;
+						kart3->right = false;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetTurnDirection() == RIGHT)
+                    {
+                        kart3->right = true;
+						kart3->left = false;
+                        return;
+                    }
+                }
+            }
+            if (kart4) {
+                for (int l = 0; l < length; l++)
+                {
+                    if (bodyB == entities[l]->body && entities[l]->GetCollisionType() == IA && entities[l]->GetTurnDirection() == LEFT) {
+                        kart4->left = true;
+                        kart4->right = false;
+                        return;
+                    }
+                    else if (bodyB == entities[l]->body && entities[l]->GetCollisionType() == IA && entities[l]->GetTurnDirection() == RIGHT)
+                    {
+                        kart4->left = false;
+                        kart4->right = true;
+                        return;
+                    }
+                }
+            }
+
+            // PLAYABLE KARTS COLLISION DETECTION
+            
             if (kart) {
                 for (int j = 0; j < length; ++j) {
                     //SNOW ZONE
@@ -1822,26 +2103,38 @@ void ModuleGame::CreateCollisionsAndSensors()
 
     //----------------------------- IA  -----------------------------------------
 
-    entities.emplace_back(new IA_1(App->physics, 180, 10, this, default)); 
-    entities.emplace_back(new IA_2(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_3(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_4(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_5(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_6(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_7(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_8(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_9(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_10(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_11(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_12(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_13(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_14(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_15(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_16(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_17(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_18(App->physics, 10, 180, this, default));
-    entities.emplace_back(new IA_19(App->physics, 180, 10, this, default));
-    entities.emplace_back(new IA_20(App->physics, 10, 180, this, default));
+    entities.emplace_back(new IA_1(App->physics, 180, 10, this, default, RIGHT)); 
+    /*entities.emplace_back(new IA_2(App->physics, 10, 180, this, default, LEFT));*/
+    entities.emplace_back(new IA_3(App->physics, 10, 180, this, default, RIGHT));
+    entities.emplace_back(new IA_4(App->physics, 10, 180, this, default, RIGHT));
+    entities.emplace_back(new IA_4_5(App->physics, 10, 180, this, default, RIGHT));
+    entities.emplace_back(new IA_4_75(App->physics, 50, 10, this, default, LEFT));
+    entities.emplace_back(new IA_5(App->physics, 10, 180, this, default, LEFT));
+    entities.emplace_back(new IA_6(App->physics, 10, 180, this, default, LEFT));
+    entities.emplace_back(new IA_6_5(App->physics, 75, 10, this, default, LEFT));
+    entities.emplace_back(new IA_6_75(App->physics, 75, 10, this, default, RIGHT));
+    entities.emplace_back(new IA_7(App->physics, 10, 180, this, default, RIGHT));
+    entities.emplace_back(new IA_8(App->physics, 10, 180, this, default, RIGHT));
+    entities.emplace_back(new IA_9(App->physics, 180, 10, this, default, RIGHT));
+    entities.emplace_back(new IA_10(App->physics, 200, 10, this, default, RIGHT));
+    entities.emplace_back(new IA_10_5(App->physics, 120, 10, this, default, LEFT));
+    entities.emplace_back(new IA_11(App->physics, 180, 10, this, default, RIGHT));
+    entities.emplace_back(new IA_11_5(App->physics, 10, 120, this, default, RIGHT));
+    entities.emplace_back(new IA_12(App->physics, 10, 180, this, default, RIGHT));
+    entities.emplace_back(new IA_13(App->physics, 180, 10, this, default, LEFT));
+    entities.emplace_back(new IA_14(App->physics, 10, 180, this, default, RIGHT));
+    entities.emplace_back(new IA_15(App->physics, 180, 10, this, default, LEFT));
+    entities.emplace_back(new IA_15_5(App->physics, 80, 10, this, default, RIGHT));
+    entities.emplace_back(new IA_16(App->physics, 10, 180, this, default, LEFT));
+    entities.emplace_back(new IA_16_5(App->physics, 10, 180, this, default, LEFT));
+    entities.emplace_back(new IA_17(App->physics, 180, 10, this, default, LEFT));
+    entities.emplace_back(new IA_17_5(App->physics, 180, 10, this, default, LEFT));
+    entities.emplace_back(new IA_18(App->physics, 10, 180, this, default, RIGHT));
+    entities.emplace_back(new IA_19(App->physics, 180, 10, this, default, RIGHT));
+    entities.emplace_back(new IA_20(App->physics, 10, 180, this, default, RIGHT));
+	entities.emplace_back(new IA_20_5(App->physics, 10, 180, this, default, RIGHT));
+	entities.emplace_back(new IA_21(App->physics, 180, 10, this, default, RIGHT));
+
 
 }
 
