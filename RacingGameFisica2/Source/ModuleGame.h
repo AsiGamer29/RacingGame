@@ -21,7 +21,8 @@ enum CollisionType
 	CHECKPOINT_SENSOR_3,
 	CHECKPOINT_SENSOR_4,
 	FINISH_CHECKPOINT_SENSOR,
-	IA 
+	IA,
+	BOOST
 };
 
 enum KartType

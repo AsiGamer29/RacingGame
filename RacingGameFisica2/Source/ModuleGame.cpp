@@ -171,7 +171,7 @@ void InitializeCheckpointSensors(ModulePhysics* physics, Module* listener, std::
 class FinishCheckpointSensor : public PhysicEntity {
 public:
     FinishCheckpointSensor(ModulePhysics* physics, int coords, int coordCount, Module* _listener, Texture2D _texture)
-        : PhysicEntity(physics->CreateRectangleSensor(88, 450, coords, coordCount), _listener)
+        : PhysicEntity(physics->CreateRectangleSensor(140, 450, coords, coordCount), _listener)
     {                                               // x    y
         collisionType = FINISH_CHECKPOINT_SENSOR;
     }
@@ -194,7 +194,6 @@ private:
 
 //------------------------------------------------------------------------------------ IA -------------------------------------------------------------------------------------
 
-// Clase base 
 class AISensor : public PhysicEntity {
 public:
     AISensor(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture, TurnDirection direction)
@@ -224,22 +223,61 @@ struct AISensorParams {
 void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
     std::vector<AISensorParams> aiSensorData = {
         {95, 240, 180, 10, RIGHT}, {140, 170, 100, 10, LEFT}, {140, 100, 180, 10, RIGHT}, // 1 2 3
-		{210, 75, 10, 180, RIGHT}, {650, 82, 10, 180, RIGHT}, {680, 150, 10, 180, RIGHT}, // 4 5 6
-		{680, 360, 50, 10, LEFT}, {745, 390, 10, 180, LEFT}, {820, 390, 10, 180, LEFT}, // 7 8 9
-		{850, 345, 75, 10, LEFT},{850, 145, 95, 30, RIGHT}, {900, 125, 10, 180, RIGHT},  //10 11 12
-		{1185, 125, 10, 180, RIGHT},{1185, 180, 180, 10, RIGHT}, {1185, 370, 200, 10, RIGHT}, // 13 14 15
-		{1150, 400, 10, 100, RIGHT}, {1030, 400, 10, 100, LEFT}, {1000, 440, 120, 10, LEFT}, // 16 17 18
-		{1000, 620, 100, 10, RIGHT}, {940, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, // 19 20 21
-		{800, 580, 180, 10, LEFT}, {574, 650, 10, 180, RIGHT}, {542, 310, 100, 10, LEFT}, // 22 23 24
-		{532, 550, 80, 10, RIGHT}, {480, 270, 10, 100, LEFT}, {400, 270, 10, 180, LEFT}, // 25 26 27
-		{350, 320, 180, 10, LEFT}, {350, 430, 180, 10, LEFT}, {430, 430, 10, 180, RIGHT}, // 28 29 30
-		{415, 630, 180, 10, RIGHT}, {370, 653, 10, 180, RIGHT}, {120, 665, 10, 100, RIGHT}, // 31 32 33
+        {210, 75, 10, 180, RIGHT}, {650, 82, 10, 180, RIGHT}, {680, 150, 10, 180, RIGHT}, // 4 5 6
+        {680, 360, 160, 30, LEFT}, {745, 390, 10, 180, LEFT}, {820, 390, 10, 180, LEFT}, // 7 8 9
+        {840, 345, 145, 10, LEFT},{925, 145, 205, 30, RIGHT}, {920, 125, 60, 180, RIGHT},  //10 11 12
+        {1150, 125, 10, 180, RIGHT},{1230, 200, 140, 10, RIGHT}, {1185, 370, 200, 10, RIGHT}, // 13 14 15
+        {1130, 400, 10, 100, RIGHT}, {1030, 400, 10, 100, LEFT}, {1000, 460, 120, 30, LEFT}, // 16 17 18
+        {1000, 620, 100, 10, RIGHT}, {940, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, // 19 20 21
+        {800, 580, 210, 10, LEFT}, {590, 590, 20, 210, RIGHT}, {540, 560, 20, 205, RIGHT}, // 22 23 24
+        {542, 310, 100, 10, LEFT},{480, 270, 10, 170, LEFT}, {400, 270, 10, 180, LEFT}, // 25 26 27
+        {350, 320, 180, 10, LEFT}, {350, 430, 180, 10, LEFT}, {430, 430, 10, 180, RIGHT}, // 28 29 30
+        {415, 630, 180, 10, RIGHT}, {370, 653, 10, 180, RIGHT}, {120, 665, 10, 100, RIGHT}, // 31 32 33
         {88, 600, 180, 10, RIGHT} // 34
     };
 
     // Crear cada sensor IA y añadirlo a la lista de entidades
     for (const auto& sensor : aiSensorData) {
         entities.emplace_back(new AISensor(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture, sensor.direction));
+    }
+}
+
+//----------------------------------------------------- BOOST PADS -------------------------------------------------------------------------------------
+
+class BoostPad : public PhysicEntity {
+public:
+    BoostPad(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture)
+        : PhysicEntity(physics->CreateRectangleSensor(x, y, width, height), listener), texture(texture) {
+        collisionType = BOOST;
+    }
+
+    virtual void Update() override {
+        int posX, posY;
+        body->GetPhysicPosition(posX, posY);
+        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+    }
+
+protected:
+    Texture2D texture;
+};
+
+struct BoostSensorParams {
+    int x;
+    int y;
+    int width;
+    int height;
+};
+
+void InitializeBoostSensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
+    std::vector<BoostSensorParams> boostSensorData = {
+        {248, 69, 20, 13}, {520, 92, 20, 13}, {1172, 248, 13, 20}, // 1 2 3
+        {1073, 343, 13, 20}, {744, 604, 20, 13}, {532, 425, 13, 20}, // 4 5 6
+        {242, 645, 20, 13}, {225, 328, 13, 20}
+    };
+
+    // Crear cada sensor IA y añadirlo a la lista de entidades
+    for (const auto& sensor : boostSensorData) {
+        entities.emplace_back(new BoostPad(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture));
     }
 }
 
@@ -443,7 +481,10 @@ protected:
 class Kart_Controller : public Kart {
 public:
     Kart_Controller(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
-        : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type), player(player){}
+        : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type), player(player)
+    {
+        timeToBoost.Start();
+    }
 
 
     virtual void HandleInput() {
@@ -453,19 +494,45 @@ public:
         float kartAcceleration;
 
         if (kartType == KARTO) {
-            currentMaxSpeed = maxSpeedKa;
+            if (isBoosting) {
+                currentMaxSpeed = boostedMaxSpeedKa;
+            }
+			else {
+				currentMaxSpeed = maxSpeedKa;
+			}
         }
         else if (kartType == HAOLIEN) {
-			currentMaxSpeed = maxSpeedHa;
+            if (isBoosting)
+            {
+                currentMaxSpeed = boostedMaxSpeedHa;
+            }
+            else {
+				currentMaxSpeed = maxSpeedHa;
+            }
 		}
 		else if (kartType == JOHANA) {
-			currentMaxSpeed = maxSpeedJo;
+			if (isBoosting) {
+				currentMaxSpeed = boostedMaxSpeedJo;
+			}
+            else {
+                currentMaxSpeed = maxSpeedJo;
+            }
 		}
 		else if (kartType == TANKETO) {
-			currentMaxSpeed = maxSpeedTa;
+			if (isBoosting) {
+				currentMaxSpeed = boostedMaxSpeedTa;
+			}
+            else {
+                currentMaxSpeed = maxSpeedTa;
+            }
 		}
 		else {
-			currentMaxSpeed = maxSpeed;
+            if (isBoosting) {
+				currentMaxSpeed = boostedMaxSpeed;
+            }
+            else {
+                currentMaxSpeed = maxSpeed;
+            }
 		}
 
         if (kartType == KARTO) {
@@ -577,21 +644,42 @@ public:
 			isDrifting = false;
         }
 
+
         if (isDrifting) {
             if (player == PLAYER1) {
                 if (IsKeyDown(KEY_A)) {
-                    rotation -= kartRotation + 0.5f;
+                    if (isBoosting) {
+                        rotation -= 1.35f;
+                    }
+					else {
+						rotation -= kartRotation;
+					}
                 }
                 if (IsKeyDown(KEY_D)) {
-                    rotation += kartRotation + 0.5f;
+					if (isBoosting) {
+						rotation += 1.35f;
+					}
+                    else {
+                        rotation += kartRotation;
+                    }
                 }
             }
 			else if (player == PLAYER2) {
 				if (IsKeyDown(KEY_LEFT)) {
-					rotation -= kartRotation + 0.5f;
+                    if (isBoosting) {
+                        rotation -= 1.35f;
+                    }
+                    else {
+                        rotation -= kartRotation;
+                    }
 				}
 				if (IsKeyDown(KEY_RIGHT)) {
-					rotation += kartRotation + 0.5f;
+                    if (isBoosting) {
+                        rotation += 1.35f;
+                    }
+                    else {
+                        rotation += kartRotation;
+                    }
 				}
 			}
             
@@ -599,25 +687,52 @@ public:
 		else {
             if (player == PLAYER1) {
 				if (IsKeyDown(KEY_A)) {
-                    rotation -= kartRotation;
+                    if (isBoosting) {
+                        rotation -= 1.25f;
+                    }
+                    else {
+                        rotation -= kartRotation;
+                    }
 				}
 				if (IsKeyDown(KEY_D)) {
-                    rotation += kartRotation;
+                    if (isBoosting) {
+                        rotation += 1.25f;
+                    }
+                    else {
+                        rotation += kartRotation;
+                    }
 				}
             }
             else if (player == PLAYER2) {
                 if (IsKeyDown(KEY_LEFT)) {
-					rotation -= kartRotation;
+                    if (isBoosting) {
+                        rotation -= 1.25f;
+                    }
+                    else {
+                        rotation -= kartRotation;
+                    }
                 }
                 if (IsKeyDown(KEY_RIGHT)) {
-                    rotation += kartRotation;
+                    if (isBoosting) {
+                        rotation += 1.25f;
+                    }
+                    else {
+                        rotation += kartRotation;
+                    }
                 }
             }
         }
         
+
+        if (isBoosting && timeToBoost.ReadSec() >= boostTime) {
+            isBoosting = false;
+            timeToBoost.Start();
+            boostTime = 1;
+        }
+
     }
     
-    // La logica para boostear esta en los commits anteriores
+    
 
     void Move()
     {
@@ -648,24 +763,29 @@ public:
 	// Max boosted speed for each kart
     float boostedMaxSpeedKa = 4.0f;
     float boostedMaxSpeedJo = 3.0f;
-    float boostedMaxSpeedTa = 6.0f;
+    float boostedMaxSpeedTa = 5.25f;
     float boostedMaxSpeedHa = 5.0f;
 
 	// Rotations for each kart
-	float rotationKa = 2.0f;
-	float rotationTa = 2.25f;
-    float rotationHa = 1.0f;
-	float rotationJo = 1.5f;
+	float rotationKa = 2.5f;
+	float rotationTa = 2.75f;
+    float rotationHa = 1.5f;
+	float rotationJo = 2.0f;
 
 	float maxSpeed = 2.0f;
     float acceleration = 1.0f;
 	float rotationDefault = 2.0f;
 	float boostedMaxSpeed = 4.0f;
 
+    bool isBoosting = false;
+
     bool inSnowZone = false;
     bool inDarkenedSnowZone = false;
     int snowZoneCount = 0;
     int DarkenedsnowZoneCount = 0;
+
+    Timer timeToBoost;
+    int boostTime = 1;
 
 
     KartType kartType;
@@ -676,10 +796,8 @@ protected:
     float speed;
     float rotation;
     bool isMoving;
-    bool isBoosting;
     bool isDrifting;
     const float deceleration = 0.05f;
-    uint32 boostSound = app->audio->LoadFx("Assets/boost.wav");
 	uint32 engineSound = app->audio->LoadFx("Assets/drive.wav");
 };
 
@@ -764,8 +882,7 @@ protected:
     bool isMoving;
     bool isBoosting;
     Timer rotationTimer;
-    Timer hasRotatedEnough;
-    const float deceleration = 0.05f;
+    float deceleration = 0.05f;
 };
 
 class Kart_Player_1 : public Kart_Controller {
@@ -857,7 +974,7 @@ bool ModuleGame::Start()
     leaderboard2 = LoadTexture("Assets/leaderboard2.png");
 
     engine_fx = App->audio->LoadFx("Assets/drive.wav");
-    boost_fx = App->audio->LoadFx("Assets/boost.wav"); // Cargar el sonido de boost
+    boost_fx = App->audio->LoadFx("Assets/boost.wav"); 
     bump_fx = App->audio->LoadFx("Assets/Bump.wav");
 
     bgm = LoadMusicStream("Assets/music.ogg");
@@ -1284,6 +1401,17 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         kart->DarkenedsnowZoneCount++;
                         return;
                     }
+                    //------------------------------------ BOOSTERS -------------------------------------------
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == BOOST) {
+						printf("Kart entered booster.\n");
+                        if (kart->isBoosting == false) {
+                            kart->isBoosting = true;
+							kart->timeToBoost.Start();
+                            App->audio->PlayFx(boost_fx);
+                        }
+						return;
+                    }
+
                     //------------------------------------  CHECKPOINTS  --------------------------------------
                     // CHECKPOINT 
                     for (PhysicEntity* entity : entities)
@@ -1530,11 +1658,16 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
 
 void ModuleGame::CreateCollisionsAndSensors()
 {
-    //------------------------------ Collision ----------------------------------------
-
-    //----------------------------- Checkpoints  -----------------------------------------
-
-    entities.emplace_back(new FinishCheckpointSensor(App->physics, 142, 10, this, default));
+    //------------------------------ SLOW ZONES ----------------------------------------
+    InitializeSnowZones(App->physics, this, entities, default);
+    InitializeDarkenedSnowZones(App->physics, this, entities, default);
+    //------------------------------ SENSORS ----------------------------------------
+	InitializeBoostSensors(App->physics, this, entities, default);
+    InitializeCheckpointSensors(App->physics, this, entities, default);
+    InitializeAISensors(App->physics, this, entities, default);
+    entities.emplace_back(new FinishCheckpointSensor(App->physics, 250, 10, this, default));
+    //------------------------------ COLLISIONS ----------------------------------------
+    InitializeCollisions(App->physics, this, entities, default);
 
 }
 
