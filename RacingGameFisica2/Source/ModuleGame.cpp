@@ -223,17 +223,17 @@ struct AISensorParams {
 
 void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
     std::vector<AISensorParams> aiSensorData = {
-        {95, 250, 180, 10, RIGHT}, {280, 75, 10, 180, RIGHT}, // 1 2
-        {580, 82, 10, 180, RIGHT}, {680, 150, 10, 180, RIGHT}, {680, 350, 50, 10, LEFT}, // 3 4 5
-        {745, 390, 10, 180, LEFT}, {800, 390, 10, 180, LEFT}, {850, 325, 75, 10, LEFT}, // 6 7 8
-        {850, 225, 75, 10, RIGHT}, {975, 125, 10, 180, RIGHT}, {1100, 125, 10, 180, RIGHT}, // 9 10 11
-        {1185, 235, 180, 10, RIGHT}, {1185, 245, 200, 10, RIGHT}, {1000, 425, 120, 10, LEFT}, // 12 13 14
-        {923, 570, 180, 10, RIGHT}, {910, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, // 15 16 17
-        {800, 580, 180, 10, LEFT}, {574, 650, 10, 180, RIGHT}, {542, 350, 180, 10, LEFT}, // 18 19 20
-        {532, 550, 80, 10, RIGHT}, {450, 270, 10, 180, LEFT}, {430, 270, 10, 180, LEFT}, // 21 22 23
-        {350, 430, 180, 10, LEFT}, {350, 350, 180, 10, LEFT}, {400, 430, 10, 180, RIGHT}, // 24 25 26 
-        {415, 618, 180, 10, RIGHT}, {300, 653, 10, 180, RIGHT}, {225, 653, 10, 180, RIGHT}, // 27 28 29
-        {88, 550, 180, 10, RIGHT} // 30 
+        {95, 250, 180, 10, RIGHT}, {140, 180, 180, 10, LEFT}, {140, 100, 180, 10, RIGHT}, {210, 75, 10, 180, RIGHT}, // 1 2 3 4
+        {650, 82, 10, 180, RIGHT}, {680, 150, 10, 180, RIGHT}, {680, 350, 50, 10, LEFT}, // 5 6 7
+		{745, 390, 10, 180, LEFT}, {820, 390, 10, 180, LEFT}, {850, 325, 75, 10, LEFT}, // 8 9 10
+		{850, 145, 75, 10, RIGHT}, {900, 125, 10, 180, RIGHT}, {1185, 125, 10, 180, RIGHT}, // 11 12 13
+		{1185, 180, 180, 10, RIGHT}, {1185, 370, 200, 10, RIGHT}, {1150, 400, 10, 100, RIGHT}, {1030, 400, 10, 100, LEFT}, {1000, 440, 120, 10, LEFT}, // 14 15 16
+		{1000, 620, 100, 10, RIGHT}, {940, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, // 17 18 19
+		{800, 580, 180, 10, LEFT}, {574, 650, 10, 180, RIGHT}, {542, 310, 100, 10, LEFT}, // 20 21 22
+		{532, 550, 80, 10, RIGHT}, {480, 270, 10, 100, LEFT}, {400, 270, 10, 180, LEFT}, // 23 24 25
+        {350, 320, 180, 10, LEFT}, {350, 430, 180, 10, LEFT}, {430, 430, 10, 180, RIGHT}, // 26 27 28 
+        {415, 630, 180, 10, RIGHT}, {370, 653, 10, 180, RIGHT}, {140, 665, 10, 100, RIGHT}, // 29 30 31
+        {88, 600, 180, 10, RIGHT} // 32 
     };
 
     // Crear cada sensor IA y añadirlo a la lista de entidades
@@ -1046,7 +1046,7 @@ update_status ModuleGame::Update()
 
             entity->Update();
         }
-        UpdateMusicStream(bgm);
+        /*UpdateMusicStream(bgm);*/ // LUEGO LO CAMBIO
        
         if (IsKeyPressed(KEY_Z)) {
             if (hasDeleted == false) {
