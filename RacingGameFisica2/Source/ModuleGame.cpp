@@ -228,7 +228,7 @@ void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<P
         {745, 390, 10, 180, LEFT}, {800, 390, 10, 180, LEFT}, {850, 325, 75, 10, LEFT}, // 6 7 8
         {850, 225, 75, 10, RIGHT}, {975, 125, 10, 180, RIGHT}, {1100, 125, 10, 180, RIGHT}, // 9 10 11
         {1185, 235, 180, 10, RIGHT}, {1185, 245, 200, 10, RIGHT}, {1000, 425, 120, 10, LEFT}, // 12 13 14
-        {923, 570, 180, 10, RIGHT}, {925, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, // 15 16 17
+        {923, 570, 180, 10, RIGHT}, {910, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, // 15 16 17
         {800, 580, 180, 10, LEFT}, {574, 650, 10, 180, RIGHT}, {542, 350, 180, 10, LEFT}, // 18 19 20
         {532, 550, 80, 10, RIGHT}, {450, 270, 10, 180, LEFT}, {430, 270, 10, 180, LEFT}, // 21 22 23
         {350, 430, 180, 10, LEFT}, {350, 350, 180, 10, LEFT}, {400, 430, 10, 180, RIGHT}, // 24 25 26 
@@ -1004,7 +1004,7 @@ update_status ModuleGame::Update()
             }
 
             if (i == 0) {
-                entities.emplace_back(new Kart_Player_3(App->physics, 81, 482, this, kartTexture[i], App, DEFAULT_KART));
+                entities.emplace_back(new Kart_Player_3(App->physics, 81, 458, this, kartTexture[i], App, DEFAULT_KART));
             }
             else {
                 entities.emplace_back(new Kart_Player_4(App->physics, 104, 494, this, kartTexture[i], App, DEFAULT_KART));
@@ -1087,39 +1087,39 @@ update_status ModuleGame::Update()
 
         if (chosenKartop1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, blueCar, App, KARTO, PLAYER1));
+            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, blueCar, App, KARTO, PLAYER1));
 			hasChosenPlayer1 = false;
 		}
         else if (chosenHaolienp1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, yellowCar, App, HAOLIEN, PLAYER1));
+            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, yellowCar, App, HAOLIEN, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenJohanap1 == true && hasChosenPlayer1 == true)
         {
-			entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, greenCar, App, JOHANA, PLAYER1));
+			entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, greenCar, App, JOHANA, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenTanketop1 == true && hasChosenPlayer1 == true)
         {
-			entities.emplace_back(new Kart_Player_1(App->physics, 81, 458, this, redCar, App, TANKETO, PLAYER1));
+			entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, redCar, App, TANKETO, PLAYER1));
             hasChosenPlayer1 = false;
         }
 
         if (chosenKartop2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, blueCar, App, KARTO, PLAYER2));
+            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, blueCar, App, KARTO, PLAYER2));
 			hasChosenPlayer2 = false;
 		}
 		else if (chosenHaolienp2 == true && hasChosenPlayer2 == true) {
-			entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, yellowCar, App, HAOLIEN, PLAYER2));
+			entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, yellowCar, App, HAOLIEN, PLAYER2));
 			hasChosenPlayer2 = false;
 		}
 		else if (chosenJohanap2 == true && hasChosenPlayer2 == true) {
-			entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, greenCar, App, JOHANA, PLAYER2));
+			entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, greenCar, App, JOHANA, PLAYER2));
 			hasChosenPlayer2 = false;
 		}
         else if (chosenTanketop2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(new Kart_Player_2(App->physics, 104, 470, this, redCar, App, TANKETO, PLAYER2));
+            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, redCar, App, TANKETO, PLAYER2));
             hasChosenPlayer2 = false;
         }
 
@@ -1535,40 +1535,6 @@ void ModuleGame::CreateCollisionsAndSensors()
     //----------------------------- Checkpoints  -----------------------------------------
 
     entities.emplace_back(new FinishCheckpointSensor(App->physics, 142, 10, this, default));
-
-    //----------------------------- IA  -----------------------------------------
-
- //   entities.emplace_back(new IA_1(App->physics, 180, 10, this, default, RIGHT)); 
- //   entities.emplace_back(new IA_3(App->physics, 10, 180, this, default, RIGHT)); 
- //   entities.emplace_back(new IA_4(App->physics, 10, 180, this, default, RIGHT)); 
- //   entities.emplace_back(new IA_4_5(App->physics, 10, 180, this, default, RIGHT)); // 4 
- //   entities.emplace_back(new IA_4_75(App->physics, 50, 10, this, default, LEFT));// 5
- //   entities.emplace_back(new IA_5(App->physics, 10, 180, this, default, LEFT));// 6
- //   entities.emplace_back(new IA_6(App->physics, 10, 180, this, default, LEFT)); // 7
- //   entities.emplace_back(new IA_6_5(App->physics, 75, 10, this, default, LEFT)); // 8
- //   entities.emplace_back(new IA_6_75(App->physics, 75, 10, this, default, RIGHT)); // 9
- //   entities.emplace_back(new IA_7(App->physics, 10, 180, this, default, RIGHT)); // 10
- //   entities.emplace_back(new IA_8(App->physics, 10, 180, this, default, RIGHT)); // 11
- //   entities.emplace_back(new IA_9(App->physics, 180, 10, this, default, RIGHT)); // 12
- //   entities.emplace_back(new IA_10(App->physics, 200, 10, this, default, RIGHT)); // 13
- //   entities.emplace_back(new IA_10_5(App->physics, 120, 10, this, default, LEFT)); // 14
- //   entities.emplace_back(new IA_11(App->physics, 180, 10, this, default, RIGHT)); // 15
- //   entities.emplace_back(new IA_11_5(App->physics, 10, 120, this, default, RIGHT)); // 16
- //   entities.emplace_back(new IA_12(App->physics, 10, 180, this, default, RIGHT)); 17
- //   entities.emplace_back(new IA_13(App->physics, 180, 10, this, default, LEFT)); 18
- //   entities.emplace_back(new IA_14(App->physics, 10, 180, this, default, RIGHT)); 19
- //   entities.emplace_back(new IA_15(App->physics, 180, 10, this, default, LEFT)); 20
- //   entities.emplace_back(new IA_15_5(App->physics, 80, 10, this, default, RIGHT)); 21
- //   entities.emplace_back(new IA_16(App->physics, 10, 180, this, default, LEFT)); 22
- //   entities.emplace_back(new IA_16_5(App->physics, 10, 180, this, default, LEFT)); 23
- //   entities.emplace_back(new IA_17(App->physics, 180, 10, this, default, LEFT)); 24      
- //   entities.emplace_back(new IA_17_5(App->physics, 180, 10, this, default, LEFT)); 25
- //   entities.emplace_back(new IA_18(App->physics, 10, 180, this, default, RIGHT));26
- //   entities.emplace_back(new IA_19(App->physics, 180, 10, this, default, RIGHT));27
- //   entities.emplace_back(new IA_20(App->physics, 10, 180, this, default, RIGHT));28
-	//entities.emplace_back(new IA_20_5(App->physics, 10, 180, this, default, RIGHT));29
-	//entities.emplace_back(new IA_21(App->physics, 180, 10, this, default, RIGHT));30
-
 
 }
 
