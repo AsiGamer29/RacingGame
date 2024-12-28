@@ -1145,7 +1145,7 @@ update_status ModuleGame::Update()
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
                 if (kart_1->CurrentRank == 1) {
-                    App->fontsModule->DrawText(1035, 538, TextFormat("KART 1"), 20, BLUISH_WHITE);    
+                    App->fontsModule->DrawText(1035, 538, TextFormat("KART 1"), 20, WHITE);     
                 }
                 else {
                     App->fontsModule->DrawText(1035, 572, TextFormat("KART 1"), 20, WHITE);
