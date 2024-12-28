@@ -189,6 +189,7 @@
 #define DARKBROWN  CLITERAL(Color){ 76, 63, 47, 255 }      // Dark Brown
 
 #define WHITE      CLITERAL(Color){ 255, 255, 255, 255 }   // White
+#define BLUISH_WHITE CLITERAL(Color) { 0, 59, 74, 255 }   // Bluish White 
 #define BLACK      CLITERAL(Color){ 0, 0, 0, 255 }         // Black
 #define BLANK      CLITERAL(Color){ 0, 0, 0, 0 }           // Blank (Transparent)
 #define MAGENTA    CLITERAL(Color){ 255, 0, 255, 255 }     // Magenta
