@@ -394,31 +394,6 @@ private:
 
 };
 
-class Cone : public PhysicEntity
-{
-public:
-    Cone(ModulePhysics* physics, int x, int y, Module* listener, Texture2D _texture, Application* _app)
-        : PhysicEntity(physics->CreateStaticCircle(x, y, 6), listener), texture(_texture), app(_app)
-    {
-    }
-
-    void Update() override
-    {
-        int x, y;
-        body->GetPhysicPosition(x, y);
-
-        float scale = 2.0f;
-        DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-            Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
-            Vector2{ (float)texture.width, (float)texture.height }, 0.0f, WHITE);
-    }
-
-private:
-    Texture2D texture;
-    Application* app;
-};
-
-
 class Kart : public PhysicEntity {
 public:
     Kart(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
@@ -828,12 +803,6 @@ bool ModuleGame::Start()
 
 	gameState = TITLESCREEN;
 
-    InitializeSnowZones(App->physics, this, entities, default);  
-    InitializeDarkenedSnowZones(App->physics, this, entities, default); 
-    InitializeCheckpointSensors(App->physics, this, entities, default); 
-    InitializeCollisions(App->physics, this, entities, default); 
-    InitializeAISensors(App->physics, this, entities, default); 
-
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
     lap_start_time = GetTime();
@@ -854,8 +823,12 @@ bool ModuleGame::Start()
     player1Select = LoadTexture("Assets/player1select.png");
 	player2Select = LoadTexture("Assets/player2select.png");
 	background = LoadTexture("Assets/Mapa1Racing.png");
-    leaderboard = LoadTexture("Assets/leaderboard.png");
     leaderboard2 = LoadTexture("Assets/leaderboard2.png");
+	kaWin = LoadTexture("Assets/kartoWin.png");
+	haWin = LoadTexture("Assets/haolienWin.png");
+	joWin = LoadTexture("Assets/johanaWin.png");
+	taWin = LoadTexture("Assets/tanketoWin.png");
+	npcWin = LoadTexture("Assets/npcWin.png");
 
     engine_fx = App->audio->LoadFx("Assets/drive.wav");
     boost_fx = App->audio->LoadFx("Assets/boost.wav"); // Cargar el sonido de boost
@@ -864,13 +837,17 @@ bool ModuleGame::Start()
     bgm = LoadMusicStream("Assets/music.ogg");
 	playerSelect = LoadMusicStream("Assets/playerselect.ogg");
 	title = LoadMusicStream("Assets/title.ogg");
+	win = LoadMusicStream("Assets/win.ogg");
+	loss = LoadMusicStream("Assets/loss.ogg");
 
     //App->fontsModule->LoadFontTexture("Assets/fuente32_16.png", ' ', 32);
     App->fontsModule->LoadFontTexture("Assets/Font8x8.png", ' ', 8);
 
     PlayMusicStream(title);
-	PlayMusicStream(playerSelect);
+    PlayMusicStream(playerSelect);
     PlayMusicStream(bgm);
+	PlayMusicStream(win);
+	PlayMusicStream(loss);
 
     return ret;
 }
@@ -885,7 +862,7 @@ bool ModuleGame::CleanUp()
 	UnloadTexture(blueCar);
 	UnloadTexture(mainScreen);
 	UnloadTexture(background);
-    UnloadTexture(leaderboard);
+    UnloadTexture(leaderboard2);
 	UnloadMusicStream(bgm);
 	UnloadMusicStream(title);
     return true;
@@ -904,6 +881,7 @@ update_status ModuleGame::Update()
         }
         break;
     case PLAYER1SELECT:
+        
         UpdateMusicStream(playerSelect);
         DrawTexture(player1Select, 0, 0, WHITE);
         
@@ -1015,8 +993,9 @@ update_status ModuleGame::Update()
         }
 
     case PLAYING:
+        
         DrawTexture(background, 0, 0, WHITE);
-        DrawTexture(leaderboard, 970, 400, WHITE);
+        DrawTexture(leaderboard2, SCREEN_WIDTH - 247, SCREEN_HEIGHT - 298, WHITE);
         lap_time = GetTime() - lap_start_time;
         App->fontsModule->DrawText(1000, 672, TextFormat("Best Lap Time:%.2f", best_lap_time), 14, WHITE);
         App->fontsModule->DrawText(1000, 692, TextFormat("Lap Time:%.2f", lap_time ), 14, WHITE);
@@ -1047,7 +1026,8 @@ update_status ModuleGame::Update()
 
             entity->Update();
         }
-        /*UpdateMusicStream(bgm);*/ // LUEGO LO CAMBIO
+		
+        UpdateMusicStream(bgm);
        
         if (IsKeyPressed(KEY_Z)) {
             if (hasDeleted == false) {
@@ -1075,8 +1055,53 @@ update_status ModuleGame::Update()
             
         }
         break;
-    }
+        case WINSCREEN:
+			if (chosenKartop1 && player1Won) {
+				DrawTexture(kaWin, 0, 0, WHITE);
+			}
+			else if (chosenHaolienp1 && player1Won) {
+				DrawTexture(haWin, 0, 0, WHITE);
+			}
+			else if (chosenJohanap1 && player1Won) {
+				DrawTexture(joWin, 0, 0, WHITE);
+			}
+			else if (chosenTanketop1 && player1Won) {
+				DrawTexture(taWin, 0, 0, WHITE);
+			}
+			else if (chosenKartop2 && player2Won) {
+				DrawTexture(kaWin, 0, 0, WHITE);
+			}
+			else if (chosenHaolienp2 && player2Won) {
+				DrawTexture(haWin, 0, 0, WHITE);
+			}
+			else if (chosenJohanap2 && player2Won) {
+				DrawTexture(joWin, 0, 0, WHITE);
+			}
+            else if (chosenTanketop2 && player2Won) {
+                DrawTexture(taWin, 0, 0, WHITE);
+            }
+			UpdateMusicStream(win);
+            RemoveAllCollisionsAndSensors();
+			hasDeleted = true;
+			hasStarted = false;
 
+            if (IsKeyPressed(KEY_R)) {
+                gameState = TITLESCREEN;
+            }
+        break;
+
+		case LOSSSCREEN:
+			DrawTexture(npcWin, 0, 0, WHITE);
+			UpdateMusicStream(loss);
+            RemoveAllCollisionsAndSensors();
+            hasDeleted = true;
+			hasStarted = false;
+     
+            if (IsKeyPressed(KEY_R)) {
+                gameState = TITLESCREEN;
+            }
+		break;
+    }
     
     if (gameState == PLAYING) {
         if (IsKeyPressed(KEY_SPACE))
@@ -1085,6 +1110,22 @@ update_status ModuleGame::Update()
             ray.x = GetMouseX();
             ray.y = GetMouseY();
         }
+
+		if (IsKeyPressed(KEY_I))
+		{
+			player1Won = true;
+			gameState = WINSCREEN;
+		}
+        if (IsKeyPressed(KEY_O)) 
+        {
+			player2Won = true;
+			gameState = WINSCREEN;
+        }
+		if (IsKeyPressed(KEY_P))
+		{
+			npcWon = true;
+			gameState = LOSSSCREEN;
+		}
 
         if (chosenKartop1 == true && hasChosenPlayer1 == true)
         {
@@ -1122,17 +1163,6 @@ update_status ModuleGame::Update()
         else if (chosenTanketop2 == true && hasChosenPlayer2 == true) {
             entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, redCar, App, TANKETO, PLAYER2));
             hasChosenPlayer2 = false;
-        }
-
-
-
-
-
-
-
-        if (IsKeyPressed(KEY_M))
-        {
-            entities.emplace_back(new Cone(App->physics, GetMouseX(), GetMouseY(), this, cone, App)); // Pasa el puntero a Application y el sonido de boost
         }
     }
 
@@ -1531,11 +1561,15 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
 
 void ModuleGame::CreateCollisionsAndSensors()
 {
-    //------------------------------ Collision ----------------------------------------
-
-    //----------------------------- Checkpoints  -----------------------------------------
-
+    //------------------------------ SLOW ZONES ----------------------------------------
+    InitializeSnowZones(App->physics, this, entities, default);
+    InitializeDarkenedSnowZones(App->physics, this, entities, default);
+    //------------------------------ SENSORS ----------------------------------------
+    InitializeCheckpointSensors(App->physics, this, entities, default);
+    InitializeAISensors(App->physics, this, entities, default);
     entities.emplace_back(new FinishCheckpointSensor(App->physics, 142, 10, this, default));
+    //------------------------------ COLLISIONS ----------------------------------------
+    InitializeCollisions(App->physics, this, entities, default);
 
 }
 

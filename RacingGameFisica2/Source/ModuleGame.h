@@ -50,7 +50,9 @@ enum GameState {
 	PLAYER1SELECT,
 	PLAYER2SELECT,
 	NPCSELECTION,
-	PLAYING
+	PLAYING,
+	WINSCREEN,
+	LOSSSCREEN
 };
 
 class ModuleGame : public Module
@@ -76,8 +78,13 @@ public:
 	Texture2D player1Select;
 	Texture2D player2Select;
 	Texture2D background;
-	Texture2D leaderboard;
 	Texture2D leaderboard2;
+
+	Texture2D kaWin;
+	Texture2D haWin;
+	Texture2D joWin;
+	Texture2D taWin;
+	Texture2D npcWin;
 	
 	PhysBody* m_body;
 	PhysBody* sensor;
@@ -104,6 +111,8 @@ public:
 	Music bgm;
 	Music playerSelect;
 	Music title;
+	Music win;
+	Music loss;
 	
 	float lap_time = 0.0f;
 	float best_lap_time = 0.0f;
@@ -124,6 +133,10 @@ public:
 
 	bool hasSpawnedPlayer1Car = false;
 	bool hasSpawnedPlayer2Car = false;
+
+	bool player1Won = false;
+	bool player2Won = false;
+	bool npcWon = false;
 
 	bool hasStarted = false;
 	bool hasDeleted = false;
