@@ -1155,6 +1155,9 @@ update_status ModuleGame::Update()
             }
         }
 	case SHOWSTAGE:
+        if (IsKeyPressed(KEY_F2)) {
+            gameState = PLAYING;
+        }
 		if (hasShownStage == false) {
 			showStageTimer.Start();
             App->audio->PlayFx(showStage);
@@ -1235,8 +1238,8 @@ update_status ModuleGame::Update()
         DrawTexture(background, 0, 0, WHITE);
         DrawTexture(leaderboard2, SCREEN_WIDTH - 247, SCREEN_HEIGHT - 298, WHITE);
         lap_time = GetTime() - lap_start_time;
-        App->fontsModule->DrawText(1000, 672, TextFormat("Best Lap Time:%.2f", best_lap_time), 14, WHITE); 
-        App->fontsModule->DrawText(1000, 692, TextFormat("Lap Time:%.2f", lap_time ), 14, WHITE);
+        App->fontsModule->DrawText(1065, 638, TextFormat("BEST TIME:%.2f", best_lap_time), 12, WHITE); 
+        App->fontsModule->DrawText(1065, 674, TextFormat("LAP TIME:%.2f", lap_time ), 12, WHITE);
             for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
@@ -1245,20 +1248,20 @@ update_status ModuleGame::Update()
             } 
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
-                if (kart_1->CurrentRank == 1) {
-                    App->fontsModule->DrawText(1035, 538, TextFormat("KART 1"), 20, WHITE);     
+                if (kart_1->CurrentRank == 3) {
+                    App->fontsModule->DrawText(1105, 488, TextFormat("KART 1"), 20, WHITE);     
                 }
                 else {
-                    App->fontsModule->DrawText(1035, 572, TextFormat("KART 1"), 20, WHITE);
+                    App->fontsModule->DrawText(1105, 522, TextFormat("KART 1"), 20, WHITE);
                 }
             }
             if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
             {
-                if (kart_2->CurrentRank == 1) {
-                    App->fontsModule->DrawText(1035, 538, TextFormat("KART 2"), 20, WHITE);
+                if (kart_2->CurrentRank == 3) {
+                    App->fontsModule->DrawText(1105, 488, TextFormat("KART 2"), 20, WHITE);
                 }
                 else {
-                    App->fontsModule->DrawText(1035, 574, TextFormat("KART 2"), 20, WHITE);
+                    App->fontsModule->DrawText(1105, 524, TextFormat("KART 2"), 20, WHITE);
                 }
             }
 
@@ -1611,14 +1614,14 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                 if (kart_1 && kart_2) {
                                     if (kart_1->body == bodyA) { //first kart_1
                                         if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 1;
-                                            kart_2->CurrentRank = 2;
+                                            kart_1->CurrentRank = 3;
+                                            kart_2->CurrentRank = 4;
                                         }
                                     }
                                     else if (kart_2->body == bodyA) { //first kart_2
                                         if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 1;
-                                            kart_1->CurrentRank = 2;
+                                            kart_2->CurrentRank = 3;
+                                            kart_1->CurrentRank = 4;
                                         }
                                     }
                                 }
@@ -1641,14 +1644,14 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                 if (kart_1 && kart_2) {
                                     if (kart_1->body == bodyA) { //first kart_1
                                         if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 1;
-                                            kart_2->CurrentRank = 2;
+                                            kart_1->CurrentRank = 3;
+                                            kart_2->CurrentRank = 4;
                                         }
                                     }
                                     else if (kart_2->body == bodyA) { //first kart_2
                                         if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 1;
-                                            kart_1->CurrentRank = 2;
+                                            kart_2->CurrentRank = 3;
+                                            kart_1->CurrentRank = 4;
                                         }
                                     }
                                 }
@@ -1670,14 +1673,14 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                 if (kart_1 && kart_2) {
                                     if (kart_1->body == bodyA) { //first kart_1
                                         if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 1;
-                                            kart_2->CurrentRank = 2;
+                                            kart_1->CurrentRank = 3;
+                                            kart_2->CurrentRank = 4;
                                         }
                                     }
                                     else if (kart_2->body == bodyA) { //first kart_2
                                         if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 1;
-                                            kart_1->CurrentRank = 2;
+                                            kart_2->CurrentRank = 3;
+                                            kart_1->CurrentRank = 4;
                                         }
                                     }
                                 }
@@ -1700,14 +1703,14 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                 if (kart_1 && kart_2) {
                                     if (kart_1->body == bodyA) { //first kart_1
                                         if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 1;
-                                            kart_2->CurrentRank = 2;
+                                            kart_1->CurrentRank = 3;
+                                            kart_2->CurrentRank = 4;
                                         }
                                     }
                                     else if (kart_2->body == bodyA) { //first kart_2
                                         if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 1;
-                                            kart_1->CurrentRank = 2;
+                                            kart_2->CurrentRank = 3;
+                                            kart_1->CurrentRank = 4;
                                         }
                                     }
                                 }
