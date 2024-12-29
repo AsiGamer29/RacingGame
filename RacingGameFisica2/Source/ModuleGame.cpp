@@ -84,7 +84,7 @@ void InitializeSnowZones(ModulePhysics* physics, Module* listener, std::vector<P
     };
 
     for (const auto& zone : snowZoneData) {
-        entities.emplace_back(new SnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
+        entities.emplace_back(DBG_NEW SnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
     }
 }
 
@@ -124,7 +124,7 @@ void InitializeDarkenedSnowZones(ModulePhysics* physics, Module* listener, std::
 
     // Crear cada zona de DarkenedSnow y añadirla a la lista de entidades
     for (const auto& zone : darkenedSnowZoneData) {
-        entities.emplace_back(new DarkenedSnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
+        entities.emplace_back(DBG_NEW DarkenedSnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
     }
 }
 
@@ -165,7 +165,7 @@ void InitializeCheckpointSensors(ModulePhysics* physics, Module* listener, std::
     };
 
     for (const auto& checkpoint : checkpointData) {
-        entities.emplace_back(new CheckpointSensor(physics, checkpoint.x, checkpoint.y, checkpoint.width, checkpoint.height, listener, defaultTexture, checkpoint.type));
+        entities.emplace_back(DBG_NEW CheckpointSensor(physics, checkpoint.x, checkpoint.y, checkpoint.width, checkpoint.height, listener, defaultTexture, checkpoint.type));
     }
 }
 
@@ -239,7 +239,7 @@ void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<P
 
     // Crear cada sensor IA y añadirlo a la lista de entidades
     for (const auto& sensor : aiSensorData) {
-        entities.emplace_back(new AISensor(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture, sensor.direction));
+        entities.emplace_back(DBG_NEW AISensor(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture, sensor.direction));
     }
 }
 
@@ -278,7 +278,7 @@ void InitializeBoostSensors(ModulePhysics* physics, Module* listener, std::vecto
 
     // Crear cada sensor IA y añadirlo a la lista de entidades
     for (const auto& sensor : boostSensorData) {
-        entities.emplace_back(new BoostPad(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture));
+        entities.emplace_back(DBG_NEW BoostPad(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture));
     }
 }
 
@@ -401,7 +401,7 @@ void InitializeCollisions(ModulePhysics* physics, Module* listener, std::vector<
     };
 
     for (const auto& collision : collisionData) {
-        entities.emplace_back(new CollisionZone(physics, collision.coords, collision.coordCount, listener, defaultTexture, collision.type));
+        entities.emplace_back(DBG_NEW CollisionZone(physics, collision.coords, collision.coordCount, listener, defaultTexture, collision.type));
     }
 }
 
@@ -1146,10 +1146,10 @@ update_status ModuleGame::Update()
             }
 
             if (i == 0) {
-                entities.emplace_back(new Kart_Player_3(App->physics, 81, 458, this, kartTexture[i], App, DEFAULT_KART));
+                entities.emplace_back(DBG_NEW Kart_Player_3(App->physics, 81, 458, this, kartTexture[i], App, DEFAULT_KART));
             }
             else {
-                entities.emplace_back(new Kart_Player_4(App->physics, 104, 470, this, kartTexture[i], App, DEFAULT_KART));
+                entities.emplace_back(DBG_NEW Kart_Player_4(App->physics, 104, 470, this, kartTexture[i], App, DEFAULT_KART));
                 gameState = SHOWSTAGE;
                 break; 
             }
@@ -1167,39 +1167,39 @@ update_status ModuleGame::Update()
         }
         if (chosenKartop1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, blueCar, App, KARTO, PLAYER1));
+            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 104, 494, this, blueCar, App, KARTO, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenHaolienp1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, yellowCar, App, HAOLIEN, PLAYER1));
+            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 104, 494, this, yellowCar, App, HAOLIEN, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenJohanap1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, greenCar, App, JOHANA, PLAYER1));
+            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 104, 494, this, greenCar, App, JOHANA, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenTanketop1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, redCar, App, TANKETO, PLAYER1));
+            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 104, 494, this, redCar, App, TANKETO, PLAYER1));
             hasChosenPlayer1 = false;
         }
 
         if (chosenKartop2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, blueCar, App, KARTO, PLAYER2));
+            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 81, 482, this, blueCar, App, KARTO, PLAYER2));
             hasChosenPlayer2 = false;
         }
         else if (chosenHaolienp2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, yellowCar, App, HAOLIEN, PLAYER2));
+            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 81, 482, this, yellowCar, App, HAOLIEN, PLAYER2));
             hasChosenPlayer2 = false;
         }
         else if (chosenJohanap2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, greenCar, App, JOHANA, PLAYER2));
+            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 81, 482, this, greenCar, App, JOHANA, PLAYER2));
             hasChosenPlayer2 = false;
         }
         else if (chosenTanketop2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, redCar, App, TANKETO, PLAYER2));
+            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 81, 482, this, redCar, App, TANKETO, PLAYER2));
             hasChosenPlayer2 = false;
         }
 		break;
@@ -1785,7 +1785,7 @@ void ModuleGame::CreateCollisionsAndSensors()
 	InitializeBoostSensors(App->physics, this, entities, default);
     InitializeCheckpointSensors(App->physics, this, entities, default);
     InitializeAISensors(App->physics, this, entities, default);
-    entities.emplace_back(new FinishCheckpointSensor(App->physics, 250, 10, this, default));
+    entities.emplace_back(DBG_NEW FinishCheckpointSensor(App->physics, 250, 10, this, default));
     //------------------------------ COLLISIONS ----------------------------------------
     InitializeCollisions(App->physics, this, entities, default);
 

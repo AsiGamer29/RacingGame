@@ -2,8 +2,18 @@
 #include "Globals.h"
 #include "ModuleRender.h"
 #include "raylib.h"
-
 #include <stdlib.h>
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#include <cstdlib>
+
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
 
 enum main_states
 {
@@ -83,5 +93,6 @@ int main(int argc, char** argv)
 
 	delete App;
 	LOG("Exiting game '%s'...\n", TITLE);
+	_CrtDumpMemoryLeaks();
 	return main_return;
 }
