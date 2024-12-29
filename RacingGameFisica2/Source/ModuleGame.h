@@ -2,7 +2,7 @@
 
 #include "Globals.h"
 #include "Module.h"
-
+#include "Timer.h"
 #include "p2Point.h"
 
 #include "raylib.h"
@@ -52,6 +52,8 @@ enum GameState {
 	PLAYER2SELECT,
 	NPCSELECTION,
 	PLAYING,
+	SHOWSTAGE,
+	COUNTDOWN,
 	WINSCREEN,
 	LOSSSCREEN
 };
@@ -81,6 +83,11 @@ public:
 	Texture2D background;
 	Texture2D leaderboard2;
 
+	Texture2D three;
+	Texture2D two;
+	Texture2D one;
+	Texture2D go;
+
 	Texture2D kaWin;
 	Texture2D haWin;
 	Texture2D joWin;
@@ -109,12 +116,24 @@ public:
 	uint32 boost_fx;
 	uint32 horn_fx;
 
+	uint32 showStage;
+	uint32 countdown;
+
 	Music bgm;
 	Music playerSelect;
 	Music title;
 	Music win;
 	Music loss;
 	
+	Timer showStageTimer;
+	Timer countdownTimer;
+
+	bool hasShownStage = false;
+	bool hasShownCountdown = false;
+
+	int stageTime = 13;
+	int countdownTime = 4;
+
 	float lap_time = 0.0f;
 	float best_lap_time = 0.0f;
 	float lap_start_time = 0.0f;

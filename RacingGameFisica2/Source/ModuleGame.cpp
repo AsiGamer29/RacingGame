@@ -5,8 +5,9 @@
 #include "ModuleAudio.h"
 #include "ModuleFonts.h"
 #include "ModulePhysics.h"
-#include "Timer.h"
 #include "time.h"
+
+bool raceStarted = false;
 
 class PhysicEntity
 {
@@ -649,7 +650,7 @@ public:
             if (player == PLAYER1) {
                 if (IsKeyDown(KEY_A)) {
                     if (isBoosting) {
-                        rotation -= 1.35f;
+                        rotation -= kartRotation - 0.75f;
                     }
 					else {
 						rotation -= kartRotation;
@@ -657,7 +658,7 @@ public:
                 }
                 if (IsKeyDown(KEY_D)) {
 					if (isBoosting) {
-						rotation += 1.35f;
+						rotation += kartRotation - 0.75f;
 					}
                     else {
                         rotation += kartRotation;
@@ -667,7 +668,7 @@ public:
 			else if (player == PLAYER2) {
 				if (IsKeyDown(KEY_LEFT)) {
                     if (isBoosting) {
-                        rotation -= 1.35f;
+                        rotation -= kartRotation - 0.75f;
                     }
                     else {
                         rotation -= kartRotation;
@@ -675,7 +676,7 @@ public:
 				}
 				if (IsKeyDown(KEY_RIGHT)) {
                     if (isBoosting) {
-                        rotation += 1.35f;
+                        rotation += kartRotation - 0.75f;
                     }
                     else {
                         rotation += kartRotation;
@@ -742,8 +743,10 @@ public:
     }
 
     virtual void Update() override {
-        HandleInput();
-        Move();
+        if (raceStarted == true) {
+            HandleInput();
+            Move();
+        }
         Kart::Update();
 		
     }
@@ -804,7 +807,7 @@ protected:
 class Kart_NPC : public Kart {
 public:
     Kart_NPC(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
-        : Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type) 
+		: Kart(physics, x, y, _listener, _texture, _app, type), speed(0.0f), rotation(0.0f), isBoosting(false), isMoving(false), kartType(type)
     {
         rotationTimer.Start();
     }
@@ -852,8 +855,10 @@ public:
     }
 
     virtual void Update() override {
-        MovingLogic();
-        Move();
+        if (raceStarted == true) {
+            MovingLogic();
+            Move();
+        }
         Kart::Update();
     }
 
@@ -888,43 +893,46 @@ protected:
 class Kart_Player_1 : public Kart_Controller {
 public:
     Kart_Player_1(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
-        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) {}
-
-public:
-    int CurrentRank = 1;
-};
-
-class Kart_Player_2 : public Kart_Controller {
-public:
-    Kart_Player_2(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
-        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) {
-    }
-    
-public:
-    int CurrentRank = 2;
-};
-
-class Kart_Player_3 : public Kart_NPC {
-public:
-    Kart_Player_3(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
-        : Kart_NPC(physics, x, y, _listener, _texture, _app, type) {
-    }
-
-public:
-    int CurrentRank = 3;
-};
-
-class Kart_Player_4 : public Kart_NPC {
-public:
-    Kart_Player_4(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
-        : Kart_NPC(physics, x, y, _listener, _texture, _app, type) {
+        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) 
+    {
     }
 
 public:
     int CurrentRank = 4;
 };
 
+class Kart_Player_2 : public Kart_Controller {
+public:
+    Kart_Player_2(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type, Player player)
+        : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) 
+    {
+    }
+    
+public:
+    int CurrentRank = 3;
+};
 
+class Kart_Player_3 : public Kart_NPC {
+public:
+    Kart_Player_3(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
+        : Kart_NPC(physics, x, y, _listener, _texture, _app, type) 
+    {
+    }
+
+public:
+    int CurrentRank = 2;
+};
+
+class Kart_Player_4 : public Kart_NPC {
+public:
+    Kart_Player_4(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
+        : Kart_NPC(physics, x, y, _listener, _texture, _app, type) 
+    {
+    }
+
+public:
+    int CurrentRank = 1;
+};
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -967,6 +975,17 @@ bool ModuleGame::Start()
 	npc3 = LoadTexture("Assets/npc3.png");
 	npc4 = LoadTexture("Assets/npc4.png");
 
+	three = LoadTexture("Assets/three.png");
+	two = LoadTexture("Assets/two.png");
+	one = LoadTexture("Assets/one.png");
+	go = LoadTexture("Assets/go.png");
+
+	kaWin = LoadTexture("Assets/kartoWin.png");
+	haWin = LoadTexture("Assets/haolienWin.png");
+	joWin = LoadTexture("Assets/johanaWin.png");
+	taWin = LoadTexture("Assets/tanketoWin.png");
+	npcWin = LoadTexture("Assets/npcWin.png");
+
 	mainScreen = LoadTexture("Assets/mainScreen.png");
     player1Select = LoadTexture("Assets/player1select.png");
 	player2Select = LoadTexture("Assets/player2select.png");
@@ -977,16 +996,22 @@ bool ModuleGame::Start()
     boost_fx = App->audio->LoadFx("Assets/boost.wav"); 
     bump_fx = App->audio->LoadFx("Assets/Bump.wav");
 
+	showStage = App->audio->LoadFx("Assets/show.wav");
+	countdown = App->audio->LoadFx("Assets/start.wav");
+
     bgm = LoadMusicStream("Assets/music.ogg");
 	playerSelect = LoadMusicStream("Assets/playerselect.ogg");
 	title = LoadMusicStream("Assets/title.ogg");
+	win = LoadMusicStream("Assets/win.ogg");
+	loss = LoadMusicStream("Assets/loss.ogg");
 
     App->fontsModule->LoadFontTexture("Assets/fuente32_16.png", ' ', 32);
-    /*App->fontsModule->LoadFontTexture("Assets/Font8x8.png", ' ', 16);*/
 
     PlayMusicStream(title);
 	PlayMusicStream(playerSelect);
     PlayMusicStream(bgm);
+	PlayMusicStream(win);
+	PlayMusicStream(loss);
 
     return ret;
 }
@@ -1124,15 +1149,91 @@ update_status ModuleGame::Update()
                 entities.emplace_back(new Kart_Player_3(App->physics, 81, 458, this, kartTexture[i], App, DEFAULT_KART));
             }
             else {
-                entities.emplace_back(new Kart_Player_4(App->physics, 104, 494, this, kartTexture[i], App, DEFAULT_KART));
-                gameState = PLAYING;
+                entities.emplace_back(new Kart_Player_4(App->physics, 104, 470, this, kartTexture[i], App, DEFAULT_KART));
+                gameState = SHOWSTAGE;
                 break; 
             }
         }
+	case SHOWSTAGE:
+		if (hasShownStage == false) {
+			showStageTimer.Start();
+            App->audio->PlayFx(showStage);
+			hasShownStage = true;
+		}
+        DrawTexture(background, 0, 0, WHITE);
+        if (showStageTimer.ReadSec() >= 12) {
+            gameState = COUNTDOWN;
+            hasShownStage = false;
+        }
+        if (chosenKartop1 == true && hasChosenPlayer1 == true)
+        {
+            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, blueCar, App, KARTO, PLAYER1));
+            hasChosenPlayer1 = false;
+        }
+        else if (chosenHaolienp1 == true && hasChosenPlayer1 == true)
+        {
+            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, yellowCar, App, HAOLIEN, PLAYER1));
+            hasChosenPlayer1 = false;
+        }
+        else if (chosenJohanap1 == true && hasChosenPlayer1 == true)
+        {
+            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, greenCar, App, JOHANA, PLAYER1));
+            hasChosenPlayer1 = false;
+        }
+        else if (chosenTanketop1 == true && hasChosenPlayer1 == true)
+        {
+            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, redCar, App, TANKETO, PLAYER1));
+            hasChosenPlayer1 = false;
+        }
+
+        if (chosenKartop2 == true && hasChosenPlayer2 == true) {
+            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, blueCar, App, KARTO, PLAYER2));
+            hasChosenPlayer2 = false;
+        }
+        else if (chosenHaolienp2 == true && hasChosenPlayer2 == true) {
+            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, yellowCar, App, HAOLIEN, PLAYER2));
+            hasChosenPlayer2 = false;
+        }
+        else if (chosenJohanap2 == true && hasChosenPlayer2 == true) {
+            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, greenCar, App, JOHANA, PLAYER2));
+            hasChosenPlayer2 = false;
+        }
+        else if (chosenTanketop2 == true && hasChosenPlayer2 == true) {
+            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, redCar, App, TANKETO, PLAYER2));
+            hasChosenPlayer2 = false;
+        }
+		break;
+
+    case COUNTDOWN:
+		if (hasShownCountdown == false) {
+			countdownTimer.Start();
+            App->audio->PlayFx(countdown);
+			hasShownCountdown = true;
+		}
+        DrawTexture(background, 0, 0, WHITE);
+        if (countdownTimer.ReadSec() >= 0) {
+			DrawTexture(three, 500, 250, WHITE);
+        }
+		if (countdownTimer.ReadSec() >= 1) {
+			DrawTexture(two, 500, 250, WHITE);
+		}
+        if (countdownTimer.ReadSec() >= 2) {
+            DrawTexture(one, 500, 250, WHITE);
+        }
+		if (countdownTimer.ReadSec() >= 3) {
+			DrawTexture(go, 500, 250, WHITE);
+		}
+		if (countdownTimer.ReadSec() >= countdownTime) {
+			gameState = PLAYING;
+            countdownTimer.Start();
+			hasShownCountdown = false;
+		}
+        break;
 
     case PLAYING:
+		raceStarted = true;
         DrawTexture(background, 0, 0, WHITE);
-        DrawTexture(leaderboard2, 970, 400, WHITE);
+        DrawTexture(leaderboard2, SCREEN_WIDTH - 247, SCREEN_HEIGHT - 298, WHITE);
         lap_time = GetTime() - lap_start_time;
         App->fontsModule->DrawText(1000, 672, TextFormat("Best Lap Time:%.2f", best_lap_time), 14, WHITE); 
         App->fontsModule->DrawText(1000, 692, TextFormat("Lap Time:%.2f", lap_time ), 14, WHITE);
@@ -1163,10 +1264,11 @@ update_status ModuleGame::Update()
 
             entity->Update();
         }
-        /*UpdateMusicStream(bgm);*/ // LUEGO LO CAMBIO
+        UpdateMusicStream(bgm);
        
-        if (IsKeyPressed(KEY_Z)) {
+        if (IsKeyPressed(KEY_R)) {
             if (hasDeleted == false) {
+				raceStarted = false;
                 RemoveAllCollisionsAndSensors();
 				hasDeleted = true;
                 hasStarted = false;
@@ -1188,68 +1290,86 @@ update_status ModuleGame::Update()
                 hasSpawnedPlayer2Car = false;
             }
             gameState = TITLESCREEN;
-            
         }
+
+        if (IsKeyPressed(KEY_I))
+        {
+            player1Won = true;
+            gameState = WINSCREEN;
+        }
+        if (IsKeyPressed(KEY_O))
+        {
+            player2Won = true;
+            gameState = WINSCREEN;
+        }
+        if (IsKeyPressed(KEY_P))
+        {
+            npcWon = true;
+            gameState = LOSSSCREEN;
+        }
+
         break;
+	case WINSCREEN:
+        raceStarted = false;
+		UpdateMusicStream(win);
+        RemoveAllCollisionsAndSensors();
+        hasDeleted = true;
+        hasStarted = false;
+        if (player1Won == true) {
+            if (chosenKartop1 == true) {
+                DrawTexture(kaWin, 0, 0, WHITE);
+            }
+            else if (chosenHaolienp1 == true) {
+                DrawTexture(haWin, 0, 0, WHITE);
+            }
+            else if (chosenJohanap1 == true) {
+                DrawTexture(joWin, 0, 0, WHITE);
+            }
+            else if (chosenTanketop1 == true) {
+                DrawTexture(taWin, 0, 0, WHITE);
+            }
+        }
+        else if (player2Won == true) {
+            if (chosenKartop2 == true) {
+                DrawTexture(kaWin, 0, 0, WHITE);
+            }
+            else if (chosenHaolienp2 == true) {
+                DrawTexture(haWin, 0, 0, WHITE);
+            }
+            else if (chosenJohanap2 == true) {
+                DrawTexture(joWin, 0, 0, WHITE);
+            }
+            else if (chosenTanketop2 == true) {
+                DrawTexture(taWin, 0, 0, WHITE);
+            }
+        }
+		else if (npcWon == true) {
+			gameState = LOSSSCREEN;
+		}
+		if (IsKeyPressed(KEY_R)) {
+			gameState = TITLESCREEN;
+			player1Won = false;
+			player2Won = false;
+		}
+		break;
+	case LOSSSCREEN:
+        raceStarted = false;
+		UpdateMusicStream(loss);
+        RemoveAllCollisionsAndSensors();
+        hasDeleted = true;
+        hasStarted = false;
+		DrawTexture(npcWin, 0, 0, WHITE);
+        if (IsKeyPressed(KEY_R)) {
+            gameState = TITLESCREEN;
+            npcWon = false;
+        }
     }
-
     
-    if (gameState == PLAYING) {
-        if (IsKeyPressed(KEY_SPACE))
-        {
-            ray_on = !ray_on;
-            ray.x = GetMouseX();
-            ray.y = GetMouseY();
-        }
-
-        if (chosenKartop1 == true && hasChosenPlayer1 == true)
-        {
-            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, blueCar, App, KARTO, PLAYER1));
-			hasChosenPlayer1 = false;
-		}
-        else if (chosenHaolienp1 == true && hasChosenPlayer1 == true)
-        {
-            entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, yellowCar, App, HAOLIEN, PLAYER1));
-            hasChosenPlayer1 = false;
-        }
-        else if (chosenJohanap1 == true && hasChosenPlayer1 == true)
-        {
-			entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, greenCar, App, JOHANA, PLAYER1));
-            hasChosenPlayer1 = false;
-        }
-        else if (chosenTanketop1 == true && hasChosenPlayer1 == true)
-        {
-			entities.emplace_back(new Kart_Player_1(App->physics, 104, 494, this, redCar, App, TANKETO, PLAYER1));
-            hasChosenPlayer1 = false;
-        }
-
-        if (chosenKartop2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, blueCar, App, KARTO, PLAYER2));
-			hasChosenPlayer2 = false;
-		}
-		else if (chosenHaolienp2 == true && hasChosenPlayer2 == true) {
-			entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, yellowCar, App, HAOLIEN, PLAYER2));
-			hasChosenPlayer2 = false;
-		}
-		else if (chosenJohanap2 == true && hasChosenPlayer2 == true) {
-			entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, greenCar, App, JOHANA, PLAYER2));
-			hasChosenPlayer2 = false;
-		}
-        else if (chosenTanketop2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(new Kart_Player_2(App->physics, 81, 482, this, redCar, App, TANKETO, PLAYER2));
-            hasChosenPlayer2 = false;
-        }
-
-
-
-
-
-
-
-        if (IsKeyPressed(KEY_M))
-        {
-            entities.emplace_back(new Cone(App->physics, GetMouseX(), GetMouseY(), this, cone, App)); // Pasa el puntero a Application y el sonido de boost
-        }
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        ray_on = !ray_on;
+        ray.x = GetMouseX();
+        ray.y = GetMouseY();
     }
 
     // Prepare for raycast ------------------------------------------------------
