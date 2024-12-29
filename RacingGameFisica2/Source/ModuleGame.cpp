@@ -55,7 +55,7 @@ public:
     virtual void Update() override {
         int posX, posY;
         body->GetPhysicPosition(posX, posY);
-        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 0.0f, WHITE);
     }
 
 protected:
@@ -101,7 +101,7 @@ public:
     virtual void Update() override {
         int posX, posY;
         body->GetPhysicPosition(posX, posY);
-        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 0.0f, WHITE);
     }
 
 protected:
@@ -141,7 +141,7 @@ public:
     virtual void Update() override {
         int posX, posY;
         body->GetPhysicPosition(posX, posY);
-        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 0.0f, YELLOW);
     }
 
 protected:
@@ -180,7 +180,7 @@ public:
     virtual void Update() override {
         int x, y;
         body->GetPhysicPosition(x, y);
-        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 0.0f, YELLOW);
     }
 public: 
     int CountSensor = 0;
@@ -206,7 +206,7 @@ public:
     virtual void Update() override {
         int posX, posY;
         body->GetPhysicPosition(posX, posY);
-        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 0.0f, YELLOW);
     }
 
 protected:
@@ -255,7 +255,7 @@ public:
     virtual void Update() override {
         int posX, posY;
         body->GetPhysicPosition(posX, posY);
-        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 1.0f, YELLOW);
+        DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 0.0f, YELLOW);
     }
 
 protected:
@@ -294,7 +294,7 @@ public:
     virtual void Update() override {
         int x, y;
         body->GetPhysicPosition(x, y);
-        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
+        DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 0.0f, WHITE);
     }
 
 protected:
@@ -1420,23 +1420,24 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
     for (int i = 0; i < length; ++i) {
         if (bodyA == entities[i]->body) {
             Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entities[i]);
-			Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entities[i]);
-			Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entities[i]);
+            Kart_NPC* kartNPC = dynamic_cast<Kart_NPC*>(entities[i]);
+            Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entities[i]);
+            Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entities[i]);
             FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entities[i]);
-            
+
             // NPC KART AI MANAGEMENT
             if (kart3) {
                 for (int k = 0; k < length; k++)
                 {
                     if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetTurnDirection() == LEFT) {
                         kart3->left = true;
-						kart3->right = false;
+                        kart3->right = false;
                         return;
                     }
                     else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetTurnDirection() == RIGHT)
                     {
                         kart3->right = true;
-						kart3->left = false;
+                        kart3->left = false;
                         return;
                     }
                 }
@@ -1459,78 +1460,137 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
             }
 
             // PLAYABLE KARTS COLLISION DETECTION
-            
-            if (kart) {
+
+            if (kart || kartNPC) {
                 for (int j = 0; j < length; ++j) {
-                    //SNOW ZONE
+                    // SNOW ZONE
                     if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == SNOW) {
-                        if (kart->snowZoneCount == 0) {
+                        if (kart && kart->snowZoneCount == 0) {
                             printf("Kart entered snow zone.\n");
                             kart->inSnowZone = true;
-                            if (kart->kartType == KARTO) {
-								kart->maxSpeedKa = 1.5f;
-								kart->boostedMaxSpeedKa = 3.0f;
-							}
-                            else if (kart->kartType == HAOLIEN) {
+                            switch (kart->kartType) {
+                            case KARTO:
+                                kart->maxSpeedKa = 1.5f;
+                                kart->boostedMaxSpeedKa = 3.0f;
+                                break;
+                            case HAOLIEN:
                                 kart->maxSpeedHa = 1.5f;
                                 kart->boostedMaxSpeedHa = 2.5f;
-                            }
-							else if (kart->kartType == JOHANA) {
-								kart->maxSpeedJo = 2.5f;
-								kart->boostedMaxSpeedJo = 4.0f;
-							}
-							else if (kart->kartType == TANKETO) {
-								kart->maxSpeedTa = 1.5f;
-								kart->boostedMaxSpeedTa = 6.0f;
-							}
-							else if (kart->kartType == DEFAULT_KART) {
-								kart->maxSpeed = 1.5f;
-								kart->boostedMaxSpeed = 3.0f;
-							}
-                            
-                        }
-                        kart->snowZoneCount++;
-                        return;
-                    }
-                    //DARKENED SNOW ZONE
-                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == DARKENED_SNOW) {
-                        if (kart->DarkenedsnowZoneCount == 0) {
-                            printf("Kart entered darkened snow zone.\n");
-                            kart->inDarkenedSnowZone = true;
-                            if (kart->kartType == KARTO) {
-                                kart->maxSpeedKa = 1.0f;
-                                kart->boostedMaxSpeedKa = 2.5f;
-                            }
-                            else if (kart->kartType == HAOLIEN) {
-                                kart->maxSpeedHa = 1.0f;
-                                kart->boostedMaxSpeedHa = 2.0f;
-                            }
-                            else if (kart->kartType == JOHANA) {
+                                break;
+                            case JOHANA:
                                 kart->maxSpeedJo = 2.5f;
                                 kart->boostedMaxSpeedJo = 4.0f;
-                            }
-                            else if (kart->kartType == TANKETO) {
+                                break;
+                            case TANKETO:
                                 kart->maxSpeedTa = 1.5f;
                                 kart->boostedMaxSpeedTa = 6.0f;
+                                break;
+                            default:
+                                kart->maxSpeed = 1.5f;
+                                kart->boostedMaxSpeed = 3.0f;
+                                break;
                             }
-							else if (kart->kartType == DEFAULT_KART) {
-								kart->maxSpeed = 1.0f;
-								kart->boostedMaxSpeed = 2.5f;
-							}
                         }
-                        kart->DarkenedsnowZoneCount++;
+                        if (kartNPC && kartNPC->snowZoneCount == 0) {
+                            printf("Kart_NPC entered snow zone.\n");
+                            kartNPC->inSnowZone = true;
+                            switch (kartNPC->kartType) {
+                            case KARTO:
+                                kartNPC->maxSpeed = 1.5f;
+                                kartNPC->boostedMaxSpeed = 3.0f;
+                                break;
+                            case HAOLIEN:
+                                kartNPC->maxSpeed = 1.5f;
+                                kartNPC->boostedMaxSpeed = 2.5f;
+                                break;
+                            case JOHANA:
+                                kartNPC->maxSpeed = 2.5f;
+                                kartNPC->boostedMaxSpeed = 4.0f;
+                                break;
+                            case TANKETO:
+                                kartNPC->maxSpeed = 1.5f;
+                                kartNPC->boostedMaxSpeed = 6.0f;
+                                break;
+                            default:
+                                kartNPC->maxSpeed = 1.5f;
+                                kartNPC->boostedMaxSpeed = 3.0f;
+                                break;
+                            }
+                        }
+                        if (kart) kart->snowZoneCount++;
+                        if (kartNPC) kartNPC->snowZoneCount++;
+                        return;
+                    }
+                    // DARKENED SNOW ZONE
+                    if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == DARKENED_SNOW) {
+                        if (kart && kart->DarkenedsnowZoneCount == 0) {
+                            printf("Kart entered darkened snow zone.\n");
+                            kart->inDarkenedSnowZone = true;
+                            switch (kart->kartType) {
+                            case KARTO:
+                                kart->maxSpeedKa = 1.0f;
+                                kart->boostedMaxSpeedKa = 2.5f;
+                                break;
+                            case HAOLIEN:
+                                kart->maxSpeedHa = 1.0f;
+                                kart->boostedMaxSpeedHa = 2.0f;
+                                break;
+                            case JOHANA:
+                                kart->maxSpeedJo = 2.5f;
+                                kart->boostedMaxSpeedJo = 4.0f;
+                                break;
+                            case TANKETO:
+                                kart->maxSpeedTa = 1.5f;
+                                kart->boostedMaxSpeedTa = 6.0f;
+                                break;
+                            default:
+                                kart->maxSpeed = 1.0f;
+                                kart->boostedMaxSpeed = 2.5f;
+                                break;
+                            }
+                        }
+                        if (kartNPC && kartNPC->DarkenedsnowZoneCount == 0) {
+                            printf("Kart_NPC entered darkened snow zone.\n");
+                            kartNPC->inDarkenedSnowZone = true;
+                            switch (kartNPC->kartType) {
+                            case KARTO:
+                                kartNPC->maxSpeed = 1.0f;
+                                kartNPC->boostedMaxSpeed = 2.5f;
+                                break;
+                            case HAOLIEN:
+                                kartNPC->maxSpeed = 1.0f;
+                                kartNPC->boostedMaxSpeed = 2.0f;
+                                break;
+                            case JOHANA:
+                                kartNPC->maxSpeed = 2.5f;
+                                kartNPC->boostedMaxSpeed = 4.0f;
+                                break;
+                            case TANKETO:
+                                kartNPC->maxSpeed = 1.5f;
+                                kartNPC->boostedMaxSpeed = 6.0f;
+                                break;
+                            default:
+                                kartNPC->maxSpeed = 1.0f;
+                                kartNPC->boostedMaxSpeed = 2.5f;
+                                break;
+                            }
+                        }
+                        if (kart) kart->DarkenedsnowZoneCount++;
+                        if (kartNPC) kartNPC->DarkenedsnowZoneCount++;
                         return;
                     }
                     //------------------------------------ BOOSTERS -------------------------------------------
                     if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == BOOST) {
-						printf("Kart entered booster.\n");
-                        if (kart->isBoosting == false) {
+                        printf("Kart entered booster.\n");
+                        if (kart && !kart->isBoosting) {
                             kart->isBoosting = true;
-							kart->timeToBoost.Start();
+                            kart->timeToBoost.Start();
                             App->audio->PlayFx(boost_fx);
                         }
-						return;
+
+                        return;
                     }
+
 
                     //------------------------------------  CHECKPOINTS  --------------------------------------
                     // CHECKPOINT 
@@ -1707,68 +1767,137 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
     for (int i = 0; i < length; ++i) {
         if (bodyA == entities[i]->body) {
             Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entities[i]);
-            if (kart) {
+            Kart_NPC* kartNPC = dynamic_cast<Kart_NPC*>(entities[i]);
+            if (kart || kartNPC) {
                 for (int j = 0; j < length; ++j) {
                     if (bodyB == entities[j]->body) {
                         // SNOW ZONE
                         if (entities[j]->GetCollisionType() == SNOW) {
-                            kart->snowZoneCount--;
-                            if (kart->snowZoneCount == 0 && kart->DarkenedsnowZoneCount == 0) {
+                            if (kart) kart->snowZoneCount--;
+                            if (kartNPC) kartNPC->snowZoneCount--;
+
+                            if ((kart && kart->snowZoneCount == 0 && kart->DarkenedsnowZoneCount == 0) ||
+                                (kartNPC && kartNPC->snowZoneCount == 0 && kartNPC->DarkenedsnowZoneCount == 0)) {
                                 printf("Kart exited snow zone.\n");
-                                kart->inSnowZone = false;
-                                kart->inDarkenedSnowZone = false;
-                                if (kart->kartType == KARTO) {
-                                    kart->maxSpeedKa = 2.5f;
-                                    kart->boostedMaxSpeedKa = 4.0f;
+                                if (kart) kart->inSnowZone = false;
+                                if (kartNPC) kartNPC->inSnowZone = false;
+
+                                if (kart) {
+                                    switch (kart->kartType) {
+                                    case KARTO:
+                                        kart->maxSpeedKa = 2.5f;
+                                        kart->boostedMaxSpeedKa = 4.0f;
+                                        break;
+                                    case HAOLIEN:
+                                        kart->maxSpeedHa = 3.0f;
+                                        kart->boostedMaxSpeedHa = 5.0f;
+                                        break;
+                                    case JOHANA:
+                                        kart->maxSpeedJo = 1.0f;
+                                        kart->boostedMaxSpeedJo = 3.0f;
+                                        break;
+                                    case TANKETO:
+                                        kart->maxSpeedTa = 1.5f;
+                                        kart->boostedMaxSpeedTa = 6.0f;
+                                        break;
+                                    default:
+                                        kart->maxSpeed = 2.0f;
+                                        kart->boostedMaxSpeed = 4.0f;
+                                        break;
+                                    }
                                 }
-                                else if (kart->kartType == HAOLIEN) {
-                                    kart->maxSpeedHa = 3.0f;
-                                    kart->boostedMaxSpeedHa = 5.0f;
+
+                                if (kartNPC) {
+                                    switch (kartNPC->kartType) {
+                                    case KARTO:
+                                        kartNPC->maxSpeed = 2.5f;
+                                        kartNPC->boostedMaxSpeed = 4.0f;
+                                        break;
+                                    case HAOLIEN:
+                                        kartNPC->maxSpeed = 3.0f;
+                                        kartNPC->boostedMaxSpeed = 5.0f;
+                                        break;
+                                    case JOHANA:
+                                        kartNPC->maxSpeed = 1.0f;
+                                        kartNPC->boostedMaxSpeed = 3.0f;
+                                        break;
+                                    case TANKETO:
+                                        kartNPC->maxSpeed = 1.5f;
+                                        kartNPC->boostedMaxSpeed = 6.0f;
+                                        break;
+                                    default:
+                                        kartNPC->maxSpeed = 2.0f;
+                                        kartNPC->boostedMaxSpeed = 4.0f;
+                                        break;
+                                    }
                                 }
-                                else if (kart->kartType == JOHANA) {
-                                    kart->maxSpeedJo = 1.0f;
-                                    kart->boostedMaxSpeedJo = 3.0f;
-                                }
-                                else if (kart->kartType == TANKETO) {
-                                    kart->maxSpeedTa = 1.5f;
-                                    kart->boostedMaxSpeedTa = 6.0f;
-                                }
-								else if (kart->kartType == DEFAULT_KART) {
-									kart->maxSpeed = 2.0f;
-									kart->boostedMaxSpeed = 4.0f;
-								}
                             }
+                            return;
                         }
-                        //DARKENED SNOW ZONE
+
+                        // DARKENED SNOW ZONE
                         if (entities[j]->GetCollisionType() == DARKENED_SNOW) {
-                            kart->DarkenedsnowZoneCount--;
-                            if (kart->DarkenedsnowZoneCount == 0 && kart->snowZoneCount == 0) {
+                            if (kart) kart->DarkenedsnowZoneCount--;
+                            if (kartNPC) kartNPC->DarkenedsnowZoneCount--;
+
+                            if ((kart && kart->DarkenedsnowZoneCount == 0 && kart->snowZoneCount == 0) ||
+                                (kartNPC && kartNPC->DarkenedsnowZoneCount == 0 && kartNPC->snowZoneCount == 0)) {
                                 printf("Kart exited darkened snow zone.\n");
-                                kart->inSnowZone = false;
-                                kart->inDarkenedSnowZone = false;
-                                if (kart->kartType == KARTO) {
-                                    kart->maxSpeedKa = 2.5f;
-                                    kart->boostedMaxSpeedKa = 4.0f;
+                                if (kart) kart->inDarkenedSnowZone = false;
+                                if (kartNPC) kartNPC->inDarkenedSnowZone = false;
+
+                                if (kart) {
+                                    switch (kart->kartType) {
+                                    case KARTO:
+                                        kart->maxSpeedKa = 2.5f;
+                                        kart->boostedMaxSpeedKa = 4.0f;
+                                        break;
+                                    case HAOLIEN:
+                                        kart->maxSpeedHa = 3.0f;
+                                        kart->boostedMaxSpeedHa = 5.0f;
+                                        break;
+                                    case JOHANA:
+                                        kart->maxSpeedJo = 1.0f;
+                                        kart->boostedMaxSpeedJo = 3.0f;
+                                        break;
+                                    case TANKETO:
+                                        kart->maxSpeedTa = 1.5f;
+                                        kart->boostedMaxSpeedTa = 6.0f;
+                                        break;
+                                    default:
+                                        kart->maxSpeed = 2.0f;
+                                        kart->boostedMaxSpeed = 4.0f;
+                                        break;
+                                    }
                                 }
-                                else if (kart->kartType == HAOLIEN) {
-                                    kart->maxSpeedHa = 3.0f;
-                                    kart->boostedMaxSpeedHa = 5.0f;
+
+                                if (kartNPC) {
+                                    switch (kartNPC->kartType) {
+                                    case KARTO:
+                                        kartNPC->maxSpeed = 2.5f;
+                                        kartNPC->boostedMaxSpeed = 4.0f;
+                                        break;
+                                    case HAOLIEN:
+                                        kartNPC->maxSpeed = 3.0f;
+                                        kartNPC->boostedMaxSpeed = 5.0f;
+                                        break;
+                                    case JOHANA:
+                                        kartNPC->maxSpeed = 1.0f;
+                                        kartNPC->boostedMaxSpeed = 3.0f;
+                                        break;
+                                    case TANKETO:
+                                        kartNPC->maxSpeed = 1.5f;
+                                        kartNPC->boostedMaxSpeed = 6.0f;
+                                        break;
+                                    default:
+                                        kartNPC->maxSpeed = 2.0f;
+                                        kartNPC->boostedMaxSpeed = 4.0f;
+                                        break;
+                                    }
                                 }
-                                else if (kart->kartType == JOHANA) {
-                                    kart->maxSpeedJo = 1.0f;
-                                    kart->boostedMaxSpeedJo = 3.0f;
-                                }
-                                else if (kart->kartType == TANKETO) {
-                                    kart->maxSpeedTa = 1.5f;
-                                    kart->boostedMaxSpeedTa = 6.0f;
-                                }
-								else if (kart->kartType == DEFAULT_KART) {
-									kart->maxSpeed = 2.0f;
-									kart->boostedMaxSpeed = 4.0f;
-								}
                             }
+                            return;
                         }
-                        return;
                     }
                 }
             }
