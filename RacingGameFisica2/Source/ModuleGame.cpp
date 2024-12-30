@@ -770,9 +770,9 @@ public:
     float boostedMaxSpeedHa = 5.0f;
 
 	// Rotations for each kart
-	float rotationKa = 2.5f;
+	float rotationKa = 2.25f;
 	float rotationTa = 2.75f;
-    float rotationHa = 1.5f;
+    float rotationHa = 1.25f;
 	float rotationJo = 2.0f;
 
 	float maxSpeed = 2.0f;
@@ -990,7 +990,6 @@ bool ModuleGame::Start()
     player1Select = LoadTexture("Assets/player1select.png");
 	player2Select = LoadTexture("Assets/player2select.png");
 	background = LoadTexture("Assets/Mapa1Racing.png");
-    leaderboard2 = LoadTexture("Assets/leaderboard2.png");
 
     engine_fx = App->audio->LoadFx("Assets/drive.wav");
     boost_fx = App->audio->LoadFx("Assets/boost.wav"); 
@@ -1019,6 +1018,7 @@ bool ModuleGame::Start()
 bool ModuleGame::CleanUp()
 {
     LOG("Unloading Intro scene");
+	RemoveAllCollisionsAndSensors();
 	UnloadTexture(cone);
 	UnloadTexture(yellowCar);
 	UnloadTexture(redCar);
@@ -1026,9 +1026,11 @@ bool ModuleGame::CleanUp()
 	UnloadTexture(blueCar);
 	UnloadTexture(mainScreen);
 	UnloadTexture(background);
-    UnloadTexture(leaderboard2);
 	UnloadMusicStream(bgm);
 	UnloadMusicStream(title);
+	UnloadMusicStream(playerSelect);
+	UnloadMusicStream(win);
+	UnloadMusicStream(loss);
     return true;
 }
 
@@ -1146,18 +1148,15 @@ update_status ModuleGame::Update()
             }
 
             if (i == 0) {
-                entities.emplace_back(DBG_NEW Kart_Player_3(App->physics, 81, 458, this, kartTexture[i], App, DEFAULT_KART));
+                entities.emplace_back(DBG_NEW Kart_Player_3(App->physics, 86, 474, this, kartTexture[i], App, DEFAULT_KART));
             }
             else {
-                entities.emplace_back(DBG_NEW Kart_Player_4(App->physics, 104, 470, this, kartTexture[i], App, DEFAULT_KART));
+                entities.emplace_back(DBG_NEW Kart_Player_4(App->physics, 109, 484, this, kartTexture[i], App, DEFAULT_KART));
                 gameState = SHOWSTAGE;
                 break; 
             }
         }
 	case SHOWSTAGE:
-        if (IsKeyPressed(KEY_F2)) {
-            gameState = PLAYING;
-        }
 		if (hasShownStage == false) {
 			showStageTimer.Start();
             App->audio->PlayFx(showStage);
@@ -1170,39 +1169,39 @@ update_status ModuleGame::Update()
         }
         if (chosenKartop1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 104, 494, this, blueCar, App, KARTO, PLAYER1));
+            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 109, 510, this, blueCar, App, KARTO, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenHaolienp1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 104, 494, this, yellowCar, App, HAOLIEN, PLAYER1));
+            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 109, 510, this, yellowCar, App, HAOLIEN, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenJohanap1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 104, 494, this, greenCar, App, JOHANA, PLAYER1));
+            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 109, 510, this, greenCar, App, JOHANA, PLAYER1));
             hasChosenPlayer1 = false;
         }
         else if (chosenTanketop1 == true && hasChosenPlayer1 == true)
         {
-            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 104, 494, this, redCar, App, TANKETO, PLAYER1));
+            entities.emplace_back(DBG_NEW Kart_Player_1(App->physics, 109, 510, this, redCar, App, TANKETO, PLAYER1));
             hasChosenPlayer1 = false;
         }
 
         if (chosenKartop2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 81, 482, this, blueCar, App, KARTO, PLAYER2));
+            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 86, 500, this, blueCar, App, KARTO, PLAYER2));
             hasChosenPlayer2 = false;
         }
         else if (chosenHaolienp2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 81, 482, this, yellowCar, App, HAOLIEN, PLAYER2));
+            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 86, 500, this, yellowCar, App, HAOLIEN, PLAYER2));
             hasChosenPlayer2 = false;
         }
         else if (chosenJohanap2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 81, 482, this, greenCar, App, JOHANA, PLAYER2));
+            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 86, 500, this, greenCar, App, JOHANA, PLAYER2));
             hasChosenPlayer2 = false;
         }
         else if (chosenTanketop2 == true && hasChosenPlayer2 == true) {
-            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 81, 482, this, redCar, App, TANKETO, PLAYER2));
+            entities.emplace_back(DBG_NEW Kart_Player_2(App->physics, 86, 500, this, redCar, App, TANKETO, PLAYER2));
             hasChosenPlayer2 = false;
         }
 		break;
@@ -1236,33 +1235,44 @@ update_status ModuleGame::Update()
     case PLAYING:
 		raceStarted = true;
         DrawTexture(background, 0, 0, WHITE);
-        DrawTexture(leaderboard2, SCREEN_WIDTH - 247, SCREEN_HEIGHT - 298, WHITE);
         lap_time = GetTime() - lap_start_time;
-        App->fontsModule->DrawText(1065, 638, TextFormat("BEST TIME:%.2f", best_lap_time), 12, WHITE); 
-        App->fontsModule->DrawText(1065, 674, TextFormat("LAP TIME:%.2f", lap_time ), 12, WHITE);
+        App->fontsModule->DrawText(1060, 848, TextFormat("BEST: %.2f", best_lap_time), 16, WHITE);
+        App->fontsModule->DrawText(1093, 777, TextFormat("%.2f", lap_time ), 20, WHITE);
             for (PhysicEntity* entity : entities)
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
-                App->fontsModule->DrawText(1035, 500, TextFormat("LAP:%d", finish->lap), 20, WHITE);
+                App->fontsModule->DrawText(27, 770, TextFormat("LAP:%d", finish->lap), 20, WHITE);
             } 
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
-                if (kart_1->CurrentRank == 3) {
-                    App->fontsModule->DrawText(1105, 488, TextFormat("KART 1"), 20, WHITE);     
+                if (kart_1->CurrentRank == 1) {
+                    App->fontsModule->DrawText(469, 789, TextFormat("KART 1"), 20, WHITE);     
                 }
-                else {
-                    App->fontsModule->DrawText(1105, 522, TextFormat("KART 1"), 20, WHITE);
+                else if (kart_1->CurrentRank == 2) {
+                    App->fontsModule->DrawText(469, 825, TextFormat("KART 1"), 20, WHITE);
                 }
+				else if (kart_1->CurrentRank == 3) {
+					App->fontsModule->DrawText(680, 789, TextFormat("KART 1"), 20, WHITE);
+				}
+				else if (kart_1->CurrentRank == 4) {
+					App->fontsModule->DrawText(680, 825, TextFormat("KART 1"), 20, WHITE);
+				}
             }
             if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
             {
-                if (kart_2->CurrentRank == 3) {
-                    App->fontsModule->DrawText(1105, 488, TextFormat("KART 2"), 20, WHITE);
+                if (kart_2->CurrentRank == 1) {
+                    App->fontsModule->DrawText(469, 789, TextFormat("KART 2"), 20, WHITE);
                 }
-                else {
-                    App->fontsModule->DrawText(1105, 524, TextFormat("KART 2"), 20, WHITE);
+                else if (kart_2->CurrentRank == 2) {
+                    App->fontsModule->DrawText(469, 825, TextFormat("KART 2"), 20, WHITE);
                 }
+                else if (kart_2->CurrentRank == 3) {
+                    App->fontsModule->DrawText(680, 789, TextFormat("KART 2"), 20, WHITE);
+                }
+				else if (kart_2->CurrentRank == 4) {
+					App->fontsModule->DrawText(680, 825, TextFormat("KART 2"), 20, WHITE);
+				}
             }
 
             entity->Update();
@@ -1374,6 +1384,7 @@ update_status ModuleGame::Update()
         ray.x = GetMouseX();
         ray.y = GetMouseY();
     }
+
 
     // Prepare for raycast ------------------------------------------------------
     vec2i mouse;

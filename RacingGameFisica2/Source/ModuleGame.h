@@ -89,7 +89,9 @@ public:
 	Texture2D player1Select;
 	Texture2D player2Select;
 	Texture2D background;
-	Texture2D leaderboard2;
+	Texture2D leaderboard;
+	Texture2D stats;
+	Texture2D bestTimes;
 
 	Texture2D three;
 	Texture2D two;
