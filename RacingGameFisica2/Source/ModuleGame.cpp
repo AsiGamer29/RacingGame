@@ -1242,28 +1242,72 @@ update_status ModuleGame::Update()
         App->fontsModule->DrawText(1065, 674, TextFormat("LAP TIME:%.2f", lap_time ), 12, WHITE);
             for (PhysicEntity* entity : entities)
         {
-            if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
-            {
-                App->fontsModule->DrawText(1035, 500, TextFormat("LAP:%d", finish->lap), 20, WHITE);
-            } 
-            if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
-            {
-                if (kart_1->CurrentRank == 3) {
-                    App->fontsModule->DrawText(1105, 488, TextFormat("KART 1"), 20, WHITE);     
+                for (PhysicEntity* entity : entities) {
+                    if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity)) {
+                        App->fontsModule->DrawText(1035, 500, TextFormat("LAP:%d", finish->lap), 20, WHITE);
+                    }
+
+                    if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity)) {
+                        if (kart_1->CurrentRank == 1) {
+                            App->fontsModule->DrawText(1100, 488, TextFormat("KART 1"), 20, WHITE);
+                        }
+                        else if (kart_1->CurrentRank == 2) {
+                            App->fontsModule->DrawText(1100, 522, TextFormat("KART 1"), 20, WHITE);
+                        }
+                        else if (kart_1->CurrentRank == 3) {
+                            App->fontsModule->DrawText(1100, 559, TextFormat("KART 1"), 20, WHITE);
+                        }
+                        else {
+                            App->fontsModule->DrawText(1100, 595, TextFormat("KART 1"), 20, WHITE);
+                        }
+                    }
+
+                    if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity)) {
+                        if (kart_2->CurrentRank == 1) {
+                            App->fontsModule->DrawText(1100, 488, TextFormat("KART 2"), 20, WHITE);
+                        }
+                        else if (kart_2->CurrentRank == 2) {
+                            App->fontsModule->DrawText(1100, 522, TextFormat("KART 2"), 20, WHITE);
+                        }
+                        else if (kart_2->CurrentRank == 3) {
+                            App->fontsModule->DrawText(1100, 559, TextFormat("KART 2"), 20, WHITE);
+                        }
+                        else {
+                            App->fontsModule->DrawText(1100, 595, TextFormat("KART 2"), 20, WHITE);
+                        }
+                    }
+
+                    if (Kart_Player_3* kart_3 = dynamic_cast<Kart_Player_3*>(entity)) {
+                        if (kart_3->CurrentRank == 1) {
+                            App->fontsModule->DrawText(1100, 488, TextFormat("KART 3"), 20, WHITE);
+                        }
+                        else if (kart_3->CurrentRank == 2) {
+                            App->fontsModule->DrawText(1100, 522, TextFormat("KART 3"), 20, WHITE);
+                        }
+                        else if (kart_3->CurrentRank == 3) {
+                            App->fontsModule->DrawText(1100, 559, TextFormat("KART 3"), 20, WHITE);
+                        }
+                        else {
+                            App->fontsModule->DrawText(1100, 595, TextFormat("KART 3"), 20, WHITE);
+                        }
+                    }
+
+                    if (Kart_Player_4* kart_4 = dynamic_cast<Kart_Player_4*>(entity)) {
+                        if (kart_4->CurrentRank == 1) {
+                            App->fontsModule->DrawText(1100, 488, TextFormat("KART 4"), 20, WHITE);
+                        }
+                        else if (kart_4->CurrentRank == 2) {
+                            App->fontsModule->DrawText(1100, 522, TextFormat("KART 4"), 20, WHITE);
+                        }
+                        else if (kart_4->CurrentRank == 3) {
+                            App->fontsModule->DrawText(1100, 559, TextFormat("KART 4"), 20, WHITE);
+                        }
+                        else {
+                            App->fontsModule->DrawText(1100, 595, TextFormat("KART 4"), 20, WHITE);
+                        }
+                    }
                 }
-                else {
-                    App->fontsModule->DrawText(1105, 522, TextFormat("KART 1"), 20, WHITE);
-                }
-            }
-            if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity))
-            {
-                if (kart_2->CurrentRank == 3) {
-                    App->fontsModule->DrawText(1105, 488, TextFormat("KART 2"), 20, WHITE);
-                }
-                else {
-                    App->fontsModule->DrawText(1105, 524, TextFormat("KART 2"), 20, WHITE);
-                }
-            }
+
 
             entity->Update();
         }
@@ -1597,167 +1641,78 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 
                     //------------------------------------  CHECKPOINTS  --------------------------------------
                     // CHECKPOINT 
-                    for (PhysicEntity* entity : entities)
-                    {
-                        if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
-                        {
+                    static int currentRank = 1; // Contador de ranking, estático para mantener el valor entre iteraciones
 
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1 && finish->isActivated_1 == false) {
-                                Kart_Player_1* kart_1 = nullptr;
-                                Kart_Player_2* kart_2 = nullptr;
+                    for (PhysicEntity* entity : entities) {
+                        if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity)) {
+                            if (bodyB == entities[j]->body) {
+                                switch (entities[j]->GetCollisionType()) {
+                                case CHECKPOINT_SENSOR_1:
+                                    if (!finish->isActivated_1) {
+                                        if (bodyA->listener) {
+                                            printf("Entity at Checkpoint 1 is now rank %d.\n", currentRank);
+                                            currentRank++;
+                                            finish->isActivated_1 = true;
+                                        }
+                                    }
+                                    break;
 
-                                for (PhysicEntity* entity : entities) { // search karts
-                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
-                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
-                                    if (kart_1 && kart_2) break;
-                                }
-                                if (kart_1 && kart_2) {
-                                    if (kart_1->body == bodyA) { //first kart_1
-                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 3;
-                                            kart_2->CurrentRank = 4;
+                                case CHECKPOINT_SENSOR_2:
+                                    if (finish->isActivated_1 && !finish->isActivated_2) {
+                                        if (bodyA->listener) {
+                                            printf("Entity at Checkpoint 2 is now rank %d.\n", currentRank);
+                                            currentRank++;
+                                            finish->isActivated_2 = true;
                                         }
                                     }
-                                    else if (kart_2->body == bodyA) { //first kart_2
-                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 3;
-                                            kart_1->CurrentRank = 4;
-                                        }
-                                    }
-                                }
+                                    break;
 
-                                finish->CountSensor++;
-                                finish->isActivated_1 = true;
-                                printf("Checkpoint %d", finish->CountSensor);
-                                return;
-                            }
-                            // CHECKPOINT 2
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_2 && finish->isActivated_1 == true && finish->isActivated_2 == false) {
-                                Kart_Player_1* kart_1 = nullptr;
-                                Kart_Player_2* kart_2 = nullptr;
+                                case CHECKPOINT_SENSOR_3:
+                                    if (finish->isActivated_2 && !finish->isActivated_3) {
+                                        if (bodyA->listener) {
+                                            printf("Entity at Checkpoint 3 is now rank %d.\n", currentRank);
+                                            currentRank++;
+                                            finish->isActivated_3 = true;
+                                        }
+                                    }
+                                    break;
 
-                                for (PhysicEntity* entity : entities) { // search karts
-                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
-                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
-                                    if (kart_1 && kart_2) break;
-                                }
-                                if (kart_1 && kart_2) {
-                                    if (kart_1->body == bodyA) { //first kart_1
-                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 3;
-                                            kart_2->CurrentRank = 4;
+                                case CHECKPOINT_SENSOR_4:
+                                    if (finish->isActivated_3 && !finish->isActivated_4) {
+                                        if (bodyA->listener) {
+                                            printf("Entity at Checkpoint 4 is now rank %d.\n", currentRank);
+                                            currentRank++;
+                                            finish->isActivated_4 = true;
                                         }
                                     }
-                                    else if (kart_2->body == bodyA) { //first kart_2
-                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 3;
-                                            kart_1->CurrentRank = 4;
-                                        }
-                                    }
-                                }
-                                finish->CountSensor++;
-                                finish->isActivated_2 = true;
-                                printf("Checkpoint %d", finish->CountSensor);
-                                return;
-                            }
-                            // CHECKPOINT 3
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_3 && finish->isActivated_2 == true && finish->isActivated_3 == false) {
-                                Kart_Player_1* kart_1 = nullptr;
-                                Kart_Player_2* kart_2 = nullptr;
+                                    break;
 
-                                for (PhysicEntity* entity : entities) { // search karts
-                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
-                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
-                                    if (kart_1 && kart_2) break;
-                                }
-                                if (kart_1 && kart_2) {
-                                    if (kart_1->body == bodyA) { //first kart_1
-                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 3;
-                                            kart_2->CurrentRank = 4;
+                                case FINISH_CHECKPOINT_SENSOR:
+                                    if (finish->isActivated_4) {
+                                        if (bodyA->listener) {
+                                            printf("Entity at Finish Line is now rank %d.\n", currentRank);
+                                            currentRank++;
                                         }
+                                        // Reiniciar para la próxima vuelta
+                                        finish->lap++;
+                                        finish->isActivated_1 = false;
+                                        finish->isActivated_2 = false;
+                                        finish->isActivated_3 = false;
+                                        finish->isActivated_4 = false;
+                                        currentRank = 1; // Reinicia el contador
+                                        printf("Lap completed. Lap count: %d\n", finish->lap);
                                     }
-                                    else if (kart_2->body == bodyA) { //first kart_2
-                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 3;
-                                            kart_1->CurrentRank = 4;
-                                        }
-                                    }
-                                }
-                                finish->CountSensor++;
-                                finish->isActivated_3 = true;
-                                printf("Checkpoint %d", finish->CountSensor);
-                                return;
-                            }
-                            // CHECKPOINT 4
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_4 && finish->isActivated_3 == true && finish->isActivated_4 == false) {
-                                
-                                Kart_Player_1* kart_1 = nullptr;
-                                Kart_Player_2* kart_2 = nullptr;
+                                    break;
 
-                                for (PhysicEntity* entity : entities) { // search karts
-                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
-                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
-                                    if (kart_1 && kart_2) break;
+                                default:
+                                    break;
                                 }
-                                if (kart_1 && kart_2) {
-                                    if (kart_1->body == bodyA) { //first kart_1
-                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 3;
-                                            kart_2->CurrentRank = 4;
-                                        }
-                                    }
-                                    else if (kart_2->body == bodyA) { //first kart_2
-                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 3;
-                                            kart_1->CurrentRank = 4;
-                                        }
-                                    }
-                                }
-                                finish->CountSensor++;
-                                finish->isActivated_4 = true;
-                                printf("Checkpoint %d", finish->CountSensor);
-                                return;
-                            }
-                            // FINISH CHECKPOINT
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == FINISH_CHECKPOINT_SENSOR && finish->isActivated_4 == true && finish->CountSensor == 4) {
-
-                                Kart_Player_1* kart_1 = nullptr;
-                                Kart_Player_2* kart_2 = nullptr;
-
-                                for (PhysicEntity* entity : entities) { // search karts
-                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
-                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
-                                    if (kart_1 && kart_2) break;
-                                }
-                                if (kart_1 && kart_2) {
-                                    if (kart_1->body == bodyA) { //first kart_1
-                                        if (kart_1->CurrentRank > kart_2->CurrentRank) {
-                                            kart_1->CurrentRank = 1;
-                                            kart_2->CurrentRank = 2;
-                                        }
-                                    }
-                                    else if (kart_2->body == bodyA) { //first kart_2
-                                        if (kart_2->CurrentRank > kart_1->CurrentRank) {
-                                            kart_2->CurrentRank = 1;
-                                            kart_1->CurrentRank = 2;
-                                        }
-                                    }
-                                }
-                                best_lap_time = lap_time;
-                                lap_time = 0;
-                                lap_start_time = GetTime(); 
-                                finish->CountSensor = 0;
-                                finish->lap++;
-                                finish->isActivated_1 = false;
-                                finish->isActivated_2 = false;
-                                finish->isActivated_3 = false;
-                                finish->isActivated_4 = false;
-
                                 return;
                             }
                         }
                     }
+
+
                 }
             }
         }
