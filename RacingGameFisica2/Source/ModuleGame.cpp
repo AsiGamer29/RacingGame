@@ -31,15 +31,19 @@ public:
 
     CollisionType GetCollisionType() const { return collisionType; }
 	TurnDirection GetTurnDirection() const { return turnDirection; }
+    SensorOrientation GetSensorOrientation() const { return orientation; }
+    SensorValor GetSensorValor() const { return valor; }
     KartType GetKartType() const { return kartType; }
 	PhysBody* body;
-
+    
 protected:
 
 	Module* listener;
     CollisionType collisionType;
     KartType kartType;
     TurnDirection turnDirection;
+    SensorOrientation orientation;
+    SensorValor valor;
 };
 
 //------------------------------------------------------------------------------------ Snow Zone -------------------------------------------------------------------------------------
@@ -197,7 +201,7 @@ private:
 
 class AISensor : public PhysicEntity {
 public:
-    AISensor(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture, TurnDirection direction)
+    AISensor(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture, TurnDirection direction, SensorOrientation orientation, SensorValor valor)
         : PhysicEntity(physics->CreateRectangleSensor(x, y, width, height), listener), texture(texture) {
         collisionType = IA;
         turnDirection = direction;
@@ -219,27 +223,40 @@ struct AISensorParams {
     int width;
     int height;
     TurnDirection direction;
+    SensorOrientation orientation;
+    SensorValor valor;
 };
 
 void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
     std::vector<AISensorParams> aiSensorData = {
-        {95, 240, 180, 10, RIGHT}, {140, 170, 100, 10, LEFT}, {140, 100, 180, 10, RIGHT}, // 1 2 3
-        {210, 75, 10, 180, RIGHT}, {650, 82, 10, 180, RIGHT}, {680, 150, 10, 180, RIGHT}, // 4 5 6
-        {680, 360, 160, 30, LEFT}, {745, 390, 10, 180, LEFT}, {820, 390, 10, 180, LEFT}, // 7 8 9
-        {840, 345, 145, 10, LEFT},{925, 145, 205, 30, RIGHT}, {920, 125, 60, 180, RIGHT},  //10 11 12
-        {1150, 125, 10, 180, RIGHT},{1230, 200, 140, 10, RIGHT}, {1185, 370, 200, 10, RIGHT}, // 13 14 15
-        {1130, 400, 10, 100, RIGHT}, {1030, 400, 10, 100, LEFT}, {1000, 460, 120, 30, LEFT}, // 16 17 18
-        {1000, 620, 100, 10, RIGHT}, {940, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, // 19 20 21
-        {800, 580, 210, 10, LEFT}, {590, 590, 20, 210, RIGHT}, {540, 560, 20, 205, RIGHT}, // 22 23 24
-        {542, 310, 100, 10, LEFT},{480, 270, 10, 170, LEFT}, {400, 270, 10, 180, LEFT}, // 25 26 27
-        {350, 320, 180, 10, LEFT}, {350, 430, 180, 10, LEFT}, {430, 430, 10, 180, RIGHT}, // 28 29 30
-        {415, 630, 180, 10, RIGHT}, {370, 653, 10, 180, RIGHT}, {120, 665, 10, 100, RIGHT}, // 31 32 33
-        {88, 600, 180, 10, RIGHT} // 34
+        {95, 240, 180, 10, RIGHT, HORIZONTAL,POSITIVE}, {140, 170, 100, 10, LEFT, VERTICAL, NEGATIVE}, {140, 100, 180, 10, RIGHT,HORIZONTAL, POSITIVE}, // 1 2 3
+        {210, 75, 10, 180, RIGHT, HORIZONTAL, POSITIVE}, {650, 82, 10, 180, RIGHT, VERTICAL, POSITIVE}, {680, 150, 10, 180, RIGHT, VERTICAL, POSITIVE}, // 4 5 6
+        {680, 360, 160, 30, LEFT, HORIZONTAL, POSITIVE}, {745, 390, 10, 180, LEFT, HORIZONTAL, POSITIVE}, {820, 390, 10, 180, LEFT, VERTICAL, NEGATIVE}, // 7 8 9
+        {840, 345, 145, 10, LEFT, VERTICAL, NEGATIVE},{925, 145, 205, 30, RIGHT, HORIZONTAL, POSITIVE}, {920, 125, 60, 180, RIGHT, HORIZONTAL, POSITIVE},  //10 11 12
+        {1150, 125, 10, 180, RIGHT, VERTICAL, POSITIVE},{1230, 200, 140, 10, RIGHT, VERTICAL, POSITIVE }, {1185, 370, 200, 10, RIGHT, HORIZONTAL, NEGATIVE}, // 13 14 15
+        {1130, 400, 10, 100, RIGHT, HORIZONTAL, NEGATIVE}, {1030, 400, 10, 100, LEFT, VERTICAL, POSITIVE}, {1000, 460, 120, 30, LEFT, VERTICAL, POSITIVE}, // 16 17 18
+        {1000, 620, 100, 10, RIGHT, HORIZONTAL, NEGATIVE}, {940, 650, 10, 120, RIGHT, HORIZONTAL, NEGATIVE}, {830, 650, 10, 180, RIGHT, VERTICAL, NEGATIVE}, // 19 20 21
+        {800, 580, 210, 10, LEFT, HORIZONTAL, NEGATIVE}, {590, 590, 20, 210, RIGHT, VERTICAL, NEGATIVE}, {540, 560, 20, 205, RIGHT, VERTICAL, NEGATIVE}, // 22 23 24
+        {542, 310, 100, 10, LEFT, HORIZONTAL, NEGATIVE},{480, 270, 10, 170, LEFT, HORIZONTAL, NEGATIVE}, {400, 270, 10, 180, LEFT, VERTICAL, POSITIVE}, // 25 26 27
+        {350, 320, 180, 10, LEFT, VERTICAL, POSITIVE}, {350, 430, 180, 10, LEFT, HORIZONTAL, POSITIVE}, {430, 430, 10, 180, RIGHT, VERTICAL, POSITIVE}, // 28 29 30
+        {415, 630, 180, 10, RIGHT, HORIZONTAL, NEGATIVE}, {370, 653, 10, 180, RIGHT, HORIZONTAL, NEGATIVE}, {120, 665, 10, 100, RIGHT, VERTICAL, NEGATIVE}, // 31 32 33
+        {88, 600, 180, 10, RIGHT, VERTICAL, NEGATIVE} // 34
     };
 
     // Crear cada sensor IA y añadirlo a la lista de entidades
     for (const auto& sensor : aiSensorData) {
-        entities.emplace_back(DBG_NEW AISensor(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture, sensor.direction));
+        entities.emplace_back(DBG_NEW AISensor(
+            physics,
+            sensor.x,
+            sensor.y,
+            sensor.width,
+            sensor.height,
+            listener,
+            defaultTexture,
+            sensor.direction,
+            sensor.orientation,
+            sensor.valor
+        ));
     }
 }
 
@@ -790,6 +807,9 @@ public:
     Timer timeToBoost;
     int boostTime = 1;
 
+    bool orientation = false;
+    bool valor = false;
+
 
     KartType kartType;
 
@@ -870,6 +890,9 @@ public:
     float boostedMaxSpeed = 4.0f;
 
     float rotation;
+
+    bool orientation = false;
+    bool valor = false;
 
 	bool left = false;
 	bool right = false;
@@ -1240,6 +1263,65 @@ update_status ModuleGame::Update()
         lap_time = GetTime() - lap_start_time;
         App->fontsModule->DrawText(1065, 638, TextFormat("BEST TIME:%.2f", best_lap_time), 12, WHITE); 
         App->fontsModule->DrawText(1065, 674, TextFormat("LAP TIME:%.2f", lap_time ), 12, WHITE);
+
+        for (PhysicEntity* entity : entities)
+        {
+            for (PhysicEntity* entity : entities) {
+
+                if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity)) {
+                    if (kart_1->CurrentRank == 1) {
+                    }
+                    else if (kart_1->CurrentRank == 2) {
+                    }
+                    else if (kart_1->CurrentRank == 3) {
+                    }
+                    else {
+                    }
+                }
+
+                if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity)) {
+                    if (kart_2->CurrentRank == 1) {
+                    }
+                    else if (kart_2->CurrentRank == 2) {
+                    }
+                    else if (kart_2->CurrentRank == 3) {
+                    }
+                    else {
+                    }
+                }
+
+                if (Kart_Player_3* kart_3 = dynamic_cast<Kart_Player_3*>(entity)) {
+                    if (kart_3->CurrentRank == 1) {
+
+                    }
+                    else if (kart_3->CurrentRank == 2) {
+
+                    }
+                    else if (kart_3->CurrentRank == 3) {
+
+                    }
+                    else {
+
+                    }
+                }
+
+                if (Kart_Player_4* kart_4 = dynamic_cast<Kart_Player_4*>(entity)) {
+                    if (kart_4->CurrentRank == 1) {
+
+                    }
+                    else if (kart_4->CurrentRank == 2) {
+
+                    }
+                    else if (kart_4->CurrentRank == 3) {
+
+                    }
+                    else {
+
+                    }
+                }
+            }
+        }
+
             for (PhysicEntity* entity : entities)
         {
                 for (PhysicEntity* entity : entities) {
@@ -1468,10 +1550,68 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
         if (bodyA == entities[i]->body) {
             Kart_Controller* kart = dynamic_cast<Kart_Controller*>(entities[i]);
             Kart_NPC* kartNPC = dynamic_cast<Kart_NPC*>(entities[i]);
+            Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(entities[i]);
+            Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(entities[i]);
             Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entities[i]);
             Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entities[i]);
             FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entities[i]);
 
+
+            if (kart1) {
+                for (int k = 0; k < length; k++)
+                {
+                    if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == POSITIVE) {
+                        kart1->orientation = true;
+                        kart1->valor = true;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == NEGATIVE) {
+                        kart1->orientation = true;
+                        kart1->valor = false;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == VERTICAL && entities[k]->GetSensorValor() == POSITIVE)
+                    {
+                        kart1->orientation = false;
+                        kart1->valor = true;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == VERTICAL && entities[k]->GetSensorValor() == NEGATIVE)
+                    {
+                        kart1->orientation = false;
+                        kart1->valor = false;
+                        return;
+                    }
+                }
+            }
+
+            if (kart2) {
+                for (int k = 0; k < length; k++)
+                {
+                    if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == POSITIVE) {
+                        kart2->orientation = true;
+                        kart2->valor = true;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == NEGATIVE) {
+                        kart2->orientation = true;
+                        kart2->valor = false;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == VERTICAL && entities[k]->GetSensorValor() == POSITIVE)
+                    {
+                        kart2->orientation = false;
+                        kart2->valor = true;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == VERTICAL && entities[k]->GetSensorValor() == NEGATIVE)
+                    {
+                        kart2->orientation = false;
+                        kart2->valor = false;
+                        return;
+                    }
+                }
+            }
             // NPC KART AI MANAGEMENT
             if (kart3) {
                 for (int k = 0; k < length; k++)
@@ -1487,6 +1627,30 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         kart3->left = false;
                         return;
                     }
+
+                    if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == POSITIVE) {
+                        kart3->orientation = true;
+                        kart3->valor = true;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == NEGATIVE) {
+                        kart3->orientation = true;
+                        kart3->valor = false;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == VERTICAL && entities[k]->GetSensorValor() == POSITIVE)
+                    {
+                        kart3->orientation = false;
+                        kart3->valor = true;
+                        return;
+                    }
+                    else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == VERTICAL && entities[k]->GetSensorValor() == NEGATIVE)
+                    {
+                        kart3->orientation = false;
+                        kart3->valor = false;
+                        return;
+                    }
+
                 }
             }
             if (kart4) {
@@ -1501,6 +1665,29 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                     {
                         kart4->left = false;
                         kart4->right = true;
+                        return;
+                    }
+
+                    if (bodyB == entities[l]->body && entities[l]->GetCollisionType() == IA && entities[l]->GetSensorOrientation() == HORIZONTAL && entities[l]->GetSensorValor() == POSITIVE) {
+                        kart4->orientation = true;
+                        kart4->valor = true;
+                        return;
+                    }
+                    else if (bodyB == entities[l]->body && entities[l]->GetCollisionType() == IA && entities[l]->GetSensorOrientation() == HORIZONTAL && entities[l]->GetSensorValor() == NEGATIVE) {
+                        kart4->orientation = true;
+                        kart4->valor = false;
+                        return;
+                    }
+                    else if (bodyB == entities[l]->body && entities[l]->GetCollisionType() == IA && entities[l]->GetSensorOrientation() == VERTICAL && entities[l]->GetSensorValor() == POSITIVE)
+                    {
+                        kart4->orientation = false;
+                        kart4->valor = true;
+                        return;
+                    }
+                    else if (bodyB == entities[l]->body && entities[l]->GetCollisionType() == IA && entities[l]->GetSensorOrientation() == VERTICAL && entities[l]->GetSensorValor() == NEGATIVE)
+                    {
+                        kart4->orientation = false;
+                        kart4->valor = false;
                         return;
                     }
                 }

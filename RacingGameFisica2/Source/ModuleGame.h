@@ -48,6 +48,15 @@ enum TurnDirection
 	RIGHT,
 	NONE
 };
+enum SensorOrientation {
+	HORIZONTAL,
+	VERTICAL
+};
+
+enum SensorValor {
+	POSITIVE,
+	NEGATIVE
+};
 
 enum Player {
 	PLAYER1,
