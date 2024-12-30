@@ -764,6 +764,7 @@ public:
             HandleInput();
             Move();
         }
+        body->GetPhysicPosition(pos_x_kart, pos_y_kart);
         Kart::Update();
 		
     }
@@ -809,7 +810,11 @@ public:
 
     bool orientation = false;
     bool valor = false;
+    int pos_x_sensor = 0;
+    int pos_y_sensor = 0;
 
+    int pos_x_kart = 0;
+    int pos_y_kart = 0;
 
     KartType kartType;
 
@@ -879,6 +884,7 @@ public:
             MovingLogic();
             Move();
         }
+        body->GetPhysicPosition(pos_x_kart, pos_y_kart);
         Kart::Update();
     }
 
@@ -893,6 +899,11 @@ public:
 
     bool orientation = false;
     bool valor = false;
+    int pos_x_sensor = 0;
+    int pos_y_sensor = 0;
+
+    int pos_x_kart = 0; 
+    int pos_y_kart = 0; 
 
 	bool left = false;
 	bool right = false;
@@ -1267,19 +1278,189 @@ update_status ModuleGame::Update()
         for (PhysicEntity* entity : entities)
         {
             for (PhysicEntity* entity : entities) {
+                Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity);
+                Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity);
+                Kart_Player_3* kart_3 = dynamic_cast<Kart_Player_3*>(entity);
+                Kart_Player_4* kart_4 = dynamic_cast<Kart_Player_4*>(entity);
 
-                if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity)) {
-                    if (kart_1->CurrentRank == 1) {
+                if (kart_1) {
+                    if (kart_1->orientation == HORIZONTAL && kart_1->valor == POSITIVE) {
+                        kart_1->CurrentRank = 1;
+                        int kart2_position = kart_2->pos_y_kart - kart_1->pos_y_sensor;
+                        int kart3_position = kart_3->pos_y_kart - kart_1->pos_y_sensor;
+                        int kart4_position = kart_4->pos_y_kart - kart_1->pos_y_sensor;
+
+                        if (kart2_position < kart3_position && kart2_position < kart4_position) {
+                            kart_2->CurrentRank = 2;
+
+                            if (kart3_position < kart4_position) {
+                                kart_3->CurrentRank = 3;
+                                kart_4->CurrentRank = 4;
+                            }
+                            else {
+                                kart_3->CurrentRank = 4;
+                                kart_4->CurrentRank = 3;
+                            }
+                        }
+                        else if (kart3_position < kart2_position && kart3_position < kart4_position) {
+                            kart_3->CurrentRank = 2;
+
+                            if (kart2_position < kart4_position) {
+                                kart_2->CurrentRank = 3;
+                                kart_4->CurrentRank = 4;
+                            }
+                            else {
+                                kart_2->CurrentRank = 4;
+                                kart_4->CurrentRank = 3;
+                            }
+                        }
+                        else if (kart4_position < kart2_position && kart4_position < kart3_position) {
+                            kart_4->CurrentRank = 2;
+
+                            if (kart2_position < kart3_position) {
+                                kart_2->CurrentRank = 3;
+                                kart_3->CurrentRank = 4;
+                            }
+                            else {
+                                kart_2->CurrentRank = 4;
+                                kart_3->CurrentRank = 3;
+                            }
+                        }
                     }
-                    else if (kart_1->CurrentRank == 2) {
+                    
+
+                    else if (kart_1->orientation == HORIZONTAL && kart_1->valor == NEGATIVE) {
+                        kart_1->CurrentRank = 1;
+                        int kart2_position = kart_1->pos_y_sensor - kart_2->pos_y_kart;
+                        int kart3_position = kart_1->pos_y_sensor - kart_3->pos_y_kart;
+                        int kart4_position = kart_1->pos_y_sensor - kart_4->pos_y_kart;
+
+                        if (kart2_position < kart3_position && kart2_position < kart4_position) {
+                            kart_2->CurrentRank = 2;
+
+                            if (kart3_position < kart4_position) {
+                                kart_3->CurrentRank = 3;
+                                kart_4->CurrentRank = 4;
+                            }
+                            else {
+                                kart_3->CurrentRank = 4;
+                                kart_4->CurrentRank = 3;
+                            }
+                        }
+                        else if (kart3_position < kart2_position && kart3_position < kart4_position) {
+                            kart_3->CurrentRank = 2;
+
+                            if (kart2_position < kart4_position) {
+                                kart_2->CurrentRank = 3;
+                                kart_4->CurrentRank = 4;
+                            }
+                            else {
+                                kart_2->CurrentRank = 4;
+                                kart_4->CurrentRank = 3;
+                            }
+                        }
+                        else if (kart4_position < kart2_position && kart4_position < kart3_position) {
+                            kart_4->CurrentRank = 2;
+
+                            if (kart2_position < kart3_position) {
+                                kart_2->CurrentRank = 3;
+                                kart_3->CurrentRank = 4;
+                            }
+                            else {
+                                kart_2->CurrentRank = 4;
+                                kart_3->CurrentRank = 3;
+                            }
+                        }
                     }
-                    else if (kart_1->CurrentRank == 3) {
+                    else if (kart_1->orientation == VERTICAL && kart_1->valor == POSITIVE) {
+                        kart_1->CurrentRank = 1;
+                        int kart2_position = kart_2->pos_x_kart - kart_1->pos_x_sensor;
+                        int kart3_position = kart_3->pos_x_kart - kart_1->pos_x_sensor;
+                        int kart4_position = kart_4->pos_x_kart - kart_1->pos_x_sensor;
+
+                        if (kart2_position < kart3_position && kart2_position < kart4_position) {
+                            kart_2->CurrentRank = 2;
+
+                            if (kart3_position < kart4_position) {
+                                kart_3->CurrentRank = 3;
+                                kart_4->CurrentRank = 4;
+                            }
+                            else {
+                                kart_3->CurrentRank = 4;
+                                kart_4->CurrentRank = 3;
+                            }
+                        }
+                        else if (kart3_position < kart2_position && kart3_position < kart4_position) {
+                            kart_3->CurrentRank = 2;
+
+                            if (kart2_position < kart4_position) {
+                                kart_2->CurrentRank = 3;
+                                kart_4->CurrentRank = 4;
+                            }
+                            else {
+                                kart_2->CurrentRank = 4;
+                                kart_4->CurrentRank = 3;
+                            }
+                        }
+                        else if (kart4_position < kart2_position && kart4_position < kart3_position) {
+                            kart_4->CurrentRank = 2;
+
+                            if (kart2_position < kart3_position) {
+                                kart_2->CurrentRank = 3;
+                                kart_3->CurrentRank = 4;
+                            }
+                            else {
+                                kart_2->CurrentRank = 4;
+                                kart_3->CurrentRank = 3;
+                            }
+                        }
                     }
-                    else {
-                    }
+                    else if (kart_1->orientation == VERTICAL && kart_1->valor == NEGATIVE) {
+                        kart_1->CurrentRank = 1;
+                        int kart2_position = kart_1->pos_x_sensor - kart_2->pos_x_kart;
+                        int kart3_position = kart_1->pos_x_sensor - kart_3->pos_x_kart;
+                        int kart4_position = kart_1->pos_x_sensor - kart_4->pos_x_kart;
+
+                        if (kart2_position < kart3_position && kart2_position < kart4_position) {
+                            kart_2->CurrentRank = 2;
+
+                            if (kart3_position < kart4_position) {
+                                kart_3->CurrentRank = 3;
+                                kart_4->CurrentRank = 4;
+                            }
+                            else {
+                                kart_3->CurrentRank = 4;
+                                kart_4->CurrentRank = 3;
+                            }
+                        }
+                        else if (kart3_position < kart2_position && kart3_position < kart4_position) {
+                            kart_3->CurrentRank = 2;
+
+                            if (kart2_position < kart4_position) {
+                                kart_2->CurrentRank = 3;
+                                kart_4->CurrentRank = 4;
+                            }
+                            else {
+                                kart_2->CurrentRank = 4;
+                                kart_4->CurrentRank = 3;
+                            }
+                        }
+                        else if (kart4_position < kart2_position && kart4_position < kart3_position) {
+                            kart_4->CurrentRank = 2;
+
+                            if (kart2_position < kart3_position) {
+                                kart_2->CurrentRank = 3;
+                                kart_3->CurrentRank = 4;
+                            }
+                            else {
+                                kart_2->CurrentRank = 4;
+                                kart_3->CurrentRank = 3;
+                            }
+                        }
+                        }
                 }
 
-                if (Kart_Player_2* kart_2 = dynamic_cast<Kart_Player_2*>(entity)) {
+                if (kart_2) {
                     if (kart_2->CurrentRank == 1) {
                     }
                     else if (kart_2->CurrentRank == 2) {
@@ -1290,7 +1471,7 @@ update_status ModuleGame::Update()
                     }
                 }
 
-                if (Kart_Player_3* kart_3 = dynamic_cast<Kart_Player_3*>(entity)) {
+                if (kart_3) {
                     if (kart_3->CurrentRank == 1) {
 
                     }
@@ -1305,7 +1486,7 @@ update_status ModuleGame::Update()
                     }
                 }
 
-                if (Kart_Player_4* kart_4 = dynamic_cast<Kart_Player_4*>(entity)) {
+                if (kart_4) {
                     if (kart_4->CurrentRank == 1) {
 
                     }
@@ -1560,9 +1741,15 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
             if (kart1) {
                 for (int k = 0; k < length; k++)
                 {
+                    int sensorX, sensorY;
+
                     if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == POSITIVE) {
                         kart1->orientation = true;
                         kart1->valor = true;
+                        entities[k]->body->GetPhysicPosition(sensorX, sensorY);
+
+                        kart1->pos_x_sensor = sensorX;
+                        kart1->pos_y_sensor = sensorY;
                         return;
                     }
                     else if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == NEGATIVE) {
