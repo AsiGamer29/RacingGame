@@ -103,6 +103,7 @@ public:
 	void RemoveAllCollisionsAndSensors();
 	Texture2D getCarTexture(KartType kartType);
 	void UpdateRanking();
+	void UpdateKartCheckpoints(int checkpointID);
 	int randomKart();
 
 public:
