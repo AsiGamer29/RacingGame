@@ -5,6 +5,8 @@
 #include "Timer.h"
 #include "p2Point.h"
 
+#include <algorithm>
+#include "cmath"
 #include "raylib.h"
 #include <vector>
 
@@ -80,6 +82,7 @@ public:
 	void CreateCollisionsAndSensors();
 	void RemoveAllCollisionsAndSensors();
 	Texture2D getCarTexture(KartType kartType);
+	void UpdateRanking();
 	int randomKart();
 
 public:
