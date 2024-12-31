@@ -1293,7 +1293,7 @@ update_status ModuleGame::Update()
                 }
 
                 if (kart_1) {
-                    if (kart_1->orientation == HORIZONTAL && kart_1->valor == POSITIVE) {
+                    if (kart_1->orientation == true && kart_1->valor == true) {
                         kart_1->CurrentRank = 1;
                         int kart2_position = kart_2->pos_y_kart - kart_1->pos_y_sensor;
                         int kart3_position = kart_3->pos_y_kart - kart_1->pos_y_sensor;
@@ -1338,7 +1338,7 @@ update_status ModuleGame::Update()
                     }
                     
 
-                    else if (kart_1->orientation == HORIZONTAL && kart_1->valor == NEGATIVE) {
+                    else if (kart_1->orientation == true && kart_1->valor == false) {
                         kart_1->CurrentRank = 1;
                         int kart2_position = kart_1->pos_y_sensor - kart_2->pos_y_kart;
                         int kart3_position = kart_1->pos_y_sensor - kart_3->pos_y_kart;
@@ -1381,7 +1381,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_1->orientation == VERTICAL && kart_1->valor == POSITIVE) {
+                    else if (kart_1->orientation == false && kart_1->valor == true) {
                         kart_1->CurrentRank = 1;
                         int kart2_position = kart_2->pos_x_kart - kart_1->pos_x_sensor;
                         int kart3_position = kart_3->pos_x_kart - kart_1->pos_x_sensor;
@@ -1424,7 +1424,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_1->orientation == VERTICAL && kart_1->valor == NEGATIVE) {
+                    else if (kart_1->orientation == false && kart_1->valor == false) {
                         kart_1->CurrentRank = 1;
                         int kart2_position = kart_1->pos_x_sensor - kart_2->pos_x_kart;
                         int kart3_position = kart_1->pos_x_sensor - kart_3->pos_x_kart;
@@ -1470,7 +1470,7 @@ update_status ModuleGame::Update()
                 }
 
                 if (kart_2) {
-                    if (kart_2->orientation == HORIZONTAL && kart_2->valor == POSITIVE) {
+                    if (kart_2->orientation == true && kart_2->valor == true) {
                         kart_2->CurrentRank = 1;
                         int kart1_position = kart_1->pos_y_kart - kart_2->pos_y_sensor;
                         int kart3_position = kart_3->pos_y_kart - kart_2->pos_y_sensor;
@@ -1513,7 +1513,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_2->orientation == HORIZONTAL && kart_2->valor == NEGATIVE) {
+                    else if (kart_2->orientation == true && kart_2->valor == false) {
                         kart_2->CurrentRank = 1;
                         int kart1_position = kart_2->pos_y_sensor - kart_1->pos_y_kart;
                         int kart3_position = kart_2->pos_y_sensor - kart_3->pos_y_kart;
@@ -1556,7 +1556,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_2->orientation == VERTICAL && kart_2->valor == POSITIVE) {
+                    else if (kart_2->orientation == false && kart_2->valor == true) {
                         kart_2->CurrentRank = 1;
                         int kart1_position = kart_1->pos_x_kart - kart_2->pos_x_sensor;
                         int kart3_position = kart_3->pos_x_kart - kart_2->pos_x_sensor;
@@ -1599,7 +1599,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_2->orientation == VERTICAL && kart_2->valor == NEGATIVE) {
+                    else if (kart_2->orientation == false && kart_2->valor == true) {
                         kart_2->CurrentRank = 1;
                         int kart1_position = kart_2->pos_x_sensor - kart_1->pos_x_kart;
                         int kart3_position = kart_2->pos_x_sensor - kart_3->pos_x_kart;
@@ -1645,7 +1645,7 @@ update_status ModuleGame::Update()
                 }
 
                 if (kart_3) {
-                    if (kart_3->orientation == HORIZONTAL && kart_3->valor == POSITIVE) {
+                    if (kart_3->orientation == true && kart_3->valor == true) {
                         kart_3->CurrentRank = 1;
                         int kart1_position = kart_1->pos_y_kart - kart_3->pos_y_sensor;
                         int kart2_position = kart_2->pos_y_kart - kart_3->pos_y_sensor;
@@ -1688,7 +1688,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_3->orientation == HORIZONTAL && kart_3->valor == NEGATIVE) {
+                    else if (kart_3->orientation == true && kart_3->valor == false) {
                         kart_3->CurrentRank = 1;
                         int kart1_position = kart_3->pos_y_sensor - kart_1->pos_y_kart;
                         int kart2_position = kart_3->pos_y_sensor - kart_2->pos_y_kart;
@@ -1731,7 +1731,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_3->orientation == VERTICAL && kart_3->valor == POSITIVE) {
+                    else if (kart_3->orientation == false && kart_3->valor == true) {
                         kart_3->CurrentRank = 1;
                         int kart1_position = kart_1->pos_x_kart - kart_3->pos_x_sensor;
                         int kart2_position = kart_2->pos_x_kart - kart_3->pos_x_sensor;
@@ -1774,7 +1774,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_3->orientation == VERTICAL && kart_3->valor == NEGATIVE) {
+                    else if (kart_3->orientation == false && kart_3->valor == false) {
                         kart_3->CurrentRank = 1;
                         int kart1_position = kart_3->pos_x_sensor - kart_1->pos_x_kart;
                         int kart2_position = kart_3->pos_x_sensor - kart_2->pos_x_kart;
@@ -1820,7 +1820,7 @@ update_status ModuleGame::Update()
                 }
 
                 if (kart_4) {
-                    if (kart_4->orientation == HORIZONTAL && kart_4->valor == POSITIVE) {
+                    if (kart_4->orientation == true && kart_4->valor == true) {
                         kart_4->CurrentRank = 1;
                         int kart1_position = kart_1->pos_y_kart - kart_4->pos_y_sensor;
                         int kart2_position = kart_2->pos_y_kart - kart_4->pos_y_sensor;
@@ -1863,7 +1863,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_4->orientation == HORIZONTAL && kart_4->valor == NEGATIVE) {
+                    else if (kart_4->orientation == true && kart_4->valor == false) {
                         kart_4->CurrentRank = 1;
                         int kart1_position = kart_4->pos_y_sensor - kart_1->pos_y_kart;
                         int kart2_position = kart_4->pos_y_sensor - kart_2->pos_y_kart;
@@ -1906,7 +1906,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_4->orientation == VERTICAL && kart_4->valor == POSITIVE) {
+                    else if (kart_4->orientation == false && kart_4->valor == true) {
                         kart_4->CurrentRank = 1;
                         int kart1_position = kart_1->pos_x_kart - kart_4->pos_x_sensor;
                         int kart2_position = kart_2->pos_x_kart - kart_4->pos_x_sensor;
@@ -1949,7 +1949,7 @@ update_status ModuleGame::Update()
                             }
                         }
                     }
-                    else if (kart_4->orientation == VERTICAL && kart_4->valor == NEGATIVE) {
+                    else if (kart_4->orientation == false && kart_4->valor == false) {
                         kart_4->CurrentRank = 1;
                         int kart1_position = kart_4->pos_x_sensor - kart_1->pos_x_kart;
                         int kart2_position = kart_4->pos_x_sensor - kart_2->pos_x_kart;
@@ -2268,6 +2268,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
             if (kart2) {
                 for (int k = 0; k < length; k++)
                 {
+                    int sensorX, sensorY;
                     if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetSensorOrientation() == HORIZONTAL && entities[k]->GetSensorValor() == POSITIVE) {
                         kart2->orientation = true;
                         kart2->valor = true;
@@ -2296,6 +2297,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
             if (kart3) {
                 for (int k = 0; k < length; k++)
                 {
+                    int sensorX, sensorY;
                     if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA && entities[k]->GetTurnDirection() == LEFT) {
                         kart3->left = true;
                         kart3->right = false;
@@ -2336,6 +2338,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
             if (kart4) {
                 for (int l = 0; l < length; l++)
                 {
+                    int sensorX, sensorY;
                     if (bodyB == entities[l]->body && entities[l]->GetCollisionType() == IA && entities[l]->GetTurnDirection() == LEFT) {
                         kart4->left = true;
                         kart4->right = false;
