@@ -1260,10 +1260,10 @@ update_status ModuleGame::Update()
                     App->fontsModule->DrawText(469, 789, TextFormat("KART 1"), 20, WHITE);     
                 }
                 else if (kart_1->CurrentRank == 2) {
-                    App->fontsModule->DrawText(469, 825, TextFormat("KART 1"), 20, WHITE);
+					App->fontsModule->DrawText(680, 789, TextFormat("KART 1"), 20, WHITE); // 469, 825
                 }
 				else if (kart_1->CurrentRank == 3) {
-					App->fontsModule->DrawText(680, 789, TextFormat("KART 1"), 20, WHITE);
+					App->fontsModule->DrawText(469, 825, TextFormat("KART 1"), 20, WHITE);
 				}
 				else if (kart_1->CurrentRank == 4) {
 					App->fontsModule->DrawText(680, 825, TextFormat("KART 1"), 20, WHITE);
@@ -1275,10 +1275,10 @@ update_status ModuleGame::Update()
                     App->fontsModule->DrawText(469, 789, TextFormat("KART 2"), 20, WHITE);
                 }
                 else if (kart_2->CurrentRank == 2) {
-                    App->fontsModule->DrawText(469, 825, TextFormat("KART 2"), 20, WHITE);
+                    App->fontsModule->DrawText(680, 789, TextFormat("KART 2"), 20, WHITE);
                 }
                 else if (kart_2->CurrentRank == 3) {
-                    App->fontsModule->DrawText(680, 789, TextFormat("KART 2"), 20, WHITE);
+                    App->fontsModule->DrawText(469, 825, TextFormat("KART 2"), 20, WHITE);
                 }
 				else if (kart_2->CurrentRank == 4) {
 					App->fontsModule->DrawText(680, 825, TextFormat("KART 2"), 20, WHITE);
@@ -1290,10 +1290,10 @@ update_status ModuleGame::Update()
                     App->fontsModule->DrawText(469, 789, TextFormat("KART 3"), 20, WHITE);
                 }
                 else if (kart_3->CurrentRank == 2) {
-                    App->fontsModule->DrawText(469, 825, TextFormat("KART 3"), 20, WHITE);
+                    App->fontsModule->DrawText(680, 789, TextFormat("KART 3"), 20, WHITE);
                 }
                 else if (kart_3->CurrentRank == 3) {
-                    App->fontsModule->DrawText(680, 789, TextFormat("KART 3"), 20, WHITE);
+                    App->fontsModule->DrawText(469, 825, TextFormat("KART 3"), 20, WHITE);
                 }
                 else if (kart_3->CurrentRank == 4) {
                     App->fontsModule->DrawText(680, 825, TextFormat("KART 3"), 20, WHITE);
@@ -1305,10 +1305,10 @@ update_status ModuleGame::Update()
                     App->fontsModule->DrawText(469, 789, TextFormat("KART 4"), 20, WHITE);
                 }
                 else if (kart_4->CurrentRank == 2) {
-                    App->fontsModule->DrawText(469, 825, TextFormat("KART 4"), 20, WHITE);
+                    App->fontsModule->DrawText(680, 789, TextFormat("KART 4"), 20, WHITE);
                 }
                 else if (kart_4->CurrentRank == 3) {
-                    App->fontsModule->DrawText(680, 789, TextFormat("KART 4"), 20, WHITE);
+                    App->fontsModule->DrawText(469, 825, TextFormat("KART 4"), 20, WHITE);
                 }
                 else if (kart_4->CurrentRank == 4) {
                     App->fontsModule->DrawText(680, 825, TextFormat("KART 4"), 20, WHITE);
