@@ -158,10 +158,43 @@ void InitializeCheckpointSensors(ModulePhysics* physics, Module* listener, std::
     };
 
     std::vector<CheckpointParams> checkpointData = {
-        {670, 270, 130, 10, CHECKPOINT_SENSOR_1},
-        {1192, 232, 140, 10, CHECKPOINT_SENSOR_2},
-        {700, 600, 10, 206, CHECKPOINT_SENSOR_3},
-        {260, 650, 10, 116, CHECKPOINT_SENSOR_4}
+        
+
+
+
+
+        {135, 260, 240, 10, CHECKPOINT_SENSOR_1},
+        {295, 85, 10, 140, CHECKPOINT_SENSOR_2},
+        { 535, 95, 10, 160, CHECKPOINT_SENSOR_3},
+
+        {670, 270, 130, 10, CHECKPOINT_SENSOR_4},
+
+        { 760, 400, 10, 130, CHECKPOINT_SENSOR_5 },
+        {840, 270, 150, 10, CHECKPOINT_SENSOR_6 },
+        {952, 123, 10, 230, CHECKPOINT_SENSOR_7 },
+        {1093, 118, 10, 200, CHECKPOINT_SENSOR_8 },
+
+        {1192, 232, 140, 10, CHECKPOINT_SENSOR_9},
+
+        {1062, 350, 10, 200, CHECKPOINT_SENSOR_10 },
+        {991, 462, 150, 10, CHECKPOINT_SENSOR_11 },
+        {991, 583, 150, 10, CHECKPOINT_SENSOR_12 },
+        {904, 664, 10, 80, CHECKPOINT_SENSOR_13 },
+        {733, 602, 10, 230, CHECKPOINT_SENSOR_14 },
+
+        {600, 600, 10, 206, CHECKPOINT_SENSOR_15},
+
+        {543, 471, 130, 10, CHECKPOINT_SENSOR_16 },
+        {533, 341, 130, 10, CHECKPOINT_SENSOR_17 },
+        {440, 261, 10, 150, CHECKPOINT_SENSOR_18 },
+        {351, 325, 150, 10, CHECKPOINT_SENSOR_19 },
+        {371, 406, 170, 10, CHECKPOINT_SENSOR_20 },
+        {385, 504, 190, 10, CHECKPOINT_SENSOR_21 },
+        {415, 584, 130, 10, CHECKPOINT_SENSOR_22 },
+
+        {260, 650, 10, 116, CHECKPOINT_SENSOR_23},
+
+        {145, 540, 250, 10, CHECKPOINT_SENSOR_24 }
     };
 
     for (const auto& checkpoint : checkpointData) {
@@ -215,7 +248,7 @@ protected:
 
 struct AISensorParams {
     int x;
-    int y;
+        int y;
     int width;
     int height;
     TurnDirection direction;
@@ -1993,10 +2026,30 @@ void ModuleGame::UpdateRanking() {
 
     // Coordenadas de los checkpoints
     std::vector<std::pair<int, int>> checkpoints = {
-        {670, 270}, // CHECKPOINT_SENSOR_1
-        {1192, 232}, // CHECKPOINT_SENSOR_2
-        {700, 600}, // CHECKPOINT_SENSOR_3
-        {260, 650}  // CHECKPOINT_SENSOR_4
+    {135, 260}, // CHECKPOINT_SENSOR_1
+    {295, 85}, // CHECKPOINT_SENSOR_2
+    {535, 95}, // CHECKPOINT_SENSOR_3
+    {670, 270}, // CHECKPOINT_SENSOR_4
+    {760, 400}, // CHECKPOINT_SENSOR_5
+    {840, 270}, // CHECKPOINT_SENSOR_6
+    {952, 123}, // CHECKPOINT_SENSOR_7
+    {1093, 118}, // CHECKPOINT_SENSOR_8
+    {1192, 232}, // CHECKPOINT_SENSOR_9
+    {1062, 350}, // CHECKPOINT_SENSOR_10
+    {991, 462}, // CHECKPOINT_SENSOR_11
+    {991, 583}, // CHECKPOINT_SENSOR_12
+    {904, 664}, // CHECKPOINT_SENSOR_13
+    {733, 602}, // CHECKPOINT_SENSOR_14
+    {600, 600}, // CHECKPOINT_SENSOR_15
+    {543, 471}, // CHECKPOINT_SENSOR_16
+    {533, 341}, // CHECKPOINT_SENSOR_17
+    {440, 261}, // CHECKPOINT_SENSOR_18
+    {351, 325}, // CHECKPOINT_SENSOR_19
+    {371, 406}, // CHECKPOINT_SENSOR_20
+    {385, 504}, // CHECKPOINT_SENSOR_21
+    {415, 584}, // CHECKPOINT_SENSOR_22
+    {260, 650}, // CHECKPOINT_SENSOR_23
+    {145, 540}, // CHECKPOINT_SENSOR_24
     };
 
     // Calcular la distancia al próximo checkpoint para cada kart
