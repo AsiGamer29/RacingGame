@@ -212,7 +212,8 @@ public:
         body->GetPhysicPosition(posX, posY);
         DrawTextureEx(texture, Vector2{ (float)posX, (float)posY }, body->GetRotation() * RAD2DEG, 0.0f, YELLOW);
     }
-
+public:
+    int kartCount = 0; 
 protected:
     Texture2D texture;
 };
@@ -225,6 +226,7 @@ struct AISensorParams {
     TurnDirection direction;
     SensorOrientation orientation;
     SensorValor valor;
+    
 };
 
 void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
@@ -233,7 +235,7 @@ void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<P
         {210, 75, 10, 180, RIGHT, HORIZONTAL, POSITIVE}, {650, 82, 10, 180, RIGHT, VERTICAL, POSITIVE}, {680, 150, 10, 180, RIGHT, VERTICAL, POSITIVE}, // 4 5 6
         {680, 360, 160, 30, LEFT, HORIZONTAL, POSITIVE}, {745, 390, 10, 180, LEFT, HORIZONTAL, POSITIVE}, {820, 390, 10, 180, LEFT, VERTICAL, NEGATIVE}, // 7 8 9
         {840, 345, 145, 10, LEFT, VERTICAL, NEGATIVE},{925, 145, 205, 30, RIGHT, HORIZONTAL, POSITIVE}, {920, 125, 60, 180, RIGHT, HORIZONTAL, POSITIVE},  //10 11 12
-        {1150, 125, 10, 180, RIGHT, VERTICAL, POSITIVE},{1230, 200, 140, 10, RIGHT, VERTICAL, POSITIVE }, {1185, 370, 200, 10, RIGHT, HORIZONTAL, NEGATIVE}, // 13 14 15
+        {1150, 125, 10, 180, RIGHT, VERTICAL, POSITIVE},{1230, 200, 140, 10, RIGHT, VERTICAL, POSITIVE}, {1185, 370, 200, 10, RIGHT, HORIZONTAL, NEGATIVE}, // 13 14 15
         {1130, 400, 10, 100, RIGHT, HORIZONTAL, NEGATIVE}, {1030, 400, 10, 100, LEFT, VERTICAL, POSITIVE}, {1000, 460, 120, 30, LEFT, VERTICAL, POSITIVE}, // 16 17 18
         {1000, 620, 100, 10, RIGHT, HORIZONTAL, NEGATIVE}, {940, 650, 10, 120, RIGHT, HORIZONTAL, NEGATIVE}, {830, 650, 10, 180, RIGHT, VERTICAL, NEGATIVE}, // 19 20 21
         {800, 580, 210, 10, LEFT, HORIZONTAL, NEGATIVE}, {590, 590, 20, 210, RIGHT, VERTICAL, NEGATIVE}, {540, 560, 20, 205, RIGHT, VERTICAL, NEGATIVE}, // 22 23 24
@@ -245,8 +247,8 @@ void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<P
 
     // Crear cada sensor IA y añadirlo a la lista de entidades
     for (const auto& sensor : aiSensorData) {
-        entities.emplace_back(DBG_NEW AISensor(
-            physics,
+        entities.emplace_back(DBG_NEW AISensor( 
+            physics, 
             sensor.x,
             sensor.y,
             sensor.width,
@@ -256,6 +258,7 @@ void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<P
             sensor.direction,
             sensor.orientation,
             sensor.valor
+
         ));
     }
 }
@@ -1275,726 +1278,725 @@ update_status ModuleGame::Update()
         App->fontsModule->DrawText(1065, 638, TextFormat("BEST TIME:%.2f", best_lap_time), 12, WHITE); 
         App->fontsModule->DrawText(1065, 674, TextFormat("LAP TIME:%.2f", lap_time ), 12, WHITE);
 
-        for (PhysicEntity* entity : entities)
-        {
-            Kart_Player_1* kart_1 = nullptr;
-            Kart_Player_2* kart_2 = nullptr;
-            Kart_Player_3* kart_3 = nullptr;
-            Kart_Player_4* kart_4 = nullptr;
-            for (PhysicEntity* entity : entities) {
-
-
-                for (PhysicEntity* entity : entities) { // search karts
-                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
-                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
-                    if (!kart_3) kart_3 = dynamic_cast<Kart_Player_3*>(entity);
-                    if (!kart_4) kart_4 = dynamic_cast<Kart_Player_4*>(entity);
-                    if (kart_1 && kart_2 && kart_3 && kart_4) break;
-                }
-
-                if (kart_1) {
-                    if (kart_1->orientation == true && kart_1->valor == true) {
-                        kart_1->CurrentRank = 1;
-                        int kart2_position = kart_2->pos_y_kart - kart_1->pos_y_sensor;
-                        int kart3_position = kart_3->pos_y_kart - kart_1->pos_y_sensor;
-                        int kart4_position = kart_4->pos_y_kart - kart_1->pos_y_sensor;
-
-                        if (kart2_position < kart3_position && kart2_position < kart4_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart3_position < kart4_position) {
-                                kart_3->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_3->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart2_position && kart3_position < kart4_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart2_position < kart4_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart2_position && kart4_position < kart3_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart2_position < kart3_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    
-
-                    else if (kart_1->orientation == true && kart_1->valor == false) {
-                        kart_1->CurrentRank = 1;
-                        int kart2_position = kart_1->pos_y_sensor - kart_2->pos_y_kart;
-                        int kart3_position = kart_1->pos_y_sensor - kart_3->pos_y_kart;
-                        int kart4_position = kart_1->pos_y_sensor - kart_4->pos_y_kart;
-
-                        if (kart2_position < kart3_position && kart2_position < kart4_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart3_position < kart4_position) {
-                                kart_3->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_3->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart2_position && kart3_position < kart4_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart2_position < kart4_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart2_position && kart4_position < kart3_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart2_position < kart3_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_1->orientation == false && kart_1->valor == true) {
-                        kart_1->CurrentRank = 1;
-                        int kart2_position = kart_2->pos_x_kart - kart_1->pos_x_sensor;
-                        int kart3_position = kart_3->pos_x_kart - kart_1->pos_x_sensor;
-                        int kart4_position = kart_4->pos_x_kart - kart_1->pos_x_sensor;
-
-                        if (kart2_position < kart3_position && kart2_position < kart4_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart3_position < kart4_position) {
-                                kart_3->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_3->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart2_position && kart3_position < kart4_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart2_position < kart4_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart2_position && kart4_position < kart3_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart2_position < kart3_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_1->orientation == false && kart_1->valor == false) {
-                        kart_1->CurrentRank = 1;
-                        int kart2_position = kart_1->pos_x_sensor - kart_2->pos_x_kart;
-                        int kart3_position = kart_1->pos_x_sensor - kart_3->pos_x_kart;
-                        int kart4_position = kart_1->pos_x_sensor - kart_4->pos_x_kart;
-
-                        if (kart2_position < kart3_position && kart2_position < kart4_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart3_position < kart4_position) {
-                                kart_3->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_3->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart2_position && kart3_position < kart4_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart2_position < kart4_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart2_position && kart4_position < kart3_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart2_position < kart3_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                    }
-                }
-
-                if (kart_2) {
-                    if (kart_2->orientation == true && kart_2->valor == true) {
-                        kart_2->CurrentRank = 1;
-                        int kart1_position = kart_1->pos_y_kart - kart_2->pos_y_sensor;
-                        int kart3_position = kart_3->pos_y_kart - kart_2->pos_y_sensor;
-                        int kart4_position = kart_4->pos_y_kart - kart_2->pos_y_sensor;
-
-                        if (kart1_position < kart3_position && kart1_position < kart4_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart3_position < kart4_position) {
-                                kart_3->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_3->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart1_position && kart3_position < kart4_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart1_position < kart4_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart1_position && kart4_position < kart3_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart1_position < kart3_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_2->orientation == true && kart_2->valor == false) {
-                        kart_2->CurrentRank = 1;
-                        int kart1_position = kart_2->pos_y_sensor - kart_1->pos_y_kart;
-                        int kart3_position = kart_2->pos_y_sensor - kart_3->pos_y_kart;
-                        int kart4_position = kart_2->pos_y_sensor - kart_4->pos_y_kart;
-
-                        if (kart1_position < kart3_position && kart1_position < kart4_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart3_position < kart4_position) {
-                                kart_3->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_3->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart1_position && kart3_position < kart4_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart1_position < kart4_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart1_position && kart4_position < kart3_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart1_position < kart3_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_2->orientation == false && kart_2->valor == true) {
-                        kart_2->CurrentRank = 1;
-                        int kart1_position = kart_1->pos_x_kart - kart_2->pos_x_sensor;
-                        int kart3_position = kart_3->pos_x_kart - kart_2->pos_x_sensor;
-                        int kart4_position = kart_4->pos_x_kart - kart_2->pos_x_sensor;
-
-                        if (kart1_position < kart3_position && kart1_position < kart4_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart3_position < kart4_position) {
-                                kart_3->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_3->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart1_position && kart3_position < kart4_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart1_position < kart4_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart1_position && kart4_position < kart3_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart1_position < kart3_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_2->orientation == false && kart_2->valor == true) {
-                        kart_2->CurrentRank = 1;
-                        int kart1_position = kart_2->pos_x_sensor - kart_1->pos_x_kart;
-                        int kart3_position = kart_2->pos_x_sensor - kart_3->pos_x_kart;
-                        int kart4_position = kart_2->pos_x_sensor - kart_4->pos_x_kart;
-
-                        if (kart1_position < kart3_position && kart1_position < kart4_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart3_position < kart4_position) {
-                                kart_3->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_3->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart1_position && kart3_position < kart4_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart1_position < kart4_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart1_position && kart4_position < kart3_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart1_position < kart3_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                    }
-                }
-
-                if (kart_3) {
-                    if (kart_3->orientation == true && kart_3->valor == true) {
-                        kart_3->CurrentRank = 1;
-                        int kart1_position = kart_1->pos_y_kart - kart_3->pos_y_sensor;
-                        int kart2_position = kart_2->pos_y_kart - kart_3->pos_y_sensor;
-                        int kart4_position = kart_4->pos_y_kart - kart_3->pos_y_sensor;
-
-                        if (kart1_position < kart2_position && kart1_position < kart4_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart2_position < kart4_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart2_position < kart1_position && kart2_position < kart4_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart1_position < kart4_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart1_position && kart4_position < kart2_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart1_position < kart2_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_2->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_2->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_3->orientation == true && kart_3->valor == false) {
-                        kart_3->CurrentRank = 1;
-                        int kart1_position = kart_3->pos_y_sensor - kart_1->pos_y_kart;
-                        int kart2_position = kart_3->pos_y_sensor - kart_2->pos_y_kart;
-                        int kart4_position = kart_3->pos_y_sensor - kart_4->pos_y_kart;
-
-                        if (kart1_position < kart2_position && kart1_position < kart4_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart2_position < kart4_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart2_position < kart1_position && kart2_position < kart4_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart1_position < kart4_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart1_position && kart4_position < kart2_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart1_position < kart2_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_2->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_2->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_3->orientation == false && kart_3->valor == true) {
-                        kart_3->CurrentRank = 1;
-                        int kart1_position = kart_1->pos_x_kart - kart_3->pos_x_sensor;
-                        int kart2_position = kart_2->pos_x_kart - kart_3->pos_x_sensor;
-                        int kart4_position = kart_4->pos_x_kart - kart_3->pos_x_sensor;
-
-                        if (kart1_position < kart2_position && kart1_position < kart4_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart2_position < kart4_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart2_position < kart1_position && kart2_position < kart4_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart1_position < kart4_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart1_position && kart4_position < kart2_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart1_position < kart2_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_2->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_2->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_3->orientation == false && kart_3->valor == false) {
-                        kart_3->CurrentRank = 1;
-                        int kart1_position = kart_3->pos_x_sensor - kart_1->pos_x_kart;
-                        int kart2_position = kart_3->pos_x_sensor - kart_2->pos_x_kart;
-                        int kart4_position = kart_3->pos_x_sensor - kart_4->pos_x_kart;
-
-                        if (kart1_position < kart2_position && kart1_position < kart4_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart2_position < kart4_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart2_position < kart1_position && kart2_position < kart4_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart1_position < kart4_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_4->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_4->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart4_position < kart1_position && kart4_position < kart2_position) {
-                            kart_4->CurrentRank = 2;
-
-                            if (kart1_position < kart2_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_2->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_2->CurrentRank = 3;
-                            }
-                        }
-                    }
-                }
-
-                if (kart_4) {
-                    if (kart_4->orientation == true && kart_4->valor == true) {
-                        kart_4->CurrentRank = 1;
-                        int kart1_position = kart_1->pos_y_kart - kart_4->pos_y_sensor;
-                        int kart2_position = kart_2->pos_y_kart - kart_4->pos_y_sensor;
-                        int kart3_position = kart_3->pos_y_kart - kart_4->pos_y_sensor;
-
-                        if (kart1_position < kart2_position && kart1_position < kart3_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart2_position < kart3_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart2_position < kart1_position && kart2_position < kart3_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart1_position < kart3_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart1_position && kart3_position < kart2_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart1_position < kart2_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_2->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_2->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_4->orientation == true && kart_4->valor == false) {
-                        kart_4->CurrentRank = 1;
-                        int kart1_position = kart_4->pos_y_sensor - kart_1->pos_y_kart;
-                        int kart2_position = kart_4->pos_y_sensor - kart_2->pos_y_kart;
-                        int kart3_position = kart_4->pos_y_sensor - kart_3->pos_y_kart;
-
-                        if (kart1_position < kart2_position && kart1_position < kart3_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart2_position < kart3_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart2_position < kart1_position && kart2_position < kart3_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart1_position < kart3_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart1_position && kart3_position < kart2_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart1_position < kart2_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_2->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_2->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_4->orientation == false && kart_4->valor == true) {
-                        kart_4->CurrentRank = 1;
-                        int kart1_position = kart_1->pos_x_kart - kart_4->pos_x_sensor;
-                        int kart2_position = kart_2->pos_x_kart - kart_4->pos_x_sensor;
-                        int kart3_position = kart_3->pos_x_kart - kart_4->pos_x_sensor;
-
-                        if (kart1_position < kart2_position && kart1_position < kart3_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart2_position < kart3_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart2_position < kart1_position && kart2_position < kart3_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart1_position < kart3_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart1_position && kart3_position < kart2_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart1_position < kart2_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_2->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_2->CurrentRank = 3;
-                            }
-                        }
-                    }
-                    else if (kart_4->orientation == false && kart_4->valor == false) {
-                        kart_4->CurrentRank = 1;
-                        int kart1_position = kart_4->pos_x_sensor - kart_1->pos_x_kart;
-                        int kart2_position = kart_4->pos_x_sensor - kart_2->pos_x_kart;
-                        int kart3_position = kart_4->pos_x_sensor - kart_3->pos_x_kart;
-
-                        if (kart1_position < kart2_position && kart1_position < kart3_position) {
-                            kart_1->CurrentRank = 2;
-
-                            if (kart2_position < kart3_position) {
-                                kart_2->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_2->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart2_position < kart1_position && kart2_position < kart3_position) {
-                            kart_2->CurrentRank = 2;
-
-                            if (kart1_position < kart3_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_3->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_3->CurrentRank = 3;
-                            }
-                        }
-                        else if (kart3_position < kart1_position && kart3_position < kart2_position) {
-                            kart_3->CurrentRank = 2;
-
-                            if (kart1_position < kart2_position) {
-                                kart_1->CurrentRank = 3;
-                                kart_2->CurrentRank = 4;
-                            }
-                            else {
-                                kart_1->CurrentRank = 4;
-                                kart_2->CurrentRank = 3;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //for (PhysicEntity* entity : entities)
+        //{
+        //    Kart_Player_1* kart_1 = nullptr;
+        //    Kart_Player_2* kart_2 = nullptr;
+        //    Kart_Player_3* kart_3 = nullptr;
+        //    Kart_Player_4* kart_4 = nullptr;
+        //    for (PhysicEntity* entity : entities) {
+
+
+        //        for (PhysicEntity* entity : entities) { // search karts
+        //            if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
+        //            if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
+        //            if (!kart_3) kart_3 = dynamic_cast<Kart_Player_3*>(entity);
+        //            if (!kart_4) kart_4 = dynamic_cast<Kart_Player_4*>(entity);
+        //            if (kart_1 && kart_2 && kart_3 && kart_4) break;
+        //        }
+
+        //        if (kart_1) {
+        //            if (kart_1->orientation == true && kart_1->valor == true) {
+        //                kart_1->CurrentRank = 1;
+        //                int kart2_position = kart_2->pos_y_kart - kart_1->pos_y_sensor;
+        //                int kart3_position = kart_3->pos_y_kart - kart_1->pos_y_sensor;
+        //                int kart4_position = kart_4->pos_y_kart - kart_1->pos_y_sensor;
+
+        //                if (kart2_position < kart3_position && kart2_position < kart4_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart3_position < kart4_position) {
+        //                        kart_3->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_3->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart2_position && kart3_position < kart4_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart2_position < kart4_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart2_position && kart4_position < kart3_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart2_position < kart3_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+
+        //            else if (kart_1->orientation == true && kart_1->valor == false) {
+        //                kart_1->CurrentRank = 1;
+        //                int kart2_position = kart_1->pos_y_sensor - kart_2->pos_y_kart;
+        //                int kart3_position = kart_1->pos_y_sensor - kart_3->pos_y_kart;
+        //                int kart4_position = kart_1->pos_y_sensor - kart_4->pos_y_kart;
+
+        //                if (kart2_position < kart3_position && kart2_position < kart4_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart3_position < kart4_position) {
+        //                        kart_3->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_3->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart2_position && kart3_position < kart4_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart2_position < kart4_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart2_position && kart4_position < kart3_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart2_position < kart3_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_1->orientation == false && kart_1->valor == true) {
+        //                kart_1->CurrentRank = 1;
+        //                int kart2_position = kart_2->pos_x_kart - kart_1->pos_x_sensor;
+        //                int kart3_position = kart_3->pos_x_kart - kart_1->pos_x_sensor;
+        //                int kart4_position = kart_4->pos_x_kart - kart_1->pos_x_sensor;
+
+        //                if (kart2_position < kart3_position && kart2_position < kart4_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart3_position < kart4_position) {
+        //                        kart_3->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_3->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart2_position && kart3_position < kart4_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart2_position < kart4_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart2_position && kart4_position < kart3_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart2_position < kart3_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_1->orientation == false && kart_1->valor == false) {
+        //                kart_1->CurrentRank = 1;
+        //                int kart2_position = kart_1->pos_x_sensor - kart_2->pos_x_kart;
+        //                int kart3_position = kart_1->pos_x_sensor - kart_3->pos_x_kart;
+        //                int kart4_position = kart_1->pos_x_sensor - kart_4->pos_x_kart;
+
+        //                if (kart2_position < kart3_position && kart2_position < kart4_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart3_position < kart4_position) {
+        //                        kart_3->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_3->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart2_position && kart3_position < kart4_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart2_position < kart4_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart2_position && kart4_position < kart3_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart2_position < kart3_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        if (kart_2) {
+        //            if (kart_2->orientation == true && kart_2->valor == true) {
+        //                kart_2->CurrentRank = 1;
+        //                int kart1_position = kart_1->pos_y_kart - kart_2->pos_y_sensor;
+        //                int kart3_position = kart_3->pos_y_kart - kart_2->pos_y_sensor;
+        //                int kart4_position = kart_4->pos_y_kart - kart_2->pos_y_sensor;
+
+        //                if (kart1_position < kart3_position && kart1_position < kart4_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart3_position < kart4_position) {
+        //                        kart_3->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_3->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart1_position && kart3_position < kart4_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart1_position < kart4_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart1_position && kart4_position < kart3_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart1_position < kart3_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_2->orientation == true && kart_2->valor == false) {
+        //                kart_2->CurrentRank = 1;
+        //                int kart1_position = kart_2->pos_y_sensor - kart_1->pos_y_kart;
+        //                int kart3_position = kart_2->pos_y_sensor - kart_3->pos_y_kart;
+        //                int kart4_position = kart_2->pos_y_sensor - kart_4->pos_y_kart;
+
+        //                if (kart1_position < kart3_position && kart1_position < kart4_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart3_position < kart4_position) {
+        //                        kart_3->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_3->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart1_position && kart3_position < kart4_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart1_position < kart4_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart1_position && kart4_position < kart3_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart1_position < kart3_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_2->orientation == false && kart_2->valor == true) {
+        //                kart_2->CurrentRank = 1;
+        //                int kart1_position = kart_1->pos_x_kart - kart_2->pos_x_sensor;
+        //                int kart3_position = kart_3->pos_x_kart - kart_2->pos_x_sensor;
+        //                int kart4_position = kart_4->pos_x_kart - kart_2->pos_x_sensor;
+
+        //                if (kart1_position < kart3_position && kart1_position < kart4_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart3_position < kart4_position) {
+        //                        kart_3->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_3->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart1_position && kart3_position < kart4_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart1_position < kart4_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart1_position && kart4_position < kart3_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart1_position < kart3_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_2->orientation == false && kart_2->valor == true) {
+        //                kart_2->CurrentRank = 1;
+        //                int kart1_position = kart_2->pos_x_sensor - kart_1->pos_x_kart;
+        //                int kart3_position = kart_2->pos_x_sensor - kart_3->pos_x_kart;
+        //                int kart4_position = kart_2->pos_x_sensor - kart_4->pos_x_kart;
+
+        //                if (kart1_position < kart3_position && kart1_position < kart4_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart3_position < kart4_position) {
+        //                        kart_3->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_3->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart1_position && kart3_position < kart4_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart1_position < kart4_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart1_position && kart4_position < kart3_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart1_position < kart3_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        if (kart_3) {
+        //            if (kart_3->orientation == true && kart_3->valor == true) {
+        //                kart_3->CurrentRank = 1;
+        //                int kart1_position = kart_1->pos_y_kart - kart_3->pos_y_sensor;
+        //                int kart2_position = kart_2->pos_y_kart - kart_3->pos_y_sensor;
+        //                int kart4_position = kart_4->pos_y_kart - kart_3->pos_y_sensor;
+
+        //                if (kart1_position < kart2_position && kart1_position < kart4_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart2_position < kart4_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart2_position < kart1_position && kart2_position < kart4_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart1_position < kart4_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart1_position && kart4_position < kart2_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart1_position < kart2_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_2->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_2->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_3->orientation == true && kart_3->valor == false) {
+        //                kart_3->CurrentRank = 1;
+        //                int kart1_position = kart_3->pos_y_sensor - kart_1->pos_y_kart;
+        //                int kart2_position = kart_3->pos_y_sensor - kart_2->pos_y_kart;
+        //                int kart4_position = kart_3->pos_y_sensor - kart_4->pos_y_kart;
+
+        //                if (kart1_position < kart2_position && kart1_position < kart4_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart2_position < kart4_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart2_position < kart1_position && kart2_position < kart4_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart1_position < kart4_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart1_position && kart4_position < kart2_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart1_position < kart2_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_2->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_2->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_3->orientation == false && kart_3->valor == true) {
+        //                kart_3->CurrentRank = 1;
+        //                int kart1_position = kart_1->pos_x_kart - kart_3->pos_x_sensor;
+        //                int kart2_position = kart_2->pos_x_kart - kart_3->pos_x_sensor;
+        //                int kart4_position = kart_4->pos_x_kart - kart_3->pos_x_sensor;
+
+        //                if (kart1_position < kart2_position && kart1_position < kart4_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart2_position < kart4_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart2_position < kart1_position && kart2_position < kart4_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart1_position < kart4_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart1_position && kart4_position < kart2_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart1_position < kart2_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_2->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_2->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_3->orientation == false && kart_3->valor == false) {
+        //                kart_3->CurrentRank = 1;
+        //                int kart1_position = kart_3->pos_x_sensor - kart_1->pos_x_kart;
+        //                int kart2_position = kart_3->pos_x_sensor - kart_2->pos_x_kart;
+        //                int kart4_position = kart_3->pos_x_sensor - kart_4->pos_x_kart;
+
+        //                if (kart1_position < kart2_position && kart1_position < kart4_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart2_position < kart4_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart2_position < kart1_position && kart2_position < kart4_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart1_position < kart4_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_4->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_4->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart4_position < kart1_position && kart4_position < kart2_position) {
+        //                    kart_4->CurrentRank = 2;
+
+        //                    if (kart1_position < kart2_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_2->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_2->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //        if (kart_4) {
+        //            if (kart_4->orientation == true && kart_4->valor == true) {
+        //                kart_4->CurrentRank = 1;
+        //                int kart1_position = kart_1->pos_y_kart - kart_4->pos_y_sensor;
+        //                int kart2_position = kart_2->pos_y_kart - kart_4->pos_y_sensor;
+        //                int kart3_position = kart_3->pos_y_kart - kart_4->pos_y_sensor;
+
+        //                if (kart1_position < kart2_position && kart1_position < kart3_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart2_position < kart3_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart2_position < kart1_position && kart2_position < kart3_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart1_position < kart3_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart1_position && kart3_position < kart2_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart1_position < kart2_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_2->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_2->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_4->orientation == true && kart_4->valor == false) {
+        //                kart_4->CurrentRank = 1;
+        //                int kart1_position = kart_4->pos_y_sensor - kart_1->pos_y_kart;
+        //                int kart2_position = kart_4->pos_y_sensor - kart_2->pos_y_kart;
+        //                int kart3_position = kart_4->pos_y_sensor - kart_3->pos_y_kart;
+
+        //                if (kart1_position < kart2_position && kart1_position < kart3_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart2_position < kart3_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart2_position < kart1_position && kart2_position < kart3_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart1_position < kart3_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart1_position && kart3_position < kart2_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart1_position < kart2_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_2->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_2->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_4->orientation == false && kart_4->valor == true) {
+        //                kart_4->CurrentRank = 1;
+        //                int kart1_position = kart_1->pos_x_kart - kart_4->pos_x_sensor;
+        //                int kart2_position = kart_2->pos_x_kart - kart_4->pos_x_sensor;
+        //                int kart3_position = kart_3->pos_x_kart - kart_4->pos_x_sensor;
+
+        //                if (kart1_position < kart2_position && kart1_position < kart3_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart2_position < kart3_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart2_position < kart1_position && kart2_position < kart3_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart1_position < kart3_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart1_position && kart3_position < kart2_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart1_position < kart2_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_2->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_2->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //            else if (kart_4->orientation == false && kart_4->valor == false) {
+        //                kart_4->CurrentRank = 1;
+        //                int kart1_position = kart_4->pos_x_sensor - kart_1->pos_x_kart;
+        //                int kart2_position = kart_4->pos_x_sensor - kart_2->pos_x_kart;
+        //                int kart3_position = kart_4->pos_x_sensor - kart_3->pos_x_kart;
+
+        //                if (kart1_position < kart2_position && kart1_position < kart3_position) {
+        //                    kart_1->CurrentRank = 2;
+
+        //                    if (kart2_position < kart3_position) {
+        //                        kart_2->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_2->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart2_position < kart1_position && kart2_position < kart3_position) {
+        //                    kart_2->CurrentRank = 2;
+
+        //                    if (kart1_position < kart3_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_3->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_3->CurrentRank = 3;
+        //                    }
+        //                }
+        //                else if (kart3_position < kart1_position && kart3_position < kart2_position) {
+        //                    kart_3->CurrentRank = 2;
+
+        //                    if (kart1_position < kart2_position) {
+        //                        kart_1->CurrentRank = 3;
+        //                        kart_2->CurrentRank = 4;
+        //                    }
+        //                    else {
+        //                        kart_1->CurrentRank = 4;
+        //                        kart_2->CurrentRank = 3;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
             for (PhysicEntity* entity : entities)
         {
@@ -2229,7 +2231,43 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
             Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entities[i]);
             Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entities[i]);
             FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entities[i]);
+            AISensor* sensor = dynamic_cast<AISensor*>(entities[i]);
+            if (sensor) {
+                for (int k = 0; k < length; k++) {
+                    if (bodyB == entities[k]->body && entities[k]->GetCollisionType() == IA) { 
+                        for (int k = 0; k < length; k++) {
+                            if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(entities[k])) {
+                                sensor->kartCount++; // Incrementa el contador del sensor
+                                kart1->CurrentRank = sensor->kartCount; // Actualiza el CurrentRank del kart_1
+                                LOG("Kart 1 ha cruzado el sensor y su nuevo CurrentRank es %d", kart1->CurrentRank);
+                            }
+                            if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(entities[k])) {
+                                sensor->kartCount++; // Incrementa el contador del sensor
+                                kart2->CurrentRank = sensor->kartCount; // Actualiza el CurrentRank del kart_2
+                                LOG("Kart 2 ha cruzado el sensor  y su nuevo CurrentRank es %d", kart2->CurrentRank);
+                            }
+                            if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entities[k])) {
+                                sensor->kartCount++; // Incrementa el contador del sensor
+                                kart3->CurrentRank = sensor->kartCount; // Actualiza el CurrentRank del kart_3
+                                LOG("Kart 3 ha cruzado el sensor %d y su nuevo CurrentRank es %d", kart3->CurrentRank);
+                            }
+                            if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entities[k])) {
+                                sensor->kartCount++; // Incrementa el contador del sensor
+                                kart4->CurrentRank = sensor->kartCount; // Actualiza el CurrentRank del kart_4
+                                LOG("Kart 4 ha cruzado el sensor %d y su nuevo CurrentRank es %d", kart4->CurrentRank);
+                            }
 
+                            // Reinicia el contador si llega a 4
+                            if (sensor->kartCount >= 4) {
+                                sensor->kartCount = 0;
+                                LOG("El contador del sensor %d se ha reiniciado a %d", sensor->kartCount);
+                            }
+                        }
+                        
+                    }
+                }
+           }
+            
 
             if (kart1) {
                 for (int k = 0; k < length; k++)
