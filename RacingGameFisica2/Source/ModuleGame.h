@@ -20,6 +20,8 @@
 
 class PhysBody;
 class PhysicEntity;
+class Kart;
+class FinishCheckpointSensor;
 
 enum CollisionType
 {
@@ -105,7 +107,9 @@ public:
 	void UpdateRanking();
 	void UpdateKartCheckpoints(int checkpointID);
 	int randomKart();
-
+	void ResetCheckpoints(FinishCheckpointSensor* finish);
+	void UpdateLapTime();
+	int GetKartLaps(Kart* kart);
 public:
 	std::vector<PhysicEntity*> entities;
 
