@@ -216,31 +216,6 @@ public:
         DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 0.0f, YELLOW);
     }
 public: 
-    int CountSensor = 0;
-    int isActivated_1 = false;
-    int isActivated_2 = false;
-    int isActivated_3 = false;
-    int isActivated_4 = false;
-	int isActivated_5 = false;
-	int isActivated_6 = false;
-	int isActivated_7 = false;
-	int isActivated_8 = false;
-	int isActivated_9 = false;
-	int isActivated_10 = false;
-	int isActivated_11 = false;
-	int isActivated_12 = false;
-	int isActivated_13 = false;
-	int isActivated_14 = false;
-	int isActivated_15 = false;
-	int isActivated_16 = false;
-	int isActivated_17 = false;
-	int isActivated_18 = false;
-	int isActivated_19 = false;
-    int isActivated_20 = false;
-	int isActivated_21 = false;
-	int isActivated_22 = false;
-	int isActivated_23 = false;
-	int isActivated_24 = false;
     int lap = 0;
 private:
     Texture2D texture;
@@ -531,6 +506,31 @@ public:
 
     int CurrentRank;
     int currentCheckpoint;
+    int CountSensor = 0;
+    int isActivated_1 = false;
+    int isActivated_2 = false;
+    int isActivated_3 = false;
+    int isActivated_4 = false;
+    int isActivated_5 = false;
+    int isActivated_6 = false;
+    int isActivated_7 = false;
+    int isActivated_8 = false;
+    int isActivated_9 = false;
+    int isActivated_10 = false;
+    int isActivated_11 = false;
+    int isActivated_12 = false;
+    int isActivated_13 = false;
+    int isActivated_14 = false;
+    int isActivated_15 = false;
+    int isActivated_16 = false;
+    int isActivated_17 = false;
+    int isActivated_18 = false;
+    int isActivated_19 = false;
+    int isActivated_20 = false;
+    int isActivated_21 = false;
+    int isActivated_22 = false;
+    int isActivated_23 = false;
+    int isActivated_24 = false;
 
 protected:
     Texture2D texture;
@@ -853,6 +853,8 @@ public:
     Timer timeToBoost;
     int boostTime = 1;
 
+    int CurrentLap;
+
     KartType kartType;
 
 protected:
@@ -943,6 +945,9 @@ public:
     int DarkenedsnowZoneCount = 0;
     KartType kartType;
 
+    int CurrentLap;
+
+
 protected:
     
     std::vector<PhysicEntity*> entities;
@@ -959,6 +964,8 @@ public:
         : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player)
     {
         CurrentRank = 4;
+        CurrentLap = 0;
+
     }
 
 public:
@@ -970,6 +977,7 @@ public:
         : Kart_Controller(physics, x, y, _listener, _texture, _app, type, player) 
     {
         CurrentRank = 3;
+        CurrentLap = 0;
     }
     
 public:
@@ -981,6 +989,7 @@ public:
         : Kart_NPC(physics, x, y, _listener, _texture, _app, type) 
     {
 		CurrentRank = 2;
+        CurrentLap = 0;
     }
 
 public:
@@ -992,6 +1001,7 @@ public:
         : Kart_NPC(physics, x, y, _listener, _texture, _app, type) 
     {
 		CurrentRank = 1;
+        CurrentLap = 0;
     }
 
 public:
@@ -1024,7 +1034,6 @@ bool ModuleGame::Start()
 
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
-    lap_start_time = GetTime();
     lap_time = 0.0f;
     best_lap_time = 0.0f;
 
@@ -1289,6 +1298,7 @@ update_status ModuleGame::Update()
 			gameState = PLAYING;
             countdownTimer.Start();
 			hasShownCountdown = false;
+            lap_start_time = GetTime();
 		}
         break;
 
@@ -1531,7 +1541,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
             Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entities[i]);
             Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entities[i]);
             FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entities[i]);
-
+           
             // NPC KART AI MANAGEMENT
             if (kart3) {
                 for (int k = 0; k < length; k++)
@@ -1701,264 +1711,897 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 
                     //------------------------------------  CHECKPOINTS  --------------------------------------
                     // CHECKPOINT 
+                    Kart_Player_1* kart_1 = nullptr;
+                    Kart_Player_2* kart_2 = nullptr;
+                    Kart_Player_3* kart_3 = nullptr;
+                    Kart_Player_4* kart_4 = nullptr;
+
+                    for (PhysicEntity* entity : entities) { // search karts
+                        if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
+                        if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
+                        if (!kart_3) kart_3 = dynamic_cast<Kart_Player_3*>(entity);
+                        if (!kart_4) kart_4 = dynamic_cast<Kart_Player_4*>(entity);
+                        if (kart_1 && kart_2 && kart_3 && kart_4) break;
+                    }
                     for (PhysicEntity* entity : entities)
                     {
                         if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
                         {
                             // CHECKPOINT 1
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1 && finish->isActivated_1 == false) {
-                                UpdateKartCheckpoints(1);
-                                finish->CountSensor++;
-                                finish->isActivated_1 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_1) {
+
+                                if (kart_1->CurrentRank == 1 || kart_2->CurrentRank == 1 ||
+                                    kart_3->CurrentRank == 1 || kart_4->CurrentRank == 1) {
+                                    lapUpdated = false;
+                                }
+
+                                if (bodyA == kart_1->body && !kart_1->isActivated_1) {
+                                    kart_1->currentCheckpoint = 1;
+                                    kart_1->isActivated_1 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_1) {
+                                    kart_2->currentCheckpoint = 1;
+                                    kart_2->isActivated_1 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_1) {
+                                    kart_3->currentCheckpoint = 1;
+                                    kart_3->isActivated_1 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_1) {
+                                    kart_4->currentCheckpoint = 1;
+                                    kart_4->isActivated_1 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
-                            // CHECKPOINT 2
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_2 && finish->isActivated_1 == true && finish->isActivated_2 == false) {
-                                UpdateKartCheckpoints(2);
-                                finish->CountSensor++;
-                                finish->isActivated_2 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
-                                return;
-                            }
+                                // CHECKPOINT 2
+                                if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_2) {
+                                    if (bodyA == kart_1->body && !kart_1->isActivated_2 && kart_1->currentCheckpoint == 1) {
+                                        kart_1->currentCheckpoint = 2;
+                                        kart_1->isActivated_2 = true;
+                                        kart_1->CountSensor++;
+                                        printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                    }
+                                    else if (bodyA == kart_2->body && !kart_2->isActivated_2 && kart_2->currentCheckpoint == 1) {
+                                        kart_2->currentCheckpoint = 2;
+                                        kart_2->isActivated_2 = true;
+                                        kart_2->CountSensor++;
+                                        printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                    }
+                                    else if (bodyA == kart_3->body && !kart_3->isActivated_2 && kart_3->currentCheckpoint == 1) {
+                                        kart_3->currentCheckpoint = 2;
+                                        kart_3->isActivated_2 = true;
+                                        kart_3->CountSensor++;
+                                        printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                    }
+                                    else if (bodyA == kart_4->body && !kart_4->isActivated_2 && kart_4->currentCheckpoint == 1) {
+                                        kart_4->currentCheckpoint = 2;
+                                        kart_4->isActivated_2 = true;
+                                        kart_4->CountSensor++;
+                                        printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                    }
+                                    return;
+                                }
 
                             // CHECKPOINT 3
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_3 && finish->isActivated_2 == true && finish->isActivated_3 == false) {
-                                UpdateKartCheckpoints(3);
-                                finish->CountSensor++;
-                                finish->isActivated_3 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_3) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_3 && kart_1->currentCheckpoint == 2) {
+                                    kart_1->currentCheckpoint = 3;
+                                    kart_1->isActivated_3 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_3 && kart_2->currentCheckpoint == 2) {
+                                    kart_2->currentCheckpoint = 3;
+                                    kart_2->isActivated_3 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_3 && kart_3->currentCheckpoint == 2) {
+                                    kart_3->currentCheckpoint = 3;
+                                    kart_3->isActivated_3 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_4 && kart_4->currentCheckpoint == 2) {
+                                    kart_4->currentCheckpoint = 3;
+                                    kart_4->isActivated_3 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 4
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_4 && finish->isActivated_3 == true && finish->isActivated_4 == false) {
-                                UpdateKartCheckpoints(4);
-                                finish->CountSensor++;
-                                finish->isActivated_4 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_4) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_4 && kart_1->currentCheckpoint == 3) {
+                                    kart_1->currentCheckpoint = 4;
+                                    kart_1->isActivated_4 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_4 && kart_2->currentCheckpoint == 3) {
+                                    kart_2->currentCheckpoint = 4;
+                                    kart_2->isActivated_4 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_4 && kart_3->currentCheckpoint == 3) {
+                                    kart_3->currentCheckpoint = 4;
+                                    kart_3->isActivated_4 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_4 && kart_4->currentCheckpoint == 3) {
+                                    kart_4->currentCheckpoint = 4;
+                                    kart_4->isActivated_4 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
+
                             // CHECKPOINT 5
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_5 && finish->isActivated_4 == true && finish->isActivated_5 == false) {
-                                UpdateKartCheckpoints(5);
-                                finish->CountSensor++;
-                                finish->isActivated_5 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_5) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_5 && kart_1->currentCheckpoint == 4) {
+                                    kart_1->currentCheckpoint = 5;
+                                    kart_1->isActivated_5 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_5 && kart_2->currentCheckpoint == 4) {
+                                    kart_2->currentCheckpoint = 5;
+                                    kart_2->isActivated_5 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_5 && kart_3->currentCheckpoint == 4) {
+                                    kart_3->currentCheckpoint = 5;
+                                    kart_3->isActivated_5 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_5 && kart_4->currentCheckpoint == 4) {
+                                    kart_4->currentCheckpoint = 5;
+                                    kart_4->isActivated_5 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 6
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_6 && finish->isActivated_5 == true && finish->isActivated_6 == false) {
-                                UpdateKartCheckpoints(6);
-                                finish->CountSensor++;
-                                finish->isActivated_6 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_6) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_6 && kart_1->currentCheckpoint == 5) {
+                                    kart_1->currentCheckpoint = 6;
+                                    kart_1->isActivated_6 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_6 && kart_2->currentCheckpoint == 5) {
+                                    kart_2->currentCheckpoint = 6;
+                                    kart_2->isActivated_6 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_6 && kart_3->currentCheckpoint == 5) {
+                                    kart_3->currentCheckpoint = 6;
+                                    kart_3->isActivated_6 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_6 && kart_4->currentCheckpoint == 5) {
+                                    kart_4->currentCheckpoint = 6;
+                                    kart_4->isActivated_6 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 7
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_7 && finish->isActivated_6 == true && finish->isActivated_7 == false) {
-                                UpdateKartCheckpoints(7);
-                                finish->CountSensor++;
-                                finish->isActivated_7 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_7) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_7 && kart_1->currentCheckpoint == 6) {
+                                    kart_1->currentCheckpoint = 7;
+                                    kart_1->isActivated_7 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_7 && kart_2->currentCheckpoint == 6) {
+                                    kart_2->currentCheckpoint = 7;
+                                    kart_2->isActivated_7 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_7 && kart_3->currentCheckpoint == 6) {
+                                    kart_3->currentCheckpoint = 7;
+                                    kart_3->isActivated_7 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_7 && kart_4->currentCheckpoint == 6) {
+                                    kart_4->currentCheckpoint = 7;
+                                    kart_4->isActivated_7 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 8
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_8 && finish->isActivated_7 == true && finish->isActivated_8 == false) {
-                                UpdateKartCheckpoints(8);
-                                finish->CountSensor++;
-                                finish->isActivated_8 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_8) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_8 && kart_1->currentCheckpoint == 7) {
+                                    kart_1->currentCheckpoint = 8;
+                                    kart_1->isActivated_8 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_8 && kart_2->currentCheckpoint == 7) {
+                                    kart_2->currentCheckpoint = 8;
+                                    kart_2->isActivated_8 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_8 && kart_3->currentCheckpoint == 7) {
+                                    kart_3->currentCheckpoint = 8;
+                                    kart_3->isActivated_8 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_8 && kart_4->currentCheckpoint == 7) {
+                                    kart_4->currentCheckpoint = 8;
+                                    kart_4->isActivated_8 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 9
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_9 && finish->isActivated_8 == true && finish->isActivated_9 == false) {
-                                UpdateKartCheckpoints(9);
-                                finish->CountSensor++;
-                                finish->isActivated_9 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_9) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_9 && kart_1->currentCheckpoint == 8) {
+                                    kart_1->currentCheckpoint = 9;
+                                    kart_1->isActivated_9 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_9 && kart_2->currentCheckpoint == 8) {
+                                    kart_2->currentCheckpoint = 9;
+                                    kart_2->isActivated_9 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_9 && kart_3->currentCheckpoint == 8) {
+                                    kart_3->currentCheckpoint = 9;
+                                    kart_3->isActivated_9 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_9 && kart_4->currentCheckpoint == 8) {
+                                    kart_4->currentCheckpoint = 9;
+                                    kart_4->isActivated_9 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 10
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_10 && finish->isActivated_9 == true && finish->isActivated_10 == false) {
-                                UpdateKartCheckpoints(10);
-                                finish->CountSensor++;
-                                finish->isActivated_10 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_10) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_10 && kart_1->currentCheckpoint == 9) {
+                                    kart_1->currentCheckpoint = 10;
+                                    kart_1->isActivated_10 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_10 && kart_2->currentCheckpoint == 9) {
+                                    kart_2->currentCheckpoint = 10;
+                                    kart_2->isActivated_10 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_10 && kart_3->currentCheckpoint == 9) {
+                                    kart_3->currentCheckpoint = 10;
+                                    kart_3->isActivated_10 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_10 && kart_4->currentCheckpoint == 9) {
+                                    kart_4->currentCheckpoint = 10;
+                                    kart_4->isActivated_10 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 11
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_11 && finish->isActivated_10 == true && finish->isActivated_11 == false) {
-                                UpdateKartCheckpoints(11);
-                                finish->CountSensor++;
-                                finish->isActivated_11 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_11) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_11 && kart_1->currentCheckpoint == 10) {
+                                    kart_1->currentCheckpoint = 11;
+                                    kart_1->isActivated_11 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_11 && kart_2->currentCheckpoint == 10) {
+                                    kart_2->currentCheckpoint = 11;
+                                    kart_2->isActivated_11 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_11 && kart_3->currentCheckpoint == 10) {
+                                    kart_3->currentCheckpoint = 11;
+                                    kart_3->isActivated_11 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_11 && kart_4->currentCheckpoint == 10) {
+                                    kart_4->currentCheckpoint = 11;
+                                    kart_4->isActivated_11 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 12
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_12 && finish->isActivated_11 == true && finish->isActivated_12 == false) {
-                                UpdateKartCheckpoints(12);
-                                finish->CountSensor++;
-                                finish->isActivated_12 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_12) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_12 && kart_1->currentCheckpoint == 11) {
+                                    kart_1->currentCheckpoint = 12;
+                                    kart_1->isActivated_12 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_12 && kart_2->currentCheckpoint == 11) {
+                                    kart_2->currentCheckpoint = 12;
+                                    kart_2->isActivated_12 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_12 && kart_3->currentCheckpoint == 11) {
+                                    kart_3->currentCheckpoint = 12;
+                                    kart_3->isActivated_12 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_12 && kart_4->currentCheckpoint == 11) {
+                                    kart_4->currentCheckpoint = 12;
+                                    kart_4->isActivated_12 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 13
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_13 && finish->isActivated_12 == true && finish->isActivated_13 == false) {
-                                UpdateKartCheckpoints(13);
-                                finish->CountSensor++;
-                                finish->isActivated_13 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_13) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_13 && kart_1->currentCheckpoint == 12) {
+                                    kart_1->currentCheckpoint = 13;
+                                    kart_1->isActivated_13 = true;
+
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_13 && kart_2->currentCheckpoint == 12) {
+                                    kart_2->currentCheckpoint = 13;
+                                    kart_2->isActivated_13 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_13 && kart_3->currentCheckpoint == 12) {
+                                    kart_3->currentCheckpoint = 13;
+                                    kart_3->isActivated_13 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_13 && kart_4->currentCheckpoint == 12) {
+                                    kart_4->currentCheckpoint = 13;
+                                    kart_4->isActivated_13 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 14
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_14 && finish->isActivated_13 == true && finish->isActivated_14 == false) {
-                                UpdateKartCheckpoints(14);
-                                finish->CountSensor++;
-                                finish->isActivated_14 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_14) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_14 && kart_1->currentCheckpoint == 13) {
+                                    kart_1->currentCheckpoint = 14;
+                                    kart_1->isActivated_14 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_14 && kart_2->currentCheckpoint == 13) {
+                                    kart_2->currentCheckpoint = 14;
+                                    kart_2->isActivated_14 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_14 && kart_3->currentCheckpoint == 13) {
+                                    kart_3->currentCheckpoint = 14;
+                                    kart_3->isActivated_14 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_14 && kart_4->currentCheckpoint == 13) {
+                                    kart_4->currentCheckpoint = 14;
+                                    kart_4->isActivated_14 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 15
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_15 && finish->isActivated_14 == true && finish->isActivated_15 == false) {
-                                UpdateKartCheckpoints(15);
-                                finish->CountSensor++;
-                                finish->isActivated_15 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_15) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_15 && kart_1->currentCheckpoint == 14) {
+                                    kart_1->currentCheckpoint = 15;
+                                    kart_1->isActivated_15 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_15 && kart_2->currentCheckpoint == 14) {
+                                    kart_2->currentCheckpoint = 15;
+                                    kart_2->isActivated_15 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_15 && kart_3->currentCheckpoint == 14) {
+                                    kart_3->currentCheckpoint = 15;
+                                    kart_3->isActivated_15 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_15 && kart_4->currentCheckpoint == 14) {
+                                    kart_4->currentCheckpoint = 15;
+                                    kart_4->isActivated_15 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
+
                             // CHECKPOINT 16
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_16 && finish->isActivated_15 == true && finish->isActivated_16 == false) {
-                                UpdateKartCheckpoints(16);
-                                finish->CountSensor++;
-                                finish->isActivated_16 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_16) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_16 && kart_1->currentCheckpoint == 15) {
+                                    kart_1->currentCheckpoint = 16;
+                                    kart_1->isActivated_16 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_16 && kart_2->currentCheckpoint == 15) {
+                                    kart_2->currentCheckpoint = 16;
+                                    kart_2->isActivated_16 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_16 && kart_3->currentCheckpoint == 15) {
+                                    kart_3->currentCheckpoint = 16;
+                                    kart_3->isActivated_16 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_16 && kart_4->currentCheckpoint == 15) {
+                                    kart_4->currentCheckpoint = 16;
+                                    kart_4->isActivated_16 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 17
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_17 && finish->isActivated_16 == true && finish->isActivated_17 == false) {
-                                UpdateKartCheckpoints(17);
-                                finish->CountSensor++;
-                                finish->isActivated_17 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_17) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_17 && kart_1->currentCheckpoint == 16) {
+                                    kart_1->currentCheckpoint = 17;
+                                    kart_1->isActivated_17 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_17 && kart_2->currentCheckpoint == 16) {
+                                    kart_2->currentCheckpoint = 17;
+                                    kart_2->isActivated_17 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_17 && kart_3->currentCheckpoint == 16) {
+                                    kart_3->currentCheckpoint = 17;
+                                    kart_3->isActivated_17 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_17 && kart_4->currentCheckpoint == 16) {
+                                    kart_4->currentCheckpoint = 17;
+                                    kart_4->isActivated_17 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 18
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_18 && finish->isActivated_17 == true && finish->isActivated_18 == false) {
-                                UpdateKartCheckpoints(18);
-                                finish->CountSensor++;
-                                finish->isActivated_18 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_18) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_18 && kart_1->currentCheckpoint == 17) {
+                                    kart_1->currentCheckpoint = 18;
+                                    kart_1->isActivated_18 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_18 && kart_2->currentCheckpoint == 17) {
+                                    kart_2->currentCheckpoint = 18;
+                                    kart_2->isActivated_18 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_18 && kart_3->currentCheckpoint == 17) {
+                                    kart_3->currentCheckpoint = 18;
+                                    kart_3->isActivated_18 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_18 && kart_4->currentCheckpoint == 17) {
+                                    kart_4->currentCheckpoint = 18;
+                                    kart_4->isActivated_18 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 19
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_19 && finish->isActivated_18 == true && finish->isActivated_19 == false) {
-                                UpdateKartCheckpoints(19);
-                                finish->CountSensor++;
-                                finish->isActivated_19 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_19) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_19 && kart_1->currentCheckpoint == 18) {
+                                    kart_1->currentCheckpoint = 19;
+                                    kart_1->isActivated_19 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_19 && kart_2->currentCheckpoint == 18) {
+                                    kart_2->currentCheckpoint = 19;
+                                    kart_2->isActivated_19 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_19 && kart_3->currentCheckpoint == 18) {
+                                    kart_3->currentCheckpoint = 19;
+                                    kart_3->isActivated_19 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_19 && kart_4->currentCheckpoint == 18) {
+                                    kart_4->currentCheckpoint = 19;
+                                    kart_4->isActivated_19 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 20
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_20 && finish->isActivated_19 == true && finish->isActivated_20 == false) {
-                                UpdateKartCheckpoints(20);
-                                finish->CountSensor++;
-                                finish->isActivated_20 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_20) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_20 && kart_1->currentCheckpoint == 19) {
+                                    kart_1->currentCheckpoint = 20;
+                                    kart_1->isActivated_20 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_20 && kart_2->currentCheckpoint == 19) {
+                                    kart_2->currentCheckpoint = 20;
+                                    kart_2->isActivated_20 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_20 && kart_3->currentCheckpoint == 19) {
+                                    kart_3->currentCheckpoint = 20;
+                                    kart_3->isActivated_20 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_20 && kart_4->currentCheckpoint == 19) {
+                                    kart_4->currentCheckpoint = 20;
+                                    kart_4->isActivated_20 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 21
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_21 && finish->isActivated_20 == true && finish->isActivated_21 == false) {
-                                UpdateKartCheckpoints(21);
-                                finish->CountSensor++;
-                                finish->isActivated_21 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_21) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_21 && kart_1->currentCheckpoint == 20) {
+                                    kart_1->currentCheckpoint = 21;
+                                    kart_1->isActivated_21 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_21 && kart_2->currentCheckpoint == 20) {
+                                    kart_2->currentCheckpoint = 21;
+                                    kart_2->isActivated_21 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_21 && kart_3->currentCheckpoint == 20) {
+                                    kart_3->currentCheckpoint = 21;
+                                    kart_3->isActivated_21 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_21 && kart_4->currentCheckpoint == 20) {
+                                    kart_4->currentCheckpoint = 21;
+                                    kart_4->isActivated_21 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 22
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_22 && finish->isActivated_21 == true && finish->isActivated_22 == false) {
-                                UpdateKartCheckpoints(22);
-                                finish->CountSensor++;
-                                finish->isActivated_22 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_22) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_22 && kart_1->currentCheckpoint == 21) {
+                                    kart_1->currentCheckpoint = 22;
+                                    kart_1->isActivated_22 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_22 && kart_2->currentCheckpoint == 21) {
+                                    kart_2->currentCheckpoint = 22;
+                                    kart_2->isActivated_22 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_22 && kart_3->currentCheckpoint == 21) {
+                                    kart_3->currentCheckpoint = 22;
+                                    kart_3->isActivated_22 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_22 && kart_4->currentCheckpoint == 21) {
+                                    kart_4->currentCheckpoint = 22;
+                                    kart_4->isActivated_22 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 23
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_23 && finish->isActivated_22 == true && finish->isActivated_23 == false) {
-                                UpdateKartCheckpoints(23);
-                                finish->CountSensor++;
-                                finish->isActivated_23 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_23) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_23 && kart_1->currentCheckpoint == 22) {
+                                    kart_1->currentCheckpoint = 23;
+                                    kart_1->isActivated_23 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_23 && kart_2->currentCheckpoint == 22) {
+                                    kart_2->currentCheckpoint = 23;
+                                    kart_2->isActivated_23 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_23 && kart_3->currentCheckpoint == 22) {
+                                    kart_3->currentCheckpoint = 23;
+                                    kart_3->isActivated_23 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_23 && kart_4->currentCheckpoint == 22) {
+                                    kart_4->currentCheckpoint = 23;
+                                    kart_4->isActivated_23 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
 
                             // CHECKPOINT 24
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_24 && finish->isActivated_23 == true && finish->isActivated_24 == false) {
-                                UpdateKartCheckpoints(24);
-                                finish->CountSensor++;
-                                finish->isActivated_24 = true;
-                                printf("Checkpoint %d\n", finish->CountSensor);
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == CHECKPOINT_SENSOR_24) {
+                                if (bodyA == kart_1->body && !kart_1->isActivated_24 && kart_1->currentCheckpoint == 23) {
+                                    kart_1->currentCheckpoint = 24;
+                                    kart_1->isActivated_24 = true;
+                                    kart_1->CountSensor++;
+                                    printf("Kart 1 - Checkpoint: %d\n", kart_1->CountSensor);
+                                }
+                                else if (bodyA == kart_2->body && !kart_2->isActivated_24 && kart_2->currentCheckpoint == 23) {
+                                    kart_2->currentCheckpoint = 24;
+                                    kart_2->isActivated_24 = true;
+                                    kart_2->CountSensor++;
+                                    printf("Kart 2 - Checkpoint: %d\n", kart_2->CountSensor);
+                                }
+                                else if (bodyA == kart_3->body && !kart_3->isActivated_24 && kart_3->currentCheckpoint == 23) {
+                                    kart_3->currentCheckpoint = 24;
+                                    kart_3->isActivated_24 = true;
+                                    kart_3->CountSensor++;
+                                    printf("Kart 3 - Checkpoint: %d\n", kart_3->CountSensor);
+                                }
+                                else if (bodyA == kart_4->body && !kart_4->isActivated_24 && kart_4->currentCheckpoint == 23) {
+                                    kart_4->currentCheckpoint = 24;
+                                    kart_4->isActivated_24 = true;
+                                    kart_4->CountSensor++;
+                                    printf("Kart 4 - Checkpoint: %d\n", kart_4->CountSensor);
+                                }
                                 return;
                             }
                             // FINISH CHECKPOINT
-                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == FINISH_CHECKPOINT_SENSOR && finish->isActivated_4 == true && finish->CountSensor == 4) {
+                            if (bodyB == entities[j]->body && entities[j]->GetCollisionType() == FINISH_CHECKPOINT_SENSOR) {
+                                if (bodyA == kart_1->body && kart_1->currentCheckpoint == 24) {
+                                    kart_1->currentCheckpoint = 0;
+                                    kart_1->CurrentLap++;
 
-                                Kart_Player_1* kart_1 = nullptr;
-                                Kart_Player_2* kart_2 = nullptr;
-                                Kart_Player_3* kart_3 = nullptr;
-                                Kart_Player_4* kart_4 = nullptr;
+                                    kart_1->isActivated_1 = false;
+                                    kart_1->isActivated_2 = false;
+                                    kart_1->isActivated_3 = false;
+                                    kart_1->isActivated_4 = false;
+                                    kart_1->isActivated_5 = false;
+                                    kart_1->isActivated_6 = false;
+                                    kart_1->isActivated_7 = false;
+                                    kart_1->isActivated_8 = false;
+                                    kart_1->isActivated_9 = false;
+                                    kart_1->isActivated_10 = false;
+                                    kart_1->isActivated_11 = false;
+                                    kart_1->isActivated_12 = false;
+                                    kart_1->isActivated_13 = false;
+                                    kart_1->isActivated_14 = false;
+                                    kart_1->isActivated_15 = false;
+                                    kart_1->isActivated_16 = false;
+                                    kart_1->isActivated_17 = false;
+                                    kart_1->isActivated_18 = false;
+                                    kart_1->isActivated_19 = false;
+                                    kart_1->isActivated_20 = false;
+                                    kart_1->isActivated_21 = false;
+                                    kart_1->isActivated_22 = false;
+                                    kart_1->isActivated_23 = false;
+                                    kart_1->isActivated_24 = false;
+                                    kart_1->CountSensor = 0;
 
-                                for (PhysicEntity* entity : entities) { // search karts
-                                    if (!kart_1) kart_1 = dynamic_cast<Kart_Player_1*>(entity);
-                                    if (!kart_2) kart_2 = dynamic_cast<Kart_Player_2*>(entity);
-                                    if (!kart_3) kart_3 = dynamic_cast<Kart_Player_3*>(entity);
-                                    if (!kart_4) kart_4 = dynamic_cast<Kart_Player_4*>(entity);
-                                    if (kart_1 && kart_2 && kart_3 && kart_4) break;
+                                    if (kart_1->CurrentRank == 1 && !lapUpdated) {
+                                        finish->lap++;
+                                        lapUpdated = true; 
+
+                                        best_lap_time = lap_time;
+                                        lap_time = 0;
+                                        lap_start_time = GetTime();
+                                    }
+
+                                    printf("Kart 1 completed lap: %d\n", kart_1->CurrentLap);
                                 }
-                                if (kart_1 && kart_2 && kart_3 && kart_4) {
-                                    if (kart_1->currentCheckpoint == 23) {
-                                        kart_1->currentCheckpoint = 0;
-                                    }
-                                    if (kart_2->currentCheckpoint == 23) {
-                                        kart_2->currentCheckpoint = 0;
-                                    }
-                                    if (kart_3->currentCheckpoint == 23) {
-                                        kart_3->currentCheckpoint = 0;
-                                    }
-                                    if (kart_4->currentCheckpoint == 23) {
-                                        kart_4->currentCheckpoint = 0;
-                                    }
-                                }
+                                else if (bodyA == kart_2->body && kart_2->currentCheckpoint == 24) {
+                                    kart_2->currentCheckpoint = 0;
+                                    kart_2->CurrentLap++;
 
-                                best_lap_time = lap_time;
-                                lap_time = 0;
-                                lap_start_time = GetTime(); 
-                                finish->CountSensor = 0;
-                                finish->lap++;
-                                finish->isActivated_1 = false;
-                                finish->isActivated_2 = false;
-                                finish->isActivated_3 = false;
-                                finish->isActivated_4 = false;
+                                    kart_2->isActivated_1 = false;
+                                    kart_2->isActivated_2 = false;
+                                    kart_2->isActivated_3 = false;
+                                    kart_2->isActivated_4 = false;
+                                    kart_2->isActivated_5 = false;
+                                    kart_2->isActivated_6 = false;
+                                    kart_2->isActivated_7 = false;
+                                    kart_2->isActivated_8 = false;
+                                    kart_2->isActivated_9 = false;
+                                    kart_2->isActivated_10 = false;
+                                    kart_2->isActivated_11 = false;
+                                    kart_2->isActivated_12 = false;
+                                    kart_2->isActivated_13 = false;
+                                    kart_2->isActivated_14 = false;
+                                    kart_2->isActivated_15 = false;
+                                    kart_2->isActivated_16 = false;
+                                    kart_2->isActivated_17 = false;
+                                    kart_2->isActivated_18 = false;
+                                    kart_2->isActivated_19 = false;
+                                    kart_2->isActivated_20 = false;
+                                    kart_2->isActivated_21 = false;
+                                    kart_2->isActivated_22 = false;
+                                    kart_2->isActivated_23 = false;
+                                    kart_2->isActivated_24 = false;
+                                    kart_2->CountSensor = 0;
+
+                                    if (kart_2->CurrentRank == 1 && !lapUpdated) {
+                                        finish->lap++;
+                                        lapUpdated = true; 
+
+                                        best_lap_time = lap_time;
+                                        lap_time = 0;
+                                        lap_start_time = GetTime();
+
+                                    }
+
+                                    printf("Kart 2 completed lap: %d\n", kart_2->CurrentLap);
+                                }
+                                else if (bodyA == kart_3->body && kart_3->currentCheckpoint == 24) {
+                                    kart_3->currentCheckpoint = 0;
+                                    kart_3->CurrentLap++;
+
+                                    kart_3->isActivated_1 = false;
+                                    kart_3->isActivated_2 = false;
+                                    kart_3->isActivated_3 = false;
+                                    kart_3->isActivated_4 = false;
+                                    kart_3->isActivated_5 = false;
+                                    kart_3->isActivated_6 = false;
+                                    kart_3->isActivated_7 = false;
+                                    kart_3->isActivated_8 = false;
+                                    kart_3->isActivated_9 = false;
+                                    kart_3->isActivated_10 = false;
+                                    kart_3->isActivated_11 = false;
+                                    kart_3->isActivated_12 = false;
+                                    kart_3->isActivated_13 = false;
+                                    kart_3->isActivated_14 = false;
+                                    kart_3->isActivated_15 = false;
+                                    kart_3->isActivated_16 = false;
+                                    kart_3->isActivated_17 = false;
+                                    kart_3->isActivated_18 = false;
+                                    kart_3->isActivated_19 = false;
+                                    kart_3->isActivated_20 = false;
+                                    kart_3->isActivated_21 = false;
+                                    kart_3->isActivated_22 = false;
+                                    kart_3->isActivated_23 = false;
+                                    kart_3->isActivated_24 = false;
+
+                                    kart_3->CountSensor = 0;
+
+                                    if (kart_3->CurrentRank == 1 && !lapUpdated) {
+
+                                        finish->lap++;
+                                        lapUpdated = true;
+
+                                        best_lap_time = lap_time;
+                                        lap_time = 0;
+                                        lap_start_time = GetTime();
+                                    }
+
+                                    printf("Kart 3 completed lap: %d\n", kart_3->CurrentLap);
+                                }
+                                else if (bodyA == kart_4->body && kart_4->currentCheckpoint == 24) {
+                                    kart_4->currentCheckpoint = 0;
+                                    kart_4->CurrentLap++;
+
+                                    kart_4->isActivated_1 = false;
+                                    kart_4->isActivated_2 = false;
+                                    kart_4->isActivated_3 = false;
+                                    kart_4->isActivated_4 = false;
+                                    kart_4->isActivated_5 = false;
+                                    kart_4->isActivated_6 = false;
+                                    kart_4->isActivated_7 = false;
+                                    kart_4->isActivated_8 = false;
+                                    kart_4->isActivated_9 = false;
+                                    kart_4->isActivated_10 = false;
+                                    kart_4->isActivated_11 = false;
+                                    kart_4->isActivated_12 = false;
+                                    kart_4->isActivated_13 = false;
+                                    kart_4->isActivated_14 = false;
+                                    kart_4->isActivated_15 = false;
+                                    kart_4->isActivated_16 = false;
+                                    kart_4->isActivated_17 = false;
+                                    kart_4->isActivated_18 = false;
+                                    kart_4->isActivated_19 = false;
+                                    kart_4->isActivated_20 = false;
+                                    kart_4->isActivated_21 = false;
+                                    kart_4->isActivated_22 = false;
+                                    kart_4->isActivated_23 = false;
+                                    kart_4->isActivated_24 = false;
+
+                                    kart_4->CountSensor = 0;
+
+                                    if (kart_4->CurrentRank == 1 && !lapUpdated) {
+
+                                        finish->lap++;
+                                        lapUpdated = true;
+
+                                        best_lap_time = lap_time;
+                                        lap_time = 0;
+                                        lap_start_time = GetTime();
+                                    }
+
+                                    printf("Kart 4 completed lap: %d\n", kart_4->CurrentLap);
+                                }
 
                                 return;
                             }
@@ -2124,8 +2767,8 @@ void ModuleGame::UpdateRanking() {
     // Lista de checkpoints
     std::vector<std::pair<int, int>> checkpoints = {
         {135, 260}, // CHECKPOINT_SENSOR_1
-        {295, 85}, // CHECKPOINT_SENSOR_2
-        {535, 95}, // CHECKPOINT_SENSOR_3
+        {295, 85},  // CHECKPOINT_SENSOR_2
+        {535, 95},  // CHECKPOINT_SENSOR_3
         {670, 270}, // CHECKPOINT_SENSOR_4
         {760, 400}, // CHECKPOINT_SENSOR_5
         {840, 270}, // CHECKPOINT_SENSOR_6
@@ -2133,55 +2776,155 @@ void ModuleGame::UpdateRanking() {
         {1093, 118}, // CHECKPOINT_SENSOR_8
         {1192, 232}, // CHECKPOINT_SENSOR_9
         {1062, 350}, // CHECKPOINT_SENSOR_10
-        {991, 462}, // CHECKPOINT_SENSOR_11
-        {991, 583}, // CHECKPOINT_SENSOR_12
-        {904, 664}, // CHECKPOINT_SENSOR_13
-        {733, 602}, // CHECKPOINT_SENSOR_14
-        {600, 600}, // CHECKPOINT_SENSOR_15
-        {543, 471}, // CHECKPOINT_SENSOR_16
-        {533, 341}, // CHECKPOINT_SENSOR_17
-        {440, 261}, // CHECKPOINT_SENSOR_18
-        {351, 325}, // CHECKPOINT_SENSOR_19
-        {371, 406}, // CHECKPOINT_SENSOR_20
-        {385, 504}, // CHECKPOINT_SENSOR_21
-        {415, 584}, // CHECKPOINT_SENSOR_22
-        {260, 650}, // CHECKPOINT_SENSOR_23
-        {145, 540}, // CHECKPOINT_SENSOR_24
+        {991, 462},  // CHECKPOINT_SENSOR_11
+        {991, 583},  // CHECKPOINT_SENSOR_12
+        {904, 664},  // CHECKPOINT_SENSOR_13
+        {733, 602},  // CHECKPOINT_SENSOR_14
+        {600, 600},  // CHECKPOINT_SENSOR_15
+        {543, 471},  // CHECKPOINT_SENSOR_16
+        {533, 341},  // CHECKPOINT_SENSOR_17
+        {440, 261},  // CHECKPOINT_SENSOR_18
+        {351, 325},  // CHECKPOINT_SENSOR_19
+        {371, 406},  // CHECKPOINT_SENSOR_20
+        {385, 504},  // CHECKPOINT_SENSOR_21
+        {415, 584},  // CHECKPOINT_SENSOR_22
+        {260, 650},  // CHECKPOINT_SENSOR_23
+        {145, 540}   // CHECKPOINT_SENSOR_24
     };
 
-    // Encontrar el kart que va primero
+    const int totalCheckpoints = checkpoints.size();
+
+    // Encontrar el kart que va más adelantado
     Kart* leaderKart = nullptr;
-    int leaderRank = INT_MAX;
+    int maxProgress = -1;
 
     for (PhysicEntity* entity : entities) {
-        if (Kart* kart = dynamic_cast<Kart*>(entity)) {
-            if (kart->CurrentRank < leaderRank) {
-                leaderRank = kart->CurrentRank;
-                leaderKart = kart;
+        // Comprobar cada tipo específico de kart
+        if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(entity)) {
+            int kartProgress = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
+            if (kartProgress > maxProgress) {
+                maxProgress = kartProgress;
+                leaderKart = kart1;
+            }
+        }
+        else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(entity)) {
+            int kartProgress = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
+            if (kartProgress > maxProgress) {
+                maxProgress = kartProgress;
+                leaderKart = kart2;
+            }
+        }
+        else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entity)) {
+            int kartProgress = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
+            if (kartProgress > maxProgress) {
+                maxProgress = kartProgress;
+                leaderKart = kart3;
+            }
+        }
+        else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entity)) {
+            int kartProgress = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
+            if (kartProgress > maxProgress) {
+                maxProgress = kartProgress;
+                leaderKart = kart4;
             }
         }
     }
 
-    // Si hay un líder, usamos su próximo checkpoint
     if (leaderKart) {
         int leaderCheckpoint = leaderKart->currentCheckpoint % checkpoints.size();
         int checkpointX = checkpoints[leaderCheckpoint].first;
         int checkpointY = checkpoints[leaderCheckpoint].second;
 
-        // Calcular distancias al checkpoint del líder para todos los karts
+        // Recolectar información de todos los karts específicos
         for (PhysicEntity* entity : entities) {
-            if (Kart* kart = dynamic_cast<Kart*>(entity)) {
-                int kartX, kartY;
-                kart->body->GetPhysicPosition(kartX, kartY);
-
+            int kartX, kartY;
+            if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(entity)) {
+                kart1->body->GetPhysicPosition(kartX, kartY);
                 float distance = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
-                kartDistances.push_back({ kart, distance });
+                kartDistances.push_back({ kart1, distance });
+            }
+            else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(entity)) {
+                kart2->body->GetPhysicPosition(kartX, kartY);
+                float distance = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
+                kartDistances.push_back({ kart2, distance });
+            }
+            else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entity)) {
+                kart3->body->GetPhysicPosition(kartX, kartY);
+                float distance = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
+                kartDistances.push_back({ kart3, distance });
+            }
+            else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entity)) {
+                kart4->body->GetPhysicPosition(kartX, kartY);
+                float distance = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
+                kartDistances.push_back({ kart4, distance });
             }
         }
 
-        // Ordenar los karts según la distancia al checkpoint del líder
-        std::sort(kartDistances.begin(), kartDistances.end(), [](const KartInfo& a, const KartInfo& b) {
-            return a.distanceToCP < b.distanceToCP;
+        // Ordenar los karts considerando progreso real y distancia
+        std::sort(kartDistances.begin(), kartDistances.end(),
+            [totalCheckpoints](const KartInfo& a, const KartInfo& b) {
+                int progressA = 0;
+                int progressB = 0;
+                int lapA = 0;
+                int lapB = 0;
+                int checkpointA = 0;
+                int checkpointB = 0;
+
+                // Obtener progreso para kart A
+                if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(a.kart)) {
+                    progressA = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
+                    lapA = kart1->CurrentLap;
+                    checkpointA = kart1->currentCheckpoint;
+                }
+                else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(a.kart)) {
+                    progressA = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
+                    lapA = kart2->CurrentLap;
+                    checkpointA = kart2->currentCheckpoint;
+                }
+                else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(a.kart)) {
+                    progressA = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
+                    lapA = kart3->CurrentLap;
+                    checkpointA = kart3->currentCheckpoint;
+                }
+                else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(a.kart)) {
+                    progressA = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
+                    lapA = kart4->CurrentLap;
+                    checkpointA = kart4->currentCheckpoint;
+                }
+
+                // Obtener progreso para kart B
+                if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(b.kart)) {
+                    progressB = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
+                    lapB = kart1->CurrentLap;
+                    checkpointB = kart1->currentCheckpoint;
+                }
+                else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(b.kart)) {
+                    progressB = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
+                    lapB = kart2->CurrentLap;
+                    checkpointB = kart2->currentCheckpoint;
+                }
+                else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(b.kart)) {
+                    progressB = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
+                    lapB = kart3->CurrentLap;
+                    checkpointB = kart3->currentCheckpoint;
+                }
+                else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(b.kart)) {
+                    progressB = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
+                    lapB = kart4->CurrentLap;
+                    checkpointB = kart4->currentCheckpoint;
+                }
+
+                // Comparar progreso total
+                if (progressA != progressB) {
+                    return progressA > progressB;
+                }
+
+                // Si están en la misma vuelta y mismo checkpoint, usar distancia
+                if (lapA == lapB && checkpointA == checkpointB) {
+                    return a.distanceToCP < b.distanceToCP;
+                }
+
+                return false;
             });
 
         // Actualizar las posiciones

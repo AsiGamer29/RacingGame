@@ -194,6 +194,9 @@ public:
 
 	bool hasStarted = false;
 	bool hasDeleted = false;
+
+	bool lapUpdated = false;
+
 	GameState gameState;
 
 	vec2<int> ray;
