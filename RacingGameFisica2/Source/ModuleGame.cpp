@@ -1025,8 +1025,12 @@ bool ModuleGame::Start()
 
     App->renderer->camera.x = App->renderer->camera.y = 0;
 
-    lap_time = 0.0f;
+    lap_time1 = 0.0f;
+    lap_time2 = 0.0f;
+    
     best_lap_time = 0.0f;
+    best_lap_time2 = 0.0f;
+    best_time = 0.0f;
 
     cone = LoadTexture("Assets/cone.png");
     yellowCar = LoadTexture("Assets/yellow.png");
@@ -1291,15 +1295,31 @@ update_status ModuleGame::Update()
             countdownTimer.Start();
 			hasShownCountdown = false;
             lap_start_time = GetTime();
+            lap_start_time2 = GetTime();
 		}
         break;
 
     case PLAYING:
+
 		raceStarted = true;
         DrawTexture(background, 0, 0, WHITE);
-        lap_time = GetTime() - lap_start_time;
-        App->fontsModule->DrawText(1060, 848, TextFormat("BEST: %.2f", best_lap_time), 16, WHITE);
-        App->fontsModule->DrawText(1093, 777, TextFormat("%.2f", lap_time ), 20, WHITE);
+        if (best_lap_time!=0 < best_lap_time2!=0){
+			best_time = best_lap_time;
+        }
+        else if (best_lap_time != 0 && best_lap_time2 == 0) {
+            best_time = best_lap_time;
+        }
+        else if (best_lap_time == 0 && best_lap_time2 != 0) {
+            best_time = best_lap_time2;
+        }
+		else {
+			best_time = best_lap_time2;
+        }
+        lap_time1 = GetTime() - lap_start_time;
+        lap_time2 = GetTime() - lap_start_time2;
+        App->fontsModule->DrawText(1060, 848, TextFormat("BEST: %.2f", best_time), 16, WHITE);
+        App->fontsModule->DrawText(1093, 777, TextFormat("%.2f", lap_time1 ), 20, WHITE);
+        App->fontsModule->DrawText(1093, 813, TextFormat("%.2f", lap_time2), 20, WHITE);
 
         UpdateRanking();
 
@@ -2479,12 +2499,16 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                             endMusicTimer.Start();
                                             hasPlayedFinish = true;
                                         }
-
-                                        best_lap_time = lap_time;
-                                        lap_time = 0;
+                                        best_lap_time = lap_time1;
+                                        lap_time1 = 0;
+                                        lap_start_time = GetTime();
+                                        
+                                    }
+                                    else {
+                                        best_lap_time = lap_time1;
+                                        lap_time1 = 0;
                                         lap_start_time = GetTime();
                                     }
-
                                     printf("Kart 1 completed lap: %d\n", kart_1->CurrentLap);
                                 }
                                 else if (bodyA == kart_2->body && kart_2->currentCheckpoint == 24) {
@@ -2520,6 +2544,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                     if (kart_2->CurrentRank == 1 && !lapUpdated) {
                                         finish->lap++;
                                         lapUpdated = true; 
+                                    
 
                                         if (kart_2->CurrentLap == 3)
                                         {
@@ -2530,12 +2555,16 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                             hasPlayedFinish = true;
                                         }
 
-                                        best_lap_time = lap_time;
-                                        lap_time = 0;
-                                        lap_start_time = GetTime();
+                                        best_lap_time2 = lap_time2;
+                                        lap_time2 = 0;
+                                        lap_start_time2 = GetTime();
 
                                     }
-
+                                    else {
+										best_lap_time2 = lap_time2;
+										lap_time2 = 0;
+										lap_start_time2 = GetTime();
+                                    }
                                     printf("Kart 2 completed lap: %d\n", kart_2->CurrentLap);
                                 }
                                 else if (bodyA == kart_3->body && kart_3->currentCheckpoint == 24) {
@@ -2583,9 +2612,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                             hasPlayedFinish = true;
                                         }
 
-                                        best_lap_time = lap_time;
-                                        lap_time = 0;
-                                        lap_start_time = GetTime();
+                                       
                                     }
 
                                     printf("Kart 3 completed lap: %d\n", kart_3->CurrentLap);
@@ -2635,9 +2662,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                             hasPlayedFinish = true;
                                         }
 
-                                        best_lap_time = lap_time;
-                                        lap_time = 0;
-                                        lap_start_time = GetTime();
+                                      
                                     }
 
                                     printf("Kart 4 completed lap: %d\n", kart_4->CurrentLap);

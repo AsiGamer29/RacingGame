@@ -172,9 +172,14 @@ public:
 	int stageTime = 13;
 	int countdownTime = 4;
 
-	float lap_time = 0.0f;
+	float lap_time1 = 0.0f;
+	float lap_time2 = 0.0f;
 	float best_lap_time = 0.0f;
+	float best_lap_time2 = 0.0f;
+	float best_time = 0.0f;
 	float lap_start_time = 0.0f;
+	float lap_start_time2 = 0.0f;
+	
 	
 	bool chosenKartop1 = false;
 	bool chosenHaolienp1 = false;
