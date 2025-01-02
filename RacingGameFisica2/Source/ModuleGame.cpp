@@ -856,6 +856,15 @@ public:
 
     virtual void MovingLogic() {
 
+        float currentMaxSpeed;
+
+        if (isBoosting) {
+            currentMaxSpeed = boostedMaxSpeed;
+        }
+        else {
+            currentMaxSpeed = maxSpeed;
+        }
+
         if (speed != 0.0f && !isMoving)
         {
             isMoving = true;
@@ -866,26 +875,28 @@ public:
         }
 
         speed += acceleration;
-        if (speed > maxSpeed) {
-            speed = maxSpeed;
+        if (speed > currentMaxSpeed) {
+            speed = currentMaxSpeed;
         }
 
         if (rotationTimer.ReadSec() >= waitTime) {
-
             if (left == true) {
-                rotation -= 45.0f; 
-				left = false;
-
+                rotation -= 45.0f;
+                left = false;
             }
             else if (right == true) {
                 rotation += 45.0f;
-				right = false;
+                right = false;
             }
-
             rotationTimer.Start();
-			waitTime = 0;
+            waitTime = 0;
         }
-        
+
+        if (isBoosting && timeToBoost.ReadSec() >= boostTime) {
+            isBoosting = false;
+            timeToBoost.Start();
+            boostTime = 1;
+        }
     }
 
     void Move()
@@ -906,9 +917,9 @@ public:
 public:
     int waitTime = 1;
 	float timeToRotate = 0.75f;
-    float maxSpeed = 2.0f;
+    float maxSpeed = 2.5f;
     float acceleration = 1.0f;
-    float boostedMaxSpeed = 4.0f;
+    float boostedMaxSpeed = 5.0f;
 
     float rotation;
 
@@ -922,6 +933,10 @@ public:
     KartType kartType;
 
     int CurrentLap;
+    bool isBoosting;
+
+    Timer timeToBoost;
+    int boostTime = 1;
 
 
 protected:
@@ -929,7 +944,7 @@ protected:
     std::vector<PhysicEntity*> entities;
     float speed;
     bool isMoving;
-    bool isBoosting;
+    
     Timer rotationTimer;
     float deceleration = 0.05f;
 };
@@ -1687,6 +1702,11 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                         if (kart && !kart->isBoosting) {
                             kart->isBoosting = true;
                             kart->timeToBoost.Start();
+                            App->audio->PlayFx(boost_fx);
+                        }
+                        if (kartNPC && !kartNPC->isBoosting) {
+                            kartNPC->isBoosting = true;
+                            kartNPC->timeToBoost.Start();
                             App->audio->PlayFx(boost_fx);
                         }
 
