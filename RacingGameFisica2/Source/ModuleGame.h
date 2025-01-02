@@ -206,6 +206,8 @@ public:
 
 	bool lapUpdated = false;
 
+	int FPS_inGame;
+
 	GameState gameState;
 
 	vec2<int> ray;

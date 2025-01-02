@@ -1105,6 +1105,8 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
+    FPS_inGame = GetFPS();
+
     switch (gameState) {
     case TITLESCREEN:
         
@@ -1300,7 +1302,7 @@ update_status ModuleGame::Update()
         break;
 
     case PLAYING:
-
+        
 		raceStarted = true;
         DrawTexture(background, 0, 0, WHITE);
         if (best_lap_time!=0 < best_lap_time2!=0){
@@ -1320,7 +1322,7 @@ update_status ModuleGame::Update()
         App->fontsModule->DrawText(1060, 848, TextFormat("BEST: %.2f", best_time), 16, WHITE);
         App->fontsModule->DrawText(1093, 777, TextFormat("%.2f", lap_time1 ), 20, WHITE);
         App->fontsModule->DrawText(1093, 813, TextFormat("%.2f", lap_time2), 20, WHITE);
-
+        App->fontsModule->DrawText(24, 807, TextFormat("FPS:%d", FPS_inGame), 16, WHITE);
         UpdateRanking();
 
             for (PhysicEntity* entity : entities)
