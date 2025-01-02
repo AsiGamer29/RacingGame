@@ -150,6 +150,7 @@ public:
 	uint32 boost_fx;
 	uint32 horn_fx;
 
+	uint32 finishLine;
 	uint32 showStage;
 	uint32 countdown;
 
@@ -159,8 +160,11 @@ public:
 	Music win;
 	Music loss;
 	
+	Timer endMusicTimer;
 	Timer showStageTimer;
 	Timer countdownTimer;
+
+	bool hasPlayedFinish = false;
 
 	bool hasShownStage = false;
 	bool hasShownCountdown = false;

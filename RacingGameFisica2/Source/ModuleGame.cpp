@@ -461,30 +461,6 @@ private:
 
 };
 
-class Cone : public PhysicEntity
-{
-public:
-    Cone(ModulePhysics* physics, int x, int y, Module* listener, Texture2D _texture, Application* _app)
-        : PhysicEntity(physics->CreateStaticCircle(x, y, 6), listener), texture(_texture), app(_app)
-    {
-    }
-
-    void Update() override
-    {
-        int x, y;
-        body->GetPhysicPosition(x, y);
-
-        float scale = 2.0f;
-        DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-            Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
-            Vector2{ (float)texture.width, (float)texture.height }, 0.0f, WHITE);
-    }
-
-private:
-    Texture2D texture;
-    Application* app;
-};
-
 class Kart : public PhysicEntity {
 public:
     Kart(ModulePhysics* physics, int x, int y, Module* _listener, Texture2D _texture, Application* _app, KartType type)
@@ -713,36 +689,36 @@ public:
             if (player == PLAYER1) {
                 if (IsKeyDown(KEY_A)) {
                     if (isBoosting) {
-                        rotation -= kartRotation - 0.75f;
+                        rotation -= kartRotation - 0.5f;
                     }
 					else {
-						rotation -= kartRotation;
+						rotation -= kartRotation + 0.75f;
 					}
                 }
                 if (IsKeyDown(KEY_D)) {
 					if (isBoosting) {
-						rotation += kartRotation - 0.75f;
+						rotation += kartRotation - 0.5f;
 					}
                     else {
-                        rotation += kartRotation;
+                        rotation += kartRotation + 0.75f;
                     }
                 }
             }
 			else if (player == PLAYER2) {
 				if (IsKeyDown(KEY_LEFT)) {
                     if (isBoosting) {
-                        rotation -= kartRotation - 0.75f;
+                        rotation -= kartRotation - 0.5f;
                     }
                     else {
-                        rotation -= kartRotation;
+                        rotation -= kartRotation + 0.75f;
                     }
 				}
 				if (IsKeyDown(KEY_RIGHT)) {
                     if (isBoosting) {
-                        rotation += kartRotation - 0.75f;
+                        rotation += kartRotation - 0.5f;
                     }
                     else {
-                        rotation += kartRotation;
+                        rotation += kartRotation + 0.75f;
                     }
 				}
 			}
@@ -833,10 +809,10 @@ public:
     float boostedMaxSpeedHa = 5.0f;
 
 	// Rotations for each kart
-	float rotationKa = 2.25f;
-	float rotationTa = 2.75f;
+	float rotationKa = 1.75f;
+	float rotationTa = 2.25f;
     float rotationHa = 1.25f;
-	float rotationJo = 2.0f;
+	float rotationJo = 1.5f;
 
 	float maxSpeed = 2.0f;
     float acceleration = 1.0f;
@@ -1066,6 +1042,7 @@ bool ModuleGame::Start()
     engine_fx = App->audio->LoadFx("Assets/drive.wav");
     boost_fx = App->audio->LoadFx("Assets/boost.wav"); 
     bump_fx = App->audio->LoadFx("Assets/Bump.wav");
+	finishLine = App->audio->LoadFx("Assets/finish.wav");
 
 	showStage = App->audio->LoadFx("Assets/show.wav");
 	countdown = App->audio->LoadFx("Assets/start.wav");
@@ -1315,7 +1292,7 @@ update_status ModuleGame::Update()
         {
             if (FinishCheckpointSensor* finish = dynamic_cast<FinishCheckpointSensor*>(entity))
             {
-                App->fontsModule->DrawText(27, 770, TextFormat("LAP:%d", finish->lap), 20, WHITE);
+                App->fontsModule->DrawText(27, 770, TextFormat("LAP:%d", (finish->lap) + 1), 20, WHITE);
             } 
             if (Kart_Player_1* kart_1 = dynamic_cast<Kart_Player_1*>(entity))
             {
@@ -1427,7 +1404,9 @@ update_status ModuleGame::Update()
         break;
 	case WINSCREEN:
         raceStarted = false;
-		UpdateMusicStream(win);
+        if (hasPlayedFinish && endMusicTimer.ReadSec() >= 5) {
+            UpdateMusicStream(win);
+        }
         RemoveAllCollisionsAndSensors();
         hasDeleted = true;
         hasStarted = false;
@@ -1463,6 +1442,7 @@ update_status ModuleGame::Update()
 			gameState = LOSSSCREEN;
 		}
 		if (IsKeyPressed(KEY_R)) {
+			hasPlayedFinish = false;
 			gameState = TITLESCREEN;
 			player1Won = false;
 			player2Won = false;
@@ -1470,17 +1450,22 @@ update_status ModuleGame::Update()
 		break;
 	case LOSSSCREEN:
         raceStarted = false;
-		UpdateMusicStream(loss);
+        if (hasPlayedFinish && endMusicTimer.ReadSec() >= 5) {
+            UpdateMusicStream(loss); 
+        }
+		
         RemoveAllCollisionsAndSensors();
         hasDeleted = true;
         hasStarted = false;
 		DrawTexture(npcWin, 0, 0, WHITE);
         if (IsKeyPressed(KEY_R)) {
             gameState = TITLESCREEN;
+            hasPlayedFinish = false;
             npcWon = false;
         }
     }
     
+
     if (IsKeyPressed(KEY_SPACE))
     {
         ray_on = !ray_on;
@@ -2465,7 +2450,15 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 
                                     if (kart_1->CurrentRank == 1 && !lapUpdated) {
                                         finish->lap++;
-                                        lapUpdated = true; 
+                                        lapUpdated = true;
+                                        if (kart_1->CurrentLap == 3)
+                                        {
+                                            App->audio->PlayFx(finishLine);
+                                            player1Won = true;
+											gameState = WINSCREEN;
+                                            endMusicTimer.Start();
+                                            hasPlayedFinish = true;
+                                        }
 
                                         best_lap_time = lap_time;
                                         lap_time = 0;
@@ -2507,6 +2500,15 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                     if (kart_2->CurrentRank == 1 && !lapUpdated) {
                                         finish->lap++;
                                         lapUpdated = true; 
+
+                                        if (kart_2->CurrentLap == 3)
+                                        {
+                                            App->audio->PlayFx(finishLine);
+                                            player2Won = true;
+                                            gameState = WINSCREEN;
+                                            endMusicTimer.Start();
+                                            hasPlayedFinish = true;
+                                        }
 
                                         best_lap_time = lap_time;
                                         lap_time = 0;
@@ -2552,6 +2554,15 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                         finish->lap++;
                                         lapUpdated = true;
 
+                                        if (kart_3->CurrentLap == 3)
+                                        {
+                                            App->audio->PlayFx(finishLine);
+                                            npcWon = true;
+                                            gameState = LOSSSCREEN;
+                                            endMusicTimer.Start();
+                                            hasPlayedFinish = true;
+                                        }
+
                                         best_lap_time = lap_time;
                                         lap_time = 0;
                                         lap_start_time = GetTime();
@@ -2594,6 +2605,15 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 
                                         finish->lap++;
                                         lapUpdated = true;
+
+                                        if (kart_4->CurrentLap == 3)
+                                        {
+                                            App->audio->PlayFx(finishLine);
+                                            npcWon = true;
+                                            gameState = LOSSSCREEN;
+                                            endMusicTimer.Start();
+                                            hasPlayedFinish = true;
+                                        }
 
                                         best_lap_time = lap_time;
                                         lap_time = 0;
