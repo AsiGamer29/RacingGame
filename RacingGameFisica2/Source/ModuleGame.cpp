@@ -1483,6 +1483,26 @@ update_status ModuleGame::Update()
 			gameState = TITLESCREEN;
 			player1Won = false;
 			player2Won = false;
+            raceStarted = false;
+             
+            hasDeleted = true;
+            hasStarted = false;
+
+            chosenKartop1 = false;
+            chosenHaolienp1 = false;
+            chosenJohanap1 = false;
+            chosenTanketop1 = false;
+
+            chosenKartop2 = false;
+            chosenHaolienp2 = false;
+            chosenJohanap2 = false;
+            chosenTanketop2 = false;
+
+            hasChosenPlayer1 = false;
+            hasChosenPlayer2 = false;
+
+            hasSpawnedPlayer1Car = false;
+            hasSpawnedPlayer2Car = false;
 		}
 		break;
 	case LOSSSCREEN:
@@ -1499,6 +1519,25 @@ update_status ModuleGame::Update()
             gameState = TITLESCREEN;
             hasPlayedFinish = false;
             npcWon = false;
+            raceStarted = false;
+            hasDeleted = true;
+            hasStarted = false;
+
+            chosenKartop1 = false;
+            chosenHaolienp1 = false;
+            chosenJohanap1 = false;
+            chosenTanketop1 = false;
+
+            chosenKartop2 = false;
+            chosenHaolienp2 = false;
+            chosenJohanap2 = false;
+            chosenTanketop2 = false;
+
+            hasChosenPlayer1 = false;
+            hasChosenPlayer2 = false;
+
+            hasSpawnedPlayer1Car = false;
+            hasSpawnedPlayer2Car = false;
         }
     }
     
