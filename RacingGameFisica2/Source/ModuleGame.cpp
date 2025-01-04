@@ -470,7 +470,7 @@ public:
         int x, y;
         body->GetPhysicPosition(x, y);
         float rotationDegrees = body->GetRotation() * RAD2DEG;
-        float scale = 1.5f; // Escala de la imagen
+        float scale = 1.5f; 
         DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
             Rectangle{ (float)x, (float)y, (float)texture.width * scale, (float)texture.height * scale },
             Vector2{ (float)texture.width - 1.0f, (float)texture.height - 2.0f }, rotationDegrees, WHITE);
@@ -606,7 +606,7 @@ public:
         
         if (speed != 0.0f && !isMoving)
         {
-            app->audio->PlayFx(engineSound, -1); // Reproduce en bucle
+            app->audio->PlayFx(engineSound, -1); 
             isMoving = true;
         }
         else if (speed == 0.0f && isMoving)
@@ -1347,7 +1347,7 @@ update_status ModuleGame::Update()
                     App->fontsModule->DrawText(469, 789, TextFormat("KART 1"), 20, WHITE);     
                 }
                 else if (kart_1->CurrentRank == 2) {
-					App->fontsModule->DrawText(680, 789, TextFormat("KART 1"), 20, WHITE); // 469, 825
+					App->fontsModule->DrawText(680, 789, TextFormat("KART 1"), 20, WHITE); 
                 }
 				else if (kart_1->CurrentRank == 3) {
 					App->fontsModule->DrawText(469, 825, TextFormat("KART 1"), 20, WHITE);
@@ -2710,8 +2710,6 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
                                             endMusicTimer.Start();
                                             hasPlayedFinish = true;
                                         }
-
-                                      
                                     }
 
                                     printf("Kart 4 completed lap: %d\n", kart_4->CurrentLap);
