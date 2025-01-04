@@ -30,6 +30,8 @@ Application::Application()
 
 	// Rendering happens at the end
 	AddModule(renderer);
+
+	AddModule(fontsModule);
 }
 
 Application::~Application()
@@ -111,7 +113,7 @@ bool Application::CleanUp()
 		Module* item = *it;
 		ret = item->CleanUp();
 	}
-	delete fontsModule;
+
 	return ret;
 }
 
