@@ -2824,8 +2824,21 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
     }
 }
 
+// Pythagorean theorem
 float CalculateDistance(int x1, int y1, int x2, int y2) {
-    return sqrtf(powf(x2 - x1, 2) + powf(y2 - y1, 2));
+
+    float x_difference = x2 - x1;
+
+    float y_difference = y2 - y1;
+
+    float x_squared = x_difference * x_difference; 
+    float y_squared = y_difference * y_difference;
+
+    float sum = x_squared + y_squared;
+
+    float distance = sqrtf(sum);
+
+    return distance;
 }
 
 void ModuleGame::UpdateRanking() {
@@ -3016,7 +3029,6 @@ void ModuleGame::UpdateRanking() {
 
 void ModuleGame::UpdateKartCheckpoints(int checkpointID)
 {
-    // Encuentra todos los karts
     Kart_Player_1* kart_1 = nullptr;
     Kart_Player_2* kart_2 = nullptr;
     Kart_Player_3* kart_3 = nullptr;
@@ -3030,7 +3042,7 @@ void ModuleGame::UpdateKartCheckpoints(int checkpointID)
         if (kart_1 && kart_2 && kart_3 && kart_4) break;
     }
 
-    // Actualiza el checkpoint de cada kart
+    // Update karts currentCheckpoints
     if (kart_1 && kart_1->currentCheckpoint == checkpointID - 1) {
         kart_1->currentCheckpoint = checkpointID;
     }
