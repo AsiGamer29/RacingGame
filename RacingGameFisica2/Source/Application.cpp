@@ -111,7 +111,7 @@ bool Application::CleanUp()
 		Module* item = *it;
 		ret = item->CleanUp();
 	}
-	
+	delete fontsModule;
 	return ret;
 }
 

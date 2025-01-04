@@ -21,7 +21,9 @@ protected:
 	}
 
 public:
-	virtual ~PhysicEntity() = default;
+    virtual ~PhysicEntity() {
+        delete body; 
+    }
 	virtual void Update() = 0;
 
 	virtual int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal)
@@ -44,7 +46,7 @@ protected:
 
 //------------------------------------------------------------------------------------ Snow Zone -------------------------------------------------------------------------------------
 
-// Clase base
+// Base class
 class SnowZone : public PhysicEntity {
 public:
     SnowZone(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture)
@@ -63,7 +65,7 @@ protected:
 };
 
 void InitializeSnowZones(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
-    // Datos de configuración: x, y, width, height
+    //  x, y, width, height
     struct SnowZoneParams {
         int x;
         int y;
@@ -72,25 +74,25 @@ void InitializeSnowZones(ModulePhysics* physics, Module* listener, std::vector<P
     };
 
     std::vector<SnowZoneParams> snowZoneData = {
-        {562, 210, 164, 70}, {175, 371, 100, 252}, {175, 607, 100, 40},     // 6 1 2
-        {275, 435, 100, 382}, {356, 559, 62, 135}, {365, 175, 230, 138}, // 3 4 5
-        {789, 495, 75, 140}, {894, 528, 134, 206}, {704, 460, 94, 70}, // 14 15 16
-        {1060, 275, 198, 200}, {925, 300, 70, 250}, {738, 188, 80, 374}, // 17 18 19
-        {807, 329, 57, 93}, {807, 97, 57, 189}, {955, 62, 240, 118}, // 20 21 22
-        {1245, 279, 70, 296}, {1158, 574, 280, 294}, {895, 692, 246, 20}, // 23 24 25
-        {608, 370, 72, 250}, {414, 35, 564, 40}, {75, 98, 115, 165}, // 7 8 9
-        {43, 522, 52, 320}, {230, 692, 426, 20}, {480, 570, 74, 267}, // 10 11 12
-        {448, 368, 136, 137}, {43, 205, 52, 50}, {644, 663, 256, 84} // 13 26 27
+        {562, 210, 164, 70}, {175, 371, 100, 252}, {175, 607, 100, 40},     
+        {275, 435, 100, 382}, {356, 559, 62, 135}, {365, 175, 230, 138}, 
+        {789, 495, 75, 140}, {894, 528, 134, 206}, {704, 460, 94, 70}, 
+        {1060, 275, 198, 200}, {925, 300, 70, 250}, {738, 188, 80, 374}, 
+        {807, 329, 57, 93}, {807, 97, 57, 189}, {955, 62, 240, 118}, 
+        {1245, 279, 70, 296}, {1158, 574, 280, 294}, {895, 692, 246, 20}, 
+        {608, 370, 72, 250}, {414, 35, 564, 40}, {75, 98, 115, 165}, 
+        {43, 522, 52, 320}, {230, 692, 426, 20}, {480, 570, 74, 267}, 
+        {448, 368, 136, 137}, {43, 205, 52, 50}, {644, 663, 256, 84} 
     };
 
     for (const auto& zone : snowZoneData) {
-        entities.emplace_back(DBG_NEW SnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
+        entities.emplace_back(new SnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
     }
 }
 
 //------------------------------------------------------------------------------------ Darkened Snow Zone -------------------------------------------------------------------------------------
 
-// Clase base 
+// Base class
 class DarkenedSnowZone : public PhysicEntity {
 public:
     DarkenedSnowZone(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture)
@@ -122,15 +124,15 @@ void InitializeDarkenedSnowZones(ModulePhysics* physics, Module* listener, std::
         {1170, 62, 190, 118}
     };
 
-    // Crear cada zona de DarkenedSnow y añadirla a la lista de entidades
+    // Create each DarkenedSnow zone and add it to the list of entities
     for (const auto& zone : darkenedSnowZoneData) {
-        entities.emplace_back(DBG_NEW DarkenedSnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
+        entities.emplace_back(new DarkenedSnowZone(physics, zone.x, zone.y, zone.width, zone.height, listener, defaultTexture));
     }
 }
 
 //------------------------------------------------------------------------------------ CHECKPOINTS -------------------------------------------------------------------------------------
 
-// Clase base 
+// Base class
 class CheckpointSensor : public PhysicEntity {
 public:
     CheckpointSensor(ModulePhysics* physics, int x, int y, int width, int height, Module* listener, Texture2D texture, CollisionType type)
@@ -158,10 +160,6 @@ void InitializeCheckpointSensors(ModulePhysics* physics, Module* listener, std::
     };
 
     std::vector<CheckpointParams> checkpointData = {
-        
-
-
-
 
         {135, 260, 240, 10, CHECKPOINT_SENSOR_1},
         {295, 85, 10, 140, CHECKPOINT_SENSOR_2},
@@ -198,7 +196,7 @@ void InitializeCheckpointSensors(ModulePhysics* physics, Module* listener, std::
     };
 
     for (const auto& checkpoint : checkpointData) {
-        entities.emplace_back(DBG_NEW CheckpointSensor(physics, checkpoint.x, checkpoint.y, checkpoint.width, checkpoint.height, listener, defaultTexture, checkpoint.type));
+        entities.emplace_back(new CheckpointSensor(physics, checkpoint.x, checkpoint.y, checkpoint.width, checkpoint.height, listener, defaultTexture, checkpoint.type));
     }
 }
 
@@ -251,23 +249,23 @@ struct AISensorParams {
 
 void InitializeAISensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
     std::vector<AISensorParams> aiSensorData = {
-        {95, 240, 180, 10, RIGHT}, {140, 170, 100, 10, LEFT}, {140, 100, 180, 10, RIGHT}, // 1 2 3
-        {210, 75, 10, 180, RIGHT}, {650, 82, 10, 180, RIGHT}, {680, 150, 10, 180, RIGHT}, // 4 5 6
-        {680, 360, 160, 30, LEFT}, {745, 390, 10, 180, LEFT}, {820, 390, 10, 180, LEFT}, // 7 8 9
-        {840, 345, 145, 10, LEFT},{925, 145, 205, 30, RIGHT}, {920, 125, 60, 180, RIGHT},  //10 11 12
-        {1150, 125, 10, 180, RIGHT},{1230, 200, 140, 10, RIGHT}, {1185, 370, 200, 10, RIGHT}, // 13 14 15
-        {1130, 400, 10, 100, RIGHT}, {1030, 400, 10, 100, LEFT}, {1000, 460, 120, 30, LEFT}, // 16 17 18
-        {1000, 620, 100, 10, RIGHT}, {940, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, // 19 20 21
-        {800, 580, 210, 10, LEFT}, {590, 590, 20, 210, RIGHT}, {540, 560, 20, 205, RIGHT}, // 22 23 24
-        {542, 310, 100, 10, LEFT},{480, 270, 10, 170, LEFT}, {400, 270, 10, 180, LEFT}, // 25 26 27
-        {350, 320, 180, 10, LEFT}, {350, 430, 180, 10, LEFT}, {430, 430, 10, 180, RIGHT}, // 28 29 30
-        {415, 630, 180, 10, RIGHT}, {370, 653, 10, 180, RIGHT}, {120, 665, 10, 100, RIGHT}, // 31 32 33
-        {88, 600, 180, 10, RIGHT} // 34
+        {95, 240, 180, 10, RIGHT}, {140, 170, 100, 10, LEFT}, {140, 100, 180, 10, RIGHT}, 
+        {210, 75, 10, 180, RIGHT}, {650, 82, 10, 180, RIGHT}, {680, 150, 10, 180, RIGHT}, 
+        {680, 360, 160, 30, LEFT}, {745, 390, 10, 180, LEFT}, {820, 390, 10, 180, LEFT}, 
+        {840, 345, 145, 10, LEFT},{925, 145, 205, 30, RIGHT}, {920, 125, 60, 180, RIGHT},  
+        {1150, 125, 10, 180, RIGHT},{1230, 200, 140, 10, RIGHT}, {1185, 370, 200, 10, RIGHT}, 
+        {1130, 400, 10, 100, RIGHT}, {1030, 400, 10, 100, LEFT}, {1000, 460, 120, 30, LEFT}, 
+        {1000, 620, 100, 10, RIGHT}, {940, 650, 10, 120, RIGHT}, {830, 650, 10, 180, RIGHT}, 
+        {800, 580, 210, 10, LEFT}, {590, 590, 20, 210, RIGHT}, {540, 560, 20, 205, RIGHT}, 
+        {542, 310, 100, 10, LEFT},{480, 270, 10, 170, LEFT}, {400, 270, 10, 180, LEFT}, 
+        {350, 320, 180, 10, LEFT}, {350, 430, 180, 10, LEFT}, {430, 430, 10, 180, RIGHT}, 
+        {415, 630, 180, 10, RIGHT}, {370, 653, 10, 180, RIGHT}, {120, 665, 10, 100, RIGHT}, 
+        {88, 600, 180, 10, RIGHT} 
     };
 
-    // Crear cada sensor IA y añadirlo a la lista de entidades
+    // Create each AI sensor and add it to the entity list
     for (const auto& sensor : aiSensorData) {
-        entities.emplace_back(DBG_NEW AISensor(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture, sensor.direction));
+        entities.emplace_back(new AISensor(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture, sensor.direction));
     }
 }
 
@@ -299,14 +297,14 @@ struct BoostSensorParams {
 
 void InitializeBoostSensors(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
     std::vector<BoostSensorParams> boostSensorData = {
-        {248, 69, 20, 13}, {520, 92, 20, 13}, {1172, 248, 13, 20}, // 1 2 3
-        {1073, 343, 13, 20}, {744, 604, 20, 13}, {532, 425, 13, 20}, // 4 5 6
+        {248, 69, 20, 13}, {520, 92, 20, 13}, {1172, 248, 13, 20}, 
+        {1073, 343, 13, 20}, {744, 604, 20, 13}, {532, 425, 13, 20}, 
         {242, 645, 20, 13}, {225, 328, 13, 20}
     };
 
-    // Crear cada sensor IA y añadirlo a la lista de entidades
+    // Create each AI sensor and add it to the entity list
     for (const auto& sensor : boostSensorData) {
-        entities.emplace_back(DBG_NEW BoostPad(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture));
+        entities.emplace_back(new BoostPad(physics, sensor.x, sensor.y, sensor.width, sensor.height, listener, defaultTexture));
     }
 }
 
@@ -324,7 +322,7 @@ public:
         body->GetPhysicPosition(x, y);
         DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 0.0f, WHITE);
     }
-
+    
 protected:
     Texture2D texture;
 };
@@ -336,7 +334,6 @@ struct CollisionParams {
 };
 
 void InitializeCollisions(ModulePhysics* physics, Module* listener, std::vector<PhysicEntity*>& entities, Texture2D defaultTexture) {
-    // Lista de datos para cada colisión
     static constexpr int internalCollisionCoords[] = {
         241, 577, 273, 577, 273, 479, 257, 479, 257, 145, 273, 145, 273, 129, 287, 129,
         287, 145, 351, 145, 351, 161, 385, 161, 385, 145, 415, 145, 415, 161, 447, 161,
@@ -429,7 +426,7 @@ void InitializeCollisions(ModulePhysics* physics, Module* listener, std::vector<
     };
 
     for (const auto& collision : collisionData) {
-        entities.emplace_back(DBG_NEW CollisionZone(physics, collision.coords, collision.coordCount, listener, defaultTexture, collision.type));
+        entities.emplace_back(new CollisionZone(physics, collision.coords, collision.coordCount, listener, defaultTexture, collision.type));
     }
 }
 
@@ -607,7 +604,6 @@ public:
 			kartAcceleration = acceleration;
 		}
         
-
         if (speed != 0.0f && !isMoving)
         {
             app->audio->PlayFx(engineSound, -1); // Reproduce en bucle
@@ -632,7 +628,7 @@ public:
                 }
             }
             else {
-                // Deceleraci�n gradual
+                // Gradual deceleration
                 if (speed > 0.0f) {
                     speed -= deceleration;
                     if (speed < 0.0f) {
@@ -661,7 +657,7 @@ public:
                 }
             }
             else {
-                // Deceleraci�n gradual
+                //Gradual deceleration
                 if (speed > 0.0f) {
                     speed -= deceleration;
                     if (speed < 0.0f) {
@@ -763,7 +759,6 @@ public:
             }
         }
         
-
         if (isBoosting && timeToBoost.ReadSec() >= boostTime) {
             isBoosting = false;
             timeToBoost.Start();
@@ -771,8 +766,6 @@ public:
         }
 
     }
-    
-    
 
     void Move()
     {
@@ -852,7 +845,6 @@ public:
     {
         rotationTimer.Start();
     }
-
 
     virtual void MovingLogic() {
 
@@ -1041,18 +1033,18 @@ bool ModuleGame::Start()
 	npc2 = LoadTexture("Assets/npc2.png");
 	npc3 = LoadTexture("Assets/npc3.png");
 	npc4 = LoadTexture("Assets/npc4.png");
-
+    
 	three = LoadTexture("Assets/three.png");
 	two = LoadTexture("Assets/two.png");
 	one = LoadTexture("Assets/one.png");
 	go = LoadTexture("Assets/go.png");
-
+    
 	kaWin = LoadTexture("Assets/kartoWin.png");
 	haWin = LoadTexture("Assets/haolienWin.png");
 	joWin = LoadTexture("Assets/johanaWin.png");
 	taWin = LoadTexture("Assets/tanketoWin.png");
 	npcWin = LoadTexture("Assets/npcWin.png");
-
+    
 	mainScreen = LoadTexture("Assets/mainScreen.png");
     player1Select = LoadTexture("Assets/player1select.png");
 	player2Select = LoadTexture("Assets/player2select.png");
@@ -1092,6 +1084,19 @@ bool ModuleGame::CleanUp()
 	UnloadTexture(redCar);
 	UnloadTexture(greenCar);
 	UnloadTexture(blueCar);
+    UnloadTexture(npc1);
+    UnloadTexture(npc2);
+    UnloadTexture(npc3);
+    UnloadTexture(npc4);
+    UnloadTexture(three);
+    UnloadTexture(two);
+    UnloadTexture(one);
+    UnloadTexture(go);
+    UnloadTexture(kaWin);
+    UnloadTexture(haWin);
+    UnloadTexture(joWin);
+    UnloadTexture(taWin);
+    UnloadTexture(npcWin);
 	UnloadTexture(mainScreen);
 	UnloadTexture(background);
 	UnloadMusicStream(bgm);
@@ -1099,6 +1104,11 @@ bool ModuleGame::CleanUp()
 	UnloadMusicStream(playerSelect);
 	UnloadMusicStream(win);
 	UnloadMusicStream(loss);
+    for (PhysicEntity* entity : entities) {
+        delete entity; // Call the PhysicEntity destructor and free PhysBody.
+    }
+    entities.clear();
+
     return true;
 }
 
@@ -1540,7 +1550,6 @@ update_status ModuleGame::Update()
             hasSpawnedPlayer2Car = false;
         }
     }
-    
 
     if (IsKeyPressed(KEY_SPACE))
     {
@@ -1548,7 +1557,6 @@ update_status ModuleGame::Update()
         ray.x = GetMouseX();
         ray.y = GetMouseY();
     }
-
 
     // Prepare for raycast ------------------------------------------------------
     vec2i mouse;
@@ -1559,7 +1567,6 @@ update_status ModuleGame::Update()
     vec2f normal(0.0f, 0.0f);
 
     // All draw functions ------------------------------------------------------
-
 
     for (PhysicEntity* entity : entities)
     {
@@ -1573,7 +1580,6 @@ update_status ModuleGame::Update()
             }
         }
     }
-
 
     // ray -----------------
     if (ray_on == true)
