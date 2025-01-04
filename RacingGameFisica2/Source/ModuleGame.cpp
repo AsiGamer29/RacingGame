@@ -1493,8 +1493,9 @@ update_status ModuleGame::Update()
 			gameState = TITLESCREEN;
 			player1Won = false;
 			player2Won = false;
+
             raceStarted = false;
-             
+
             hasDeleted = true;
             hasStarted = false;
 
@@ -1529,6 +1530,7 @@ update_status ModuleGame::Update()
             gameState = TITLESCREEN;
             hasPlayedFinish = false;
             npcWon = false;
+
             raceStarted = false;
             hasDeleted = true;
             hasStarted = false;
@@ -2869,14 +2871,32 @@ void ModuleGame::OnCollisionExit(PhysBody* bodyA, PhysBody* bodyB) {
     }
 }
 
+// pythagorean theorem
 float CalculateDistance(int x1, int y1, int x2, int y2) {
-    return sqrtf(powf(x2 - x1, 2) + powf(y2 - y1, 2));
+
+    float x_difference = x2 - x1;
+
+    float y_difference = y2 - y1;
+
+    float x_squared = x_difference * x_difference; 
+    float y_squared = y_difference * y_difference;
+
+    float sum = x_squared + y_squared;
+
+    float distance = sqrtf(sum);
+
+    return distance;
 }
 
 void ModuleGame::UpdateRanking() {
+    
+    struct KartInfo {
+        Kart* kart;
+        float distanciaAlCheckpoint;
+    };
     std::vector<KartInfo> kartDistances;
 
-    // Lista de checkpoints
+    //checkpoints(x,Y) coords
     std::vector<std::pair<int, int>> checkpoints = {
         {135, 260}, // CHECKPOINT_SENSOR_1
         {295, 85},  // CHECKPOINT_SENSOR_2
@@ -2906,162 +2926,168 @@ void ModuleGame::UpdateRanking() {
 
     const int totalCheckpoints = checkpoints.size();
 
-    // Encontrar el kart que va más adelantado
-    Kart* leaderKart = nullptr;
-    int maxProgress = -1;
+    // find kartlider
+    Kart* kartLider = nullptr;
+    int mayorProgreso = -1;
 
     for (PhysicEntity* entity : entities) {
-        // Comprobar cada tipo específico de kart
+        // kart 1
         if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(entity)) {
-            int kartProgress = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
-            if (kartProgress > maxProgress) {
-                maxProgress = kartProgress;
-                leaderKart = kart1;
+            int progresoKart = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
+            if (progresoKart > mayorProgreso) {
+                mayorProgreso = progresoKart;
+                kartLider = kart1;
             }
         }
+        // kart 2
         else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(entity)) {
-            int kartProgress = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
-            if (kartProgress > maxProgress) {
-                maxProgress = kartProgress;
-                leaderKart = kart2;
+            int progresoKart = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
+            if (progresoKart > mayorProgreso) {
+                mayorProgreso = progresoKart;
+                kartLider = kart2;
             }
         }
+        // kart 3
         else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entity)) {
-            int kartProgress = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
-            if (kartProgress > maxProgress) {
-                maxProgress = kartProgress;
-                leaderKart = kart3;
+            int progresoKart = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
+            if (progresoKart > mayorProgreso) {
+                mayorProgreso = progresoKart;
+                kartLider = kart3;
             }
         }
+        // kart 4
         else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entity)) {
-            int kartProgress = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
-            if (kartProgress > maxProgress) {
-                maxProgress = kartProgress;
-                leaderKart = kart4;
+            int progresoKart = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
+            if (progresoKart > mayorProgreso) {
+                mayorProgreso = progresoKart;
+                kartLider = kart4;
             }
         }
     }
 
-    if (leaderKart) {
-        int leaderCheckpoint = leaderKart->currentCheckpoint % checkpoints.size();
-        int checkpointX = checkpoints[leaderCheckpoint].first;
-        int checkpointY = checkpoints[leaderCheckpoint].second;
+    // calculate the distance of each kart to the checkpoint
+    if (kartLider) {
+        int checkpointActual = kartLider->currentCheckpoint % checkpoints.size();
+        int checkpointX = checkpoints[checkpointActual].first;
+        int checkpointY = checkpoints[checkpointActual].second;
 
-        // Recolectar información de todos los karts específicos
         for (PhysicEntity* entity : entities) {
             int kartX, kartY;
+
+            // kart 1
             if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(entity)) {
                 kart1->body->GetPhysicPosition(kartX, kartY);
-                float distance = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
-                kartDistances.push_back({ kart1, distance });
+                float distancia = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
+                kartDistances.push_back({ kart1, distancia });
             }
+            // kart 2
             else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(entity)) {
                 kart2->body->GetPhysicPosition(kartX, kartY);
-                float distance = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
-                kartDistances.push_back({ kart2, distance });
+                float distancia = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
+                kartDistances.push_back({ kart2, distancia });
             }
+            // kart 3
             else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(entity)) {
                 kart3->body->GetPhysicPosition(kartX, kartY);
-                float distance = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
-                kartDistances.push_back({ kart3, distance });
+                float distancia = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
+                kartDistances.push_back({ kart3, distancia });
             }
+            // kart 4
             else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(entity)) {
                 kart4->body->GetPhysicPosition(kartX, kartY);
-                float distance = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
-                kartDistances.push_back({ kart4, distance });
+                float distancia = CalculateDistance(kartX, kartY, checkpointX, checkpointY);
+                kartDistances.push_back({ kart4, distancia });
             }
         }
 
-        // Ordenar los karts considerando progreso real y distancia
-        std::sort(kartDistances.begin(), kartDistances.end(),
-            [totalCheckpoints](const KartInfo& a, const KartInfo& b) {
-                int progressA = 0;
-                int progressB = 0;
-                int lapA = 0;
-                int lapB = 0;
+        // order the karts by position    
+        std::sort(kartDistances.begin(), kartDistances.end(), [totalCheckpoints](const KartInfo& a, const KartInfo& b) {
+                int progresoA = 0;
+                int progresoB = 0;
+                int vueltaA = 0;
+                int vueltaB = 0;
                 int checkpointA = 0;
                 int checkpointB = 0;
 
-                // Obtener progreso para kart A
+                // kart A
                 if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(a.kart)) {
-                    progressA = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
-                    lapA = kart1->CurrentLap;
+                    progresoA = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
+                    vueltaA = kart1->CurrentLap;
                     checkpointA = kart1->currentCheckpoint;
                 }
                 else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(a.kart)) {
-                    progressA = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
-                    lapA = kart2->CurrentLap;
+                    progresoA = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
+                    vueltaA = kart2->CurrentLap;
                     checkpointA = kart2->currentCheckpoint;
                 }
                 else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(a.kart)) {
-                    progressA = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
-                    lapA = kart3->CurrentLap;
+                    progresoA = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
+                    vueltaA = kart3->CurrentLap;
                     checkpointA = kart3->currentCheckpoint;
                 }
                 else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(a.kart)) {
-                    progressA = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
-                    lapA = kart4->CurrentLap;
+                    progresoA = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
+                    vueltaA = kart4->CurrentLap;
                     checkpointA = kart4->currentCheckpoint;
                 }
 
-                // Obtener progreso para kart B
+                // kart B
                 if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(b.kart)) {
-                    progressB = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
-                    lapB = kart1->CurrentLap;
+                    progresoB = (kart1->CurrentLap * totalCheckpoints) + kart1->currentCheckpoint;
+                    vueltaB = kart1->CurrentLap;
                     checkpointB = kart1->currentCheckpoint;
                 }
                 else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(b.kart)) {
-                    progressB = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
-                    lapB = kart2->CurrentLap;
+                    progresoB = (kart2->CurrentLap * totalCheckpoints) + kart2->currentCheckpoint;
+                    vueltaB = kart2->CurrentLap;
                     checkpointB = kart2->currentCheckpoint;
                 }
                 else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(b.kart)) {
-                    progressB = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
-                    lapB = kart3->CurrentLap;
+                    progresoB = (kart3->CurrentLap * totalCheckpoints) + kart3->currentCheckpoint;
+                    vueltaB = kart3->CurrentLap;
                     checkpointB = kart3->currentCheckpoint;
                 }
                 else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(b.kart)) {
-                    progressB = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
-                    lapB = kart4->CurrentLap;
+                    progresoB = (kart4->CurrentLap * totalCheckpoints) + kart4->currentCheckpoint;
+                    vueltaB = kart4->CurrentLap;
                     checkpointB = kart4->currentCheckpoint;
                 }
 
-                // Comparar progreso total
-                if (progressA != progressB) {
-                    return progressA > progressB;
+                // different progress
+                if (progresoA != progresoB) {
+                    return progresoA > progresoB;
                 }
 
-                // Si están en la misma vuelta y mismo checkpoint, usar distancia
-                if (lapA == lapB && checkpointA == checkpointB) {
-                    return a.distanceToCP < b.distanceToCP;
+                // same lap & same checkpoint? so whoever is closest wins
+                if (vueltaA == vueltaB && checkpointA == checkpointB) {
+                    return a.distanciaAlCheckpoint < b.distanciaAlCheckpoint;
                 }
 
                 return false;
             });
 
-        // Actualizar las posiciones
-        int rank = 1;
+        // update positions
+        int posicion = 1;
         for (const KartInfo& info : kartDistances) {
             if (Kart_Player_1* kart1 = dynamic_cast<Kart_Player_1*>(info.kart)) {
-                kart1->CurrentRank = rank;
+                kart1->CurrentRank = posicion;
             }
             else if (Kart_Player_2* kart2 = dynamic_cast<Kart_Player_2*>(info.kart)) {
-                kart2->CurrentRank = rank;
+                kart2->CurrentRank = posicion;
             }
             else if (Kart_Player_3* kart3 = dynamic_cast<Kart_Player_3*>(info.kart)) {
-                kart3->CurrentRank = rank;
+                kart3->CurrentRank = posicion;
             }
             else if (Kart_Player_4* kart4 = dynamic_cast<Kart_Player_4*>(info.kart)) {
-                kart4->CurrentRank = rank;
+                kart4->CurrentRank = posicion;
             }
-            ++rank;
+            posicion++;
         }
     }
 }
 
 void ModuleGame::UpdateKartCheckpoints(int checkpointID)
 {
-    // Encuentra todos los karts
     Kart_Player_1* kart_1 = nullptr;
     Kart_Player_2* kart_2 = nullptr;
     Kart_Player_3* kart_3 = nullptr;
@@ -3075,7 +3101,7 @@ void ModuleGame::UpdateKartCheckpoints(int checkpointID)
         if (kart_1 && kart_2 && kart_3 && kart_4) break;
     }
 
-    // Actualiza el checkpoint de cada kart
+    // Update karts currentCheckpoints
     if (kart_1 && kart_1->currentCheckpoint == checkpointID - 1) {
         kart_1->currentCheckpoint = checkpointID;
     }
