@@ -1434,18 +1434,27 @@ update_status ModuleGame::Update()
 
         if (IsKeyPressed(KEY_I))
         {
+            App->audio->PlayFx(finishLine);
             player1Won = true;
             gameState = WINSCREEN;
+            endMusicTimer.Start();
+            hasPlayedFinish = true;
         }
         if (IsKeyPressed(KEY_O))
         {
+            App->audio->PlayFx(finishLine);
             player2Won = true;
             gameState = WINSCREEN;
+            endMusicTimer.Start();
+            hasPlayedFinish = true;
         }
         if (IsKeyPressed(KEY_P))
         {
+            App->audio->PlayFx(finishLine);
             npcWon = true;
             gameState = LOSSSCREEN;
+            endMusicTimer.Start();
+            hasPlayedFinish = true;
         }
 
         break;
