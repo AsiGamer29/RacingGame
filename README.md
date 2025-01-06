@@ -44,4 +44,5 @@ Special and Debug Keys:
 - O: Instant win palyer 2
 - P: Instant win AI
 
+- Gameplay video: https://youtu.be/TcpvoF1ATuw
 
