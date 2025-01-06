@@ -8,6 +8,7 @@ This game was made by:
   - Aniol López
   - Ana Alcaraz
   - Haosheng Li
+
 Github link: https://github.com/AsiGamer29/RacingGame
 
 We have added the following aspects to the game:
